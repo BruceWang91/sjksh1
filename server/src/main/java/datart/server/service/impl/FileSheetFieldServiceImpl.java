@@ -1,10 +1,10 @@
 package datart.server.service.impl;
 
 import datart.core.entity.FileSheetField;
-import datart.core.mappers.FileSheetFieldMapper;
 import datart.core.mappers.ext.FileSheetFieldMapperExt;
 import datart.server.common.Convert;
 import datart.server.common.DateUtils;
+import datart.server.service.BaseService;
 import datart.server.service.IFileSheetFieldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2022-05-27
  */
 @Service
-public class FileSheetFieldServiceImpl implements IFileSheetFieldService {
+public class FileSheetFieldServiceImpl extends BaseService implements IFileSheetFieldService {
     @Autowired
     private FileSheetFieldMapperExt fileSheetFieldMapper;
 
@@ -53,6 +53,7 @@ public class FileSheetFieldServiceImpl implements IFileSheetFieldService {
     @Override
     public int insertFileSheetField(FileSheetField fileSheetField) {
         fileSheetField.setCreateTime(DateUtils.getNowDate());
+        fileSheetField.setCreateBy(getCurrentUser().getId());
         return fileSheetFieldMapper.insertFileSheetField(fileSheetField);
     }
 
@@ -65,6 +66,7 @@ public class FileSheetFieldServiceImpl implements IFileSheetFieldService {
     @Override
     public int updateFileSheetField(FileSheetField fileSheetField) {
         fileSheetField.setUpdateTime(DateUtils.getNowDate());
+        fileSheetField.setUpdateBy(getCurrentUser().getId());
         return fileSheetFieldMapper.updateFileSheetField(fileSheetField);
     }
 

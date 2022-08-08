@@ -23,22 +23,21 @@ import datart.core.base.exception.Exceptions;
 import datart.core.common.Application;
 import datart.core.common.FileUtils;
 import datart.core.entity.*;
+import datart.server.base.dto.ResponseData;
 import datart.server.common.UniversalExcelReaderUtil;
 import datart.server.enums.WhetherEnum;
 import datart.server.service.*;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class FileServiceImpl extends BaseService implements FileService {
@@ -51,6 +50,9 @@ public class FileServiceImpl extends BaseService implements FileService {
     private IFileSheetFieldService fileSheetFieldService;
     @Autowired
     private IFileSaveService fileSaveService;
+
+    @Value("${spring.libreoffice.officehome}") // 从application.yml配置文件中获取
+    private String home; // libreoffice安装位置
 
     @Override
     public String uploadFile(FileOwner fileOwner, String ownerId, MultipartFile file, String fileName) throws IOException {
@@ -225,5 +227,40 @@ public class FileServiceImpl extends BaseService implements FileService {
         file.transferTo(new File(fullPath));
 
         return filePath;
+    }
+
+    @Override
+    public HashMap<String,Object> uploadtopdf(FileOwner fileOwner, Long classId, MultipartFile file) throws IOException {
+
+
+        String filePath = FileUtils.concatPath(fileOwner.getPath(), classId.toString(), System.currentTimeMillis() + "-" + file.getOriginalFilename());
+
+        String fullPath = FileUtils.withBasePath(filePath);
+
+        FileUtils.mkdirParentIfNotExist(fullPath);
+
+        // 上传并返回新文件名称
+        HashMap<String, String> fileName = FileUtils.uploadtopdf(home, fullPath, file);
+        String url = fileName.get("filename");
+        String pdfurl = fileName.get("pdfname");
+        FileSave fileSave = new FileSave();
+        fileSave.setClassId(classId);
+        fileSave.setFileName(file.getOriginalFilename());
+        fileSave.setNewName(FileUtils.getName(fileName.get("filename")));
+        fileSave.setPdfName(FileUtils.getName(fileName.get("pdfname")));
+        fileSave.setUrl(fileName.get("filename"));
+        fileSave.setPdfurl(fileName.get("pdfname"));
+        fileSave.setCreateBy(getCurrentUser().getId());
+        fileSave.setCreateTime(new Date());
+        fileSaveService.insertFileSave(fileSave);
+        HashMap map = new HashMap();
+        map.put("url", url);
+        map.put("pdfurl", pdfurl);
+        map.put("fileName", fileName.get("filename"));
+        map.put("pdfname", fileName.get("pdfname"));
+        map.put("newFileName", FileUtils.getName(fileName.get("filename")));
+        map.put("pdfFileName", FileUtils.getName(fileName.get("pdfname")));
+        map.put("originalFilename", file.getOriginalFilename());
+        return map;
     }
 }

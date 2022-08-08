@@ -4,6 +4,7 @@ import datart.core.base.consts.FileOwner;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public interface FileService {
 
@@ -13,4 +14,5 @@ public interface FileService {
 
     String getBasePath(FileOwner owner,String id);
 
+    HashMap<String,Object> uploadtopdf(FileOwner fileData, Long classId, MultipartFile file) throws IOException;
 }

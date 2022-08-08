@@ -49,6 +49,10 @@ spring:
             threadCount: 10
             threadPriority: 5
 
+  libreoffice:
+    officehome: D:/LibreOffice
+    #officehome: /opt/libreoffice7.2
+
 mybatis:
   type-aliases-package: datart.core.entity
   configuration:

@@ -78,6 +78,7 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
     @Override
     public int insertFileMain(FileMain fileMain) {
         fileMain.setCreateTime(DateUtils.getNowDate());
+        fileMain.setCreateBy(getCurrentUser().getId());
         return fileMainMapper.insertFileMain(fileMain);
     }
 
@@ -90,6 +91,7 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
     @Override
     public int updateFileMain(FileMain fileMain) {
         fileMain.setUpdateTime(DateUtils.getNowDate());
+        fileMain.setUpdateBy(getCurrentUser().getId());
         return fileMainMapper.updateFileMain(fileMain);
     }
 

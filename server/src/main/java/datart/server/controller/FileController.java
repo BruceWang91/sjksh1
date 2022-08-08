@@ -18,14 +18,21 @@
 package datart.server.controller;
 
 import datart.core.base.consts.FileOwner;
+import datart.core.entity.FileSave;
 import datart.server.base.dto.ResponseData;
 import datart.server.service.FileService;
+import datart.server.service.IFileSaveService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.h2.store.fs.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 
 
 @Api
@@ -34,6 +41,9 @@ import java.io.IOException;
 public class FileController extends BaseController {
 
     private final FileService fileService;
+
+    @Autowired
+    private IFileSaveService fileSaveService;
 
     public FileController(FileService fileService) {
         this.fileService = fileService;
@@ -88,9 +98,19 @@ public class FileController extends BaseController {
     @ApiOperation(value = "import file data")
     @PostMapping(value = "/importfiledata")
     public ResponseData<String> importfiledata(@RequestParam String sourceId,
-                                                     @RequestParam("file") MultipartFile file) throws IOException {
+                                               @RequestParam("file") MultipartFile file) throws IOException {
 
         checkBlank(sourceId, "sourceId");
         return ResponseData.success(fileService.uploadFile(FileOwner.FILE_DATA, sourceId, file, null));
+    }
+
+    /**
+     * 留档文件上传（单个）
+     */
+    @ApiOperation("留档文件上传")
+    @PostMapping("/uploadtopdf/{classId}")
+    public ResponseData<HashMap<String,Object>> uploadtopdf(@ApiParam("分类ID") @PathVariable("classId") Long classId, @RequestPart("file") MultipartFile file) throws IOException {
+
+        return ResponseData.success(fileService.uploadtopdf(FileOwner.FILE_SAVE_DATA, classId, file));
     }
 }

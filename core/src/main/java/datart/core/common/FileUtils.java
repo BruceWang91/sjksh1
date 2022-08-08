@@ -21,8 +21,11 @@ package datart.core.common;
 import datart.core.base.exception.Exceptions;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class FileUtils {
@@ -131,5 +134,40 @@ public class FileUtils {
             outputStream.write(content);
         }
     }
+
+    /**
+     * 获取文件名称 /profile/upload/2022/04/16/xxx.png -- xxx.png
+     *
+     * @param fileName 路径名称
+     * @return 没有文件路径的名称
+     */
+    public static String getName(String fileName)
+    {
+        if (fileName == null)
+        {
+            return null;
+        }
+        int lastUnixPos = fileName.lastIndexOf('/');
+        int lastWindowsPos = fileName.lastIndexOf('\\');
+        int index = Math.max(lastUnixPos, lastWindowsPos);
+        return fileName.substring(index + 1);
+    }
+
+    public static final HashMap<String, String> uploadtopdf(String home, String fullPath, MultipartFile file)
+            throws IOException {
+
+        file.transferTo(Paths.get(fullPath));
+        HashMap<String, String> result = new HashMap<>();
+        String fileType = fullPath.substring(fullPath.lastIndexOf(".") + 1, fullPath.length());
+        if (Arrays.asList(MimeTypeUtils.CHANGETOPDF).contains(fileType) == true) {
+
+            String pdfstr = fullPath.replace("." + fileType, ".pdf");
+            OfficeToPdfUtil.f2pdf(home, fullPath, pdfstr);
+            result.put("pdfname", pdfstr);
+        }
+        result.put("filename", fullPath);
+        return result;
+    }
+
 
 }

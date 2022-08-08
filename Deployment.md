@@ -70,7 +70,7 @@ unzip datart-server-1.0.0-beta.x-install.zip
 方式2 :自行编译
 
 ```bash
-
+git clone https://github.com/running-elephant/datart.git
 
 cd datart
 

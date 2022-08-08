@@ -6,6 +6,7 @@ import datart.core.mappers.FileSheetsMapper;
 import datart.core.mappers.ext.FileSheetsMapperExt;
 import datart.server.common.Convert;
 import datart.server.common.DateUtils;
+import datart.server.service.BaseService;
 import datart.server.service.IFileSheetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import java.util.List;
  * @date 2022-05-27
  */
 @Service
-public class FileSheetsServiceImpl implements IFileSheetsService {
+public class FileSheetsServiceImpl extends BaseService implements IFileSheetsService {
     @Autowired
     private FileSheetsMapperExt fileSheetsMapper;
 
@@ -56,6 +57,7 @@ public class FileSheetsServiceImpl implements IFileSheetsService {
     @Override
     public int insertFileSheets(FileSheets fileSheets) {
         fileSheets.setCreateTime(DateUtils.getNowDate());
+        fileSheets.setCreateBy(getCurrentUser().getId());
         return fileSheetsMapper.insertFileSheets(fileSheets);
     }
 
@@ -68,6 +70,7 @@ public class FileSheetsServiceImpl implements IFileSheetsService {
     @Override
     public int updateFileSheets(FileSheets fileSheets) {
         fileSheets.setUpdateTime(DateUtils.getNowDate());
+        fileSheets.setUpdateBy(getCurrentUser().getId());
         return fileSheetsMapper.updateFileSheets(fileSheets);
     }
 
