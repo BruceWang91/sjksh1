@@ -77,8 +77,8 @@ public class FileSaveController extends BaseController {
         for (int i = 0; i < ids.length; i++) {
             Long id = ids[i];
             FileSave fileSave = fileSaveService.selectFileSaveById(id);
-            String url = FileUtils.withBasePath(fileSave.getUrl());
-            String pdfurl = FileUtils.withBasePath(fileSave.getPdfurl());
+            String url = fileSave.getUrl();
+            String pdfurl = fileSave.getPdfurl();
             File file = new File(url);
             file.delete();
             File pdffile = new File(pdfurl);
