@@ -70,6 +70,7 @@ public class SysServiceImpl implements SysService {
 
     @Override
     public boolean setup(SetupParams params) throws MessagingException, UnsupportedEncodingException {
+
         Application.updateInitialized();
         if (Application.isInitialized()) {
             Exceptions.msg("The application already initialized.");

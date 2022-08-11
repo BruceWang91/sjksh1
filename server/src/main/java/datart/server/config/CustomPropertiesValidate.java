@@ -31,7 +31,7 @@ public class CustomPropertiesValidate implements EnvironmentPostProcessor {
 
     private static final String CONFIG_HOME = "config/datart.conf";
 
-    private static final String DATABASE_URL = "spring.datasource.url";
+    private static final String DATABASE_URL = "spring.datasource.druid.master.url";
 
     private static final String CONFIG_DATABASE_URL = "datasource.ip";
 

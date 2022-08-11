@@ -17,7 +17,7 @@ spring:
       slave:
         # 从数据源开关/默认关闭
         enabled: true
-        url: jdbc:mysql://127.0.0.1:3306/ry_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.importdatabase:ry_data}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #        url: jdbc:mysql://58.22.61.222:57812/ry_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         username: root
         password: 123456
