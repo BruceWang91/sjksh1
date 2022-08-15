@@ -39,7 +39,7 @@ public class FileClassController extends BaseController {
      * 获取文件分类详细信息
      */
     @ApiOperation("获取文件分类详细信息")
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/getInfo/{id}")
     public ResponseData<FileClass> getInfo(@PathVariable("id") Long id) {
         return ResponseData.success(fileClassService.selectFileClassById(id));
     }
@@ -48,7 +48,7 @@ public class FileClassController extends BaseController {
      * 新增文件分类
      */
     @ApiOperation("新增文件分类")
-    @PostMapping
+    @PostMapping("/add")
     public ResponseData<Integer> add(@RequestBody FileClass fileClass) {
         return ResponseData.success((Integer) fileClassService.insertFileClass(fileClass));
     }
@@ -57,7 +57,7 @@ public class FileClassController extends BaseController {
      * 修改文件分类
      */
     @ApiOperation("修改文件分类")
-    @PutMapping
+    @PutMapping("/edit")
     public ResponseData<Integer> edit(@RequestBody FileClass fileClass) {
         return ResponseData.success((Integer) fileClassService.updateFileClass(fileClass));
     }
@@ -66,7 +66,7 @@ public class FileClassController extends BaseController {
      * 删除文件分类
      */
     @ApiOperation("删除文件分类")
-    @DeleteMapping("/{ids}")
+    @DeleteMapping("/remove/{ids}")
     public ResponseData<Integer> remove(@PathVariable Long[] ids) {
 
         return ResponseData.success((Integer) fileClassService.deleteFileClassByIds(ids));

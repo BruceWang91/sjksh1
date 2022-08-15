@@ -13,7 +13,7 @@ import java.util.Date;
  * @author ruoyi
  * @date 2022-05-30
  */
-public class FileSheets extends BaseEntity {
+public class FileSheets {
     private static final long serialVersionUID = 1L;
 
     /**

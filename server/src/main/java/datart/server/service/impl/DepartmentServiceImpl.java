@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -147,13 +148,14 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
     @Override
     public int insertDept(Department dept) {
         dept.setCreateBy(getCurrentUser().getId());
+        dept.setCreateTime(new Date());
         Department info = deptMapper.selectDeptById(dept.getParentId());
         // 如果父节点不为正常状态,则不允许新增子节点
-        if (!UserConstants.DEPT_NORMAL.equals(info.getStatus())) {
+        if (info != null && !UserConstants.DEPT_NORMAL.equals(info.getStatus())) {
 //            throw new Exception("部门停用，不允许新增");
             return 0;
         }
-        dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
+        dept.setAncestors(null == info ?"0":info.getAncestors() + "," + dept.getParentId());
         return deptMapper.insertDept(dept);
     }
 
@@ -166,6 +168,7 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
     @Override
     public int updateDept(Department dept) {
         dept.setUpdateBy(getCurrentUser().getId());
+        dept.setUpdateTime(new Date());
         Department newParentDept = deptMapper.selectDeptById(dept.getParentId());
         Department oldDept = deptMapper.selectDeptById(dept.getDeptId());
         if (StringUtils.isNotNull(newParentDept) && StringUtils.isNotNull(oldDept)) {

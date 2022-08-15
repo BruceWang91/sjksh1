@@ -90,8 +90,8 @@ create table file_class (
     primary key (id)
 ) engine=innodb auto_increment=200 comment = '文件分类';
 
-DROP TABLE IF EXISTS `depatment`;
-CREATE TABLE `depatment` (
+DROP TABLE IF EXISTS `department`;
+CREATE TABLE `department` (
     `dept_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '部门id',
     `parent_id` bigint(20) DEFAULT '0' COMMENT '父部门id',
     `ancestors` varchar(50) DEFAULT '' COMMENT '祖级列表',

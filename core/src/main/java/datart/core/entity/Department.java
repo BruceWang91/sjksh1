@@ -1,9 +1,9 @@
 package datart.core.entity;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,8 +13,7 @@ import java.util.List;
  */
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class Department extends BaseEntity {
+public class Department {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -51,6 +50,14 @@ public class Department extends BaseEntity {
      * 删除标志（0代表存在 1代表删除）
      */
     private String delFlag;
+
+    private String createBy;
+
+    private Date createTime;
+
+    private String updateBy;
+
+    private Date updateTime;
 
     /**
      * 父部门名称

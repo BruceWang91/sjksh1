@@ -37,8 +37,8 @@ public interface FileMainMapperExt extends FileMainMapper {
             "SELECT\n" +
                     "        filemain.*\n" +
                     "        FROM file_main filemain\n" +
-                    "        LEFT JOIN sys_user suser\n" +
-                    "            ON filemain.create_by = suser.user_id\n" +
+                    "        LEFT JOIN user suser\n" +
+                    "            ON filemain.create_by = suser.id\n" +
                     "        WHERE 1=1\n" +
                     "        <if test=\"fileName != null  and fileName != ''\">\n" +
                     "            and file_name like concat('%', #{fileName}, '%')\n" +
