@@ -20,6 +20,8 @@ public class UserAddParam {
 
     private String description;
 
+    private Long deptId;
+
     private Set<String> roleIds = new HashSet<>();
 
 }

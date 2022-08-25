@@ -72,9 +72,9 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
      * @return 下拉树结构列表
      */
     @Override
-    public List<TreeSelect> buildDeptTreeSelect(List<Department> depts) {
+    public List<Department> buildDeptTreeSelect(List<Department> depts) {
         List<Department> deptTrees = buildDeptTree(depts);
-        return deptTrees.stream().map(TreeSelect::new).collect(Collectors.toList());
+        return deptTrees;
     }
 
     /**

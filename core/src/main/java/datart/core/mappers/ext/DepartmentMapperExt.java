@@ -20,14 +20,14 @@ public interface DepartmentMapperExt extends DepartmentMapper {
     @Select({
             "<script>",
             "select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, " +
-                    "d.status, d.del_flag, d.create_by, d.create_time \n" +
+                    "d.status, d.del_flag, d.create_by, d.create_time, d.update_by, d.update_time \n" +
                     "from department d",
                     "where d.del_flag = '0'\n" +
                     "<if test=\"deptId != null and deptId != 0\">\n" +
                     "AND dept_id = #{deptId}\n" +
                     "</if>\n" +
                     "<if test=\"parentId != null and parentId != 0\">\n" +
-                    "AND parent_id = #{parentId}\n" +
+                    "AND parent_id = #{parentId} OR dept_id = #{parentId}" +
                     "</if>\n" +
                     "<if test=\"deptName != null and deptName != ''\">\n" +
                     "AND dept_name like concat('%', #{deptName}, '%')\n" +

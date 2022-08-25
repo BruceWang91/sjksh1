@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 部门信息
  *
- * @author ruoyi
+ * @author wangya
  */
 @Api("部门信息")
 @RestController
@@ -70,7 +70,7 @@ public class DepartmentController extends BaseController {
      */
     @ApiOperation("获取部门下拉树列表")
     @GetMapping("/treeselect")
-    public ResponseData<List<TreeSelect>> treeselect(Department dept) {
+    public ResponseData<List<Department>> treeselect(Department dept) {
         List<Department> depts = deptService.selectDeptList(dept);
         return ResponseData.success(deptService.buildDeptTreeSelect(depts));
     }
@@ -79,7 +79,7 @@ public class DepartmentController extends BaseController {
      * 新增部门
      */
     @ApiOperation("新增部门")
-    @PostMapping
+    @PostMapping("/add")
     public ResponseData add(@Validated @RequestBody Department dept) {
         if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {
             return ResponseData.failure("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
@@ -91,7 +91,7 @@ public class DepartmentController extends BaseController {
      * 修改部门
      */
     @ApiOperation("修改部门")
-    @PutMapping
+    @PutMapping("/edit")
     public ResponseData<Integer> edit(@Validated @RequestBody Department dept) {
         Long deptId = dept.getDeptId();
         if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))) {

@@ -159,6 +159,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         user.setCreateBy(user.getId());
         user.setCreateTime(new Date());
         user.setActive(!sendMail);
+        user.setDeptId(userRegisterParam.getDeptId());
         userMapper.insert(user);
         if (!sendMail) {
             initUser(user);

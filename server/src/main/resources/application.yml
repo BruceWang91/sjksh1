@@ -3,6 +3,8 @@ spring:
     name: datart-server
   profiles:
     active: config
+  aop:
+    proxy-target-class: true
 
   main:
     banner-mode: off
@@ -87,3 +89,21 @@ server:
   compression:
     enabled: true
     mime-types: application/javascript,application/json,application/xml,text/html,text/xml,text/plain,text/css,image/*
+
+minidao :
+  base-package: org.jeecg.modules.jmreport.desreport.dao*
+  db-type: mysql
+
+#jeecg专用配置
+#jeecg :
+#  jmreport:
+#    # 自动保存
+#    autoSave: true
+#    # 单位毫秒 默认5*60*1000
+#    interval: 10000
+#  # local|minio|alioss
+#  uploadType: local
+#  # local
+#  path :
+#    #文件路径
+#    upload: D:\images

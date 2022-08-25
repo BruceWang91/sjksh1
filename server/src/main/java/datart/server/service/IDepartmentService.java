@@ -33,7 +33,7 @@ public interface IDepartmentService {
      * @param depts 部门列表
      * @return 下拉树结构列表
      */
-    public List<TreeSelect> buildDeptTreeSelect(List<Department> depts);
+    public List<Department> buildDeptTreeSelect(List<Department> depts);
 
     /**
      * 根据部门ID查询信息

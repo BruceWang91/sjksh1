@@ -21,7 +21,7 @@ public interface DepartmentMapper {
      */
     @Select({
             "select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num,",
-            "d.status, d.del_flag, d.create_by, d.create_time",
+            "d.status, d.del_flag, d.create_by, d.create_time, d.update_by, d.update_time",
             "from department d",
             "where dept_id = #{deptId,jdbcType=VARCHAR}"
     })
@@ -60,8 +60,7 @@ public interface DepartmentMapper {
      * @return 结果
      */
     @Select({
-            "select count(1) from department" +
-                    "where del_flag = '0' and parent_id = #{deptId} limit 1"
+            "select count(1) from department where parent_id = #{deptId} limit 1"
     })
     int hasChildByDeptId(Long deptId);
 
@@ -72,7 +71,7 @@ public interface DepartmentMapper {
      * @return 结果
      */
     @Select({
-            "select count(1) from user where dept_id = #{deptId} and del_flag = '0'"
+            "select count(1) from user where dept_id = #{deptId} "
     })
     int checkDeptExistUser(Long deptId);
 
@@ -167,7 +166,7 @@ public interface DepartmentMapper {
      * @return 结果
      */
     @Delete({
-            "update department set del_flag = '2' where dept_id = #{deptId}"
+            "delete from department where dept_id = #{deptId}"
     })
     int deleteDeptById(Long deptId);
 }

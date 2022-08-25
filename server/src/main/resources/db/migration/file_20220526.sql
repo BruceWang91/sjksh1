@@ -105,3 +105,5 @@ CREATE TABLE `department` (
     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (`dept_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8 COMMENT='部门表';
+
+ALTER TABLE `user` ADD COLUMN dept_id BIGINT(20) NULL

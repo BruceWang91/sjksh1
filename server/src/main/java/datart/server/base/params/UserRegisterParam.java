@@ -42,4 +42,5 @@ public class UserRegisterParam {
     @Pattern(regexp = Const.REG_EMAIL, message = "Invalid email format")
     private String email;
 
+    private Long deptId;
 }

@@ -38,4 +38,5 @@ public class UserUpdateParam extends BaseUpdateParam {
 
     private String description;
 
+    private Long deptId;
 }

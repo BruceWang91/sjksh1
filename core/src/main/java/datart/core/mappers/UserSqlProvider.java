@@ -27,7 +27,11 @@ public class UserSqlProvider {
         if (record.getActive() != null) {
             sql.VALUES("active", "#{active,jdbcType=TINYINT}");
         }
-        
+
+        if (record.getDeptId() != null){
+            sql.VALUES("dept_id","#{deptId,jdbcType=BIGINT}");
+        }
+
         if (record.getName() != null) {
             sql.VALUES("`name`", "#{name,jdbcType=VARCHAR}");
         }
@@ -77,6 +81,10 @@ public class UserSqlProvider {
         
         if (record.getActive() != null) {
             sql.SET("active = #{active,jdbcType=TINYINT}");
+        }
+
+        if (record.getDeptId() != null){
+            sql.SET("dept_id = #{deptId,jdbcType=BIGINT}");
         }
         
         if (record.getName() != null) {

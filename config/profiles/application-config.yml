@@ -10,7 +10,7 @@ spring:
       #    password:
       # 主库数据源
       master:
-        url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.database:datart}?&allowMultiQueries=true&characterEncoding=utf-8
+        url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.database:datart}?&allowMultiQueries=true&characterEncoding=utf-8&&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
         username: ${datasource.username:root}
         password: ${datasource.password:123456}
       # 从库数据源
@@ -19,8 +19,8 @@ spring:
         enabled: true
         url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.importdatabase:ry_data}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         #        url: jdbc:mysql://58.22.61.222:57812/ry_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: root
-        password: 123456
+        username: ${datasource.username:root}
+        password: ${datasource.password:123456}
       # 初始连接数
       initialSize: 5
       # 最小连接池数量

@@ -39,6 +39,10 @@ public class UserBaseInfo {
 
     private boolean orgOwner;
 
+    private Long deptId;
+
+    private String deptName;
+
     public UserBaseInfo() {
     }
 
@@ -49,5 +53,7 @@ public class UserBaseInfo {
         this.name = user.getName();
         this.description = user.getDescription();
         this.avatar = user.getAvatar();
+        this.deptId = user.getDeptId();
+        this.deptName = user.getDeptName();
     }
 }

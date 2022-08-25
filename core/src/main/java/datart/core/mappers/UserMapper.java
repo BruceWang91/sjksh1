@@ -23,13 +23,13 @@ public interface UserMapper extends CRUDMapper {
         "insert into user (id, email, ",
         "username, `password`, ",
         "active, `name`, description, ",
-        "avatar, create_time, ",
+        "avatar, dept_id, create_time, ",
         "create_by, update_time, ",
         "update_by)",
         "values (#{id,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, ",
         "#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, ",
         "#{active,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, ",
-        "#{avatar,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, ",
+        "#{avatar,jdbcType=VARCHAR},#{deptId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, ",
         "#{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, ",
         "#{updateBy,jdbcType=VARCHAR})"
     })
@@ -40,7 +40,7 @@ public interface UserMapper extends CRUDMapper {
 
     @Select({
         "select",
-        "id, email, username, `password`, active, `name`, description, avatar, create_time, ",
+        "id, email, username, `password`, active, dept_id, `name`, description, avatar, create_time, ",
         "create_by, update_time, update_by",
         "from user",
         "where id = #{id,jdbcType=VARCHAR}"
@@ -54,6 +54,8 @@ public interface UserMapper extends CRUDMapper {
         @Result(column="name", property="name", jdbcType=JdbcType.VARCHAR),
         @Result(column="description", property="description", jdbcType=JdbcType.VARCHAR),
         @Result(column="avatar", property="avatar", jdbcType=JdbcType.VARCHAR),
+        @Result(column="dept_id",property="deptId", jdbcType = JdbcType.BIGINT),
+        @Result(column="dept_name",property="deptName", jdbcType = JdbcType.VARCHAR),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="create_by", property="createBy", jdbcType=JdbcType.VARCHAR),
         @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
@@ -70,6 +72,7 @@ public interface UserMapper extends CRUDMapper {
           "username = #{username,jdbcType=VARCHAR},",
           "`password` = #{password,jdbcType=VARCHAR},",
           "active = #{active,jdbcType=TINYINT},",
+          "dept_id = #{deptId,jdbcType=BIGINT},",
           "`name` = #{name,jdbcType=VARCHAR},",
           "description = #{description,jdbcType=VARCHAR},",
           "avatar = #{avatar,jdbcType=VARCHAR},",

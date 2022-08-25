@@ -64,6 +64,7 @@ public class BasicValidRequestInterceptor implements HandlerInterceptor {
                 || requestURI.startsWith("/antd")
                 || requestURI.startsWith("/v2/")
                 || requestURI.startsWith("/share")
+                || requestURI.startsWith("/jmreport")
                 || requestURI.startsWith(staticPath);
     }
 

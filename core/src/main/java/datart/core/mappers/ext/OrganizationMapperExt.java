@@ -25,11 +25,13 @@ public interface OrganizationMapperExt extends OrganizationMapper {
 
     @Select({
             "SELECT " +
-                    "	u.*  " +
+                    "	u.* ," +
+                    "dept_name  " +
                     "FROM " +
                     "	`user` u " +
                     "	JOIN rel_user_organization ruo ON u.id = ruo.user_id  " +
-                    "	AND ruo.org_id = #{orgId}"
+                    "   LEFT JOIN department dept ON u.dept_id = dept.dept_id"+
+                    "	WHERE ruo.org_id = #{orgId}"
     })
     List<User> listOrgMembers(@Param("orgId") String orgId);
 
