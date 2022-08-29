@@ -1,115 +1,128 @@
 Manifest-Version: 1.0
 Main-Class: datart.DatartServerApplication
-Class-Path: selenium-support-3.141.59.jar poi-ooxml-lite-5.0.0.jar selen
- ium-chrome-driver-3.141.59.jar antlr4-4.5.1.jar shiro-lang-1.8.0.jar es
- ri-geometry-api-2.2.0.jar hamcrest-2.2.jar android-json-0.0.20131108.va
- adin1.jar commons-lang3-3.11.jar j2objc-annotations-1.3.jar dingtalk-1.
- 1.86.jar selenium-edge-driver-3.141.59.jar char-translation-0.0.2.jar h
- ttpcore-4.4.14.jar gson-2.8.6.jar reactor-core-3.4.3.jar batik-svg-dom-
- 1.13.jar okhttp-3.14.9.jar batik-gui-util-1.13.jar HikariCP-3.4.5.jar g
- uava-21.0.jar lettuce-core-6.0.2.RELEASE.jar spring-boot-starter-mail-2
- .4.3.jar xmlgraphics-commons-2.4.jar netty-codec-4.1.59.Final.jar jjwt-
- 0.7.0.jar opentest4j-1.2.0.jar spring-test-5.3.4.jar swagger-annotation
- s-1.5.13.jar batik-ttf2svg-1.13.jar content-type-2.1.jar spring-boot-st
- arter-tomcat-2.4.3.jar fastjson-1.2.73.jar thymeleaf-3.0.12.RELEASE.jar
-  spring-jcl-5.3.4.jar jackson-datatype-jsr310-2.11.4.jar commons-math3-
- 3.6.1.jar tea-util-0.2.13.jar log4j-to-slf4j-2.13.3.jar jakarta.xml.bin
- d-api-2.3.3.jar mockito-core-3.6.28.jar batik-all-1.13.jar fontbox-2.0.
- 22.jar batik-shared-resources-1.13.jar jackson-annotations-2.11.4.jar b
- atik-extension-1.13.jar spring-boot-autoconfigure-2.4.3.jar junit-jupit
- er-5.7.1.jar j2objc-annotations-1.1.jar spring-security-core-5.4.5.jar 
- junit-jupiter-params-5.7.1.jar druid-1.2.4.jar jakarta.annotation-api-1
- .3.5.jar error_prone_annotations-2.3.4.jar protobuf-java-3.6.1.jar spri
- ng-boot-starter-web-2.4.3.jar spring-boot-starter-test-2.4.3.jar batik-
- svgrasterizer-1.13.jar spring-boot-test-autoconfigure-2.4.3.jar batik-a
- wt-util-1.13.jar woodstox-core-5.2.1.jar classmate-1.5.1.jar spring-boo
- t-starter-jdbc-2.4.3.jar commons-compress-1.20.jar mybatis-spring-2.0.6
- .jar org.jacoco.agent-0.8.4-runtime.jar commons-exec-1.3.jar batik-rast
- erizer-ext-1.13.jar batik-parser-1.13.jar jurt-4.1.2.jar spring-boot-st
- arter-quartz-2.4.3.jar jackson-datatype-jdk8-2.11.4.jar ascii-utf-theme
- s-0.0.1.jar json-smart-2.3.jar asciitable-0.3.2.jar commons-collections
- -3.2.2.jar spring-plugin-metadata-1.2.0.RELEASE.jar spring-boot-test-2.
- 4.3.jar jodconverter-spring-boot-starter-4.2.2.jar encoder-1.2.2.jar xa
- lan-2.7.2.jar springfox-spring-web-2.7.0.jar json-path-2.4.0.jar tea-1.
- 2.0.jar spring-webmvc-5.3.4.jar batik-dom-1.13.jar nimbus-jose-jwt-8.20
- .2.jar xml-apis-1.4.01.jar jul-to-slf4j-1.7.30.jar jose4j-0.7.12.jar sp
- ring-expression-5.3.4.jar jakarta.validation-api-2.0.2.jar freemarker-2
- .3.31.jar jaxb-core-2.3.0.jar jaxb-impl-2.3.0.jar shiro-event-1.8.0.jar
-  shiro-crypto-hash-1.8.0.jar error_prone_annotations-2.1.3.jar springfo
- x-swagger-common-2.7.0.jar spring-boot-starter-thymeleaf-2.4.3.jar xmlb
- eans-4.0.0.jar commons-collections4-4.4.jar tomcat-embed-websocket-9.0.
- 43.jar spring-security-oauth2-core-5.4.5.jar listenablefuture-9999.0-em
- pty-to-avoid-conflict-with-guava.jar apiguardian-api-1.1.0.jar SparseBi
- tSet-1.2.jar ST4-4.0.8.jar commons-text-1.9.jar graphics2d-0.30.jar spr
- ing-security-web-5.4.5.jar mockito-junit-jupiter-3.6.28.jar jackson-dat
- abind-2.11.4.jar shiro-crypto-cipher-1.8.0.jar antlr-runtime-3.5.2.jar 
- selenium-opera-driver-3.141.59.jar jboss-logging-3.4.1.Final.jar javax.
- annotation-api-1.3.2.jar batik-svgpp-1.13.jar animal-sniffer-annotation
- s-1.14.jar jakarta.activation-1.2.2.jar shiro-cache-1.8.0.jar pinyin4j-
- 2.5.1.jar commons-lang-2.6.jar junit-platform-engine-1.7.1.jar avatica-
- core-1.17.0.jar log4j-1.2.17.jar thymeleaf-spring5-3.0.12.RELEASE.jar s
- pring-web-5.3.4.jar commons-io-2.6.jar java-jwt-3.7.0.jar batik-svggen-
- 1.13.jar jackson-module-parameter-names-2.11.4.jar h2-1.4.200.jar jakar
- ta.el-3.0.3.jar jsonassert-1.5.0.jar commons-pool2-2.9.0.jar batik-scri
- pt-1.13.jar log4j-api-2.13.3.jar attoparser-2.0.5.RELEASE.jar failureac
- cess-1.0.1.jar netty-common-4.1.59.Final.jar shiro-crypto-core-1.8.0.ja
- r shiro-spring-1.8.0.jar spring-boot-2.4.3.jar batik-svgbrowser-1.13.ja
- r jodconverter-core-4.2.2.jar spring-security-oauth2-jose-5.4.5.jar htt
- pclient-4.5.13.jar jackson-dataformat-yaml-2.11.4.jar thymeleaf-extras-
- java8time-3.0.4.RELEASE.jar jodconverter-local-4.2.2.jar commons-io-2.4
- .jar cglib-3.3.0.jar spring-ldap-core-2.3.3.RELEASE.jar xmlunit-core-2.
- 7.0.jar batik-css-1.13.jar logback-core-1.2.3.jar logback-classic-1.2.3
- .jar quartz-2.3.2.jar spring-boot-starter-freemarker-2.4.3.jar springfo
- x-spi-2.7.0.jar spring-boot-starter-logging-2.4.3.jar snakeyaml-1.27.ja
- r selenium-api-3.141.59.jar openapiutil-0.1.12.jar jaxb-api-2.3.1.jar b
- atik-anim-1.13.jar jackson-core-2.11.4.jar aspectjweaver-1.9.8.M1.jar c
- ommons-logging-1.2.jar batik-squiggle-1.13.jar jcip-annotations-1.0-1.j
- ar spring-plugin-core-1.2.0.RELEASE.jar slf4j-api-1.7.30.jar spring-dat
- a-redis-2.4.5.jar oauth2-oidc-sdk-8.36.jar commons-compiler-3.1.3.jar n
- etty-buffer-4.1.59.Final.jar reflections-0.9.11.jar shiro-web-1.8.0.jar
-  lombok-1.18.18.jar byte-buddy-agent-1.10.20.jar tea-openapi-0.1.3.jar 
- spring-boot-starter-json-2.4.3.jar uzaygezen-core-0.2.jar shiro-config-
- core-1.8.0.jar selenium-java-3.141.59.jar checker-compat-qual-2.0.0.jar
-  json-path-2.7.0.jar okio-1.13.0.jar javassist-3.28.0-GA.jar unbescape-
- 1.1.6.RELEASE.jar reactive-streams-1.0.3.jar mybatis-spring-boot-autoco
- nfigure-2.1.4.jar spring-context-5.3.4.jar javax.activation-api-1.2.0.j
- ar springfox-schema-2.7.0.jar commons-dbcp2-2.8.0.jar pdfbox-2.0.22.jar
-  calcite-core-1.26.0.jar shiro-core-1.8.0.jar okio-1.14.0.jar sketches-
- core-0.9.0.jar batik-transcoder-1.13.jar commons-csv-1.8.jar avatica-me
- trics-1.17.0.jar aggdesigner-algorithm-6.0.jar batik-constants-1.13.jar
-  shiro-spring-boot-starter-1.8.0.jar spring-security-oauth2-client-5.4.
- 5.jar mybatis-spring-boot-starter-2.1.4.jar springfox-swagger2-2.7.0.ja
- r tomcat-embed-core-9.0.43.jar selenium-ie-driver-3.141.59.jar xml-apis
- -ext-1.3.04.jar druid-spring-boot-starter-1.2.4.jar thumbnailator-0.4.1
- 4.jar spring-oxm-5.3.4.jar spring-security-crypto-5.4.5.jar netty-resol
- ver-4.1.59.Final.jar netty-handler-4.1.59.Final.jar xmlsec-2.2.1.jar sp
- ring-boot-starter-oauth2-client-2.4.3.jar lang-tag-1.4.4.jar spring-boo
- t-starter-data-redis-2.4.3.jar junit-platform-commons-1.7.1.jar juh-4.1
- .2.jar mapstruct-1.1.0.Final.jar mybatis-generator-core-1.4.0.jar batik
- -util-1.13.jar spring-jdbc-5.3.4.jar janino-3.1.3.jar spring-boot-start
- er-2.4.3.jar batik-swing-1.13.jar stax2-api-4.2.jar selenium-java-3.9.1
- .jar spring-core-5.3.4.jar poi-5.0.0.jar spring-beans-5.3.4.jar seleniu
- m-firefox-driver-3.141.59.jar spring-data-commons-2.4.5.jar accessors-s
- mart-1.2.jar bcprov-jdk15on-1.68.jar unoil-4.1.2.jar jakarta.mail-1.6.5
- .jar junit-jupiter-engine-5.7.1.jar fastjson2-2.0.4.jar aspectjweaver-1
- .9.6.jar batik-slideshow-1.13.jar spring-tx-5.3.4.jar guava-29.0-jre.ja
- r asm-7.1.jar commons-beanutils-1.9.4.jar batik-bridge-1.13.jar junit-j
- upiter-api-5.7.1.jar endpoint-util-0.0.6.jar commons-codec-1.15.jar bat
- ik-squiggle-ext-1.13.jar jakarta.activation-api-1.2.2.jar springfox-cor
- e-2.7.0.jar batik-codec-1.13.jar selenium-safari-driver-3.141.59.jar sp
- ringfox-swagger-ui-2.7.0.jar mybatis-3.5.6.jar batik-i18n-1.13.jar calc
- ite-linq4j-1.26.0.jar checker-qual-2.11.1.jar byte-buddy-1.10.20.jar co
- mmons-io-1.3.1.jar curvesapi-1.06.jar objenesis-3.1.jar mchange-commons
- -java-0.2.15.jar batik-rasterizer-1.13.jar jcl-over-slf4j-1.7.30.jar sp
- ring-boot-starter-data-ldap-2.4.3.jar selenium-remote-driver-3.141.59.j
- ar spring-data-keyvalue-2.4.5.jar spring-context-support-5.3.4.jar phan
- tomjsdriver-1.4.4.jar hibernate-validator-6.1.7.Final.jar poi-ooxml-5.0
- .0.jar sql-formatter-2.0.1.jar serializer-2.7.2.jar guava-25.0-jre.jar 
- ridl-4.1.2.jar ini4j-0.5.4.jar netty-transport-4.1.59.Final.jar batik-x
- ml-1.13.jar batik-gvt-1.13.jar credentials-java-0.2.4.jar commons-loggi
- ng-1.1.3.jar skb-interfaces-0.0.1.jar assertj-core-3.18.1.jar mysql-con
- nector-java-8.0.23.jar spring-data-ldap-2.4.5.jar shiro-config-ogdl-1.8
- .0.jar bcpkix-jdk15on-1.68.jar swagger-models-1.5.13.jar jsr305-3.0.2.j
- ar batik-ext-1.13.jar memory-0.9.0.jar spring-security-config-5.4.5.jar
-  spring-aop-5.3.4.jar mysql-connector-java-8.0.29.jar
+Class-Path: commons-lang3-3.11.jar openapiutil-0.1.12.jar commons-compre
+ ss-1.20.jar spring-security-core-5.4.5.jar mysql-connector-java-8.0.29.
+ jar memory-0.9.0.jar commons-text-1.9.jar shiro-crypto-core-1.8.0.jar j
+ imureport-font-1.1.0.jar aliyun-java-sdk-kms-2.11.0.jar autopoi-web-1.4
+ .0.jar netty-transport-4.1.59.Final.jar spring-jdbc-5.3.4.jar reactive-
+ streams-1.0.3.jar slf4j-api-1.7.30.jar shiro-lang-1.8.0.jar jdom2-2.0.6
+ .jar j2objc-annotations-1.1.jar jcl-over-slf4j-1.7.30.jar spring-jcl-5.
+ 3.4.jar batik-squiggle-1.13.jar asm-7.1.jar netty-common-4.1.59.Final.j
+ ar spring-data-keyvalue-2.4.5.jar batik-rasterizer-1.13.jar openpdf-1.3
+ .27.jar android-json-0.0.20131108.vaadin1.jar batik-ext-1.13.jar creden
+ tials-java-0.2.4.jar jackson-annotations-2.11.4.jar batik-xml-1.13.jar 
+ SparseBitSet-1.2.jar sql-formatter-2.0.1.jar jsr305-3.0.2.jar spring-co
+ re-5.3.4.jar selenium-ie-driver-3.141.59.jar commons-csv-1.8.jar netty-
+ handler-4.1.59.Final.jar ini4j-0.5.4.jar shiro-crypto-cipher-1.8.0.jar 
+ shiro-web-1.8.0.jar batik-ttf2svg-1.13.jar batik-shared-resources-1.13.
+ jar shiro-crypto-hash-1.8.0.jar thumbnailator-0.4.14.jar netty-codec-4.
+ 1.59.Final.jar jaxb-api-2.3.1.jar pdfbox-2.0.22.jar batik-extension-1.1
+ 3.jar junit-platform-commons-1.7.1.jar pagehelper-spring-boot-autoconfi
+ gure-1.4.1.jar batik-constants-1.13.jar jurt-4.1.2.jar druid-1.2.4.jar 
+ jaxb-core-2.3.0.jar swagger-models-1.5.13.jar ognl-3.2.21.jar log4j-to-
+ slf4j-2.13.3.jar selenium-java-3.9.1.jar httpcore-4.4.14.jar HikariCP-3
+ .4.5.jar fastjson2-2.0.4.jar spring-boot-starter-data-redis-2.4.3.jar j
+ axb-impl-2.3.0.jar commons-io-2.6.jar guava-29.0-jre.jar reactor-core-3
+ .4.3.jar skb-interfaces-0.0.1.jar endpoint-util-0.0.6.jar aspectjrt-1.9
+ .6.jar opentracing-api-0.33.0.jar spring-boot-starter-tomcat-2.4.3.jar 
+ error_prone_annotations-2.1.3.jar json-path-2.4.0.jar xercesImpl-2.9.1.
+ jar jedis-3.3.0.jar jakarta.validation-api-2.0.2.jar mysql-connector-ja
+ va-8.0.23.jar spring-security-oauth2-jose-5.4.5.jar aviator-5.2.6.jar b
+ atik-transcoder-1.13.jar classmate-1.5.1.jar selenium-opera-driver-3.14
+ 1.59.jar ST4-4.0.8.jar junit-jupiter-params-5.7.1.jar springfox-swagger
+ 2-2.7.0.jar okhttp-3.14.9.jar listenablefuture-9999.0-empty-to-avoid-co
+ nflict-with-guava.jar jackson-databind-2.11.4.jar pagehelper-spring-boo
+ t-starter-1.4.1.jar stax-api-1.0.1.jar spring-plugin-metadata-1.2.0.REL
+ EASE.jar shiro-cache-1.8.0.jar snakeyaml-1.27.jar minidao-spring-boot-s
+ tarter-1.9.0.jar antlr4-4.5.1.jar batik-svgpp-1.13.jar shiro-config-cor
+ e-1.8.0.jar jose4j-0.7.12.jar batik-squiggle-ext-1.13.jar netty-buffer-
+ 4.1.59.Final.jar mockito-core-3.6.28.jar spring-oxm-5.3.4.jar graphics2
+ d-0.30.jar hibernate-validator-6.1.7.Final.jar spring-boot-starter-web-
+ 2.4.3.jar spring-boot-starter-jdbc-2.4.3.jar bson-4.1.1.jar batik-i18n-
+ 1.13.jar spring-data-ldap-2.4.5.jar content-type-2.1.jar spring-boot-st
+ arter-quartz-2.4.3.jar springfox-spring-web-2.7.0.jar spring-security-c
+ onfig-5.4.5.jar jakarta.activation-api-1.2.2.jar xmlgraphics-commons-2.
+ 4.jar jul-to-slf4j-1.7.30.jar batik-anim-1.13.jar dingtalk-1.1.86.jar h
+ amcrest-2.2.jar xmlbeans-4.0.0.jar calcite-linq4j-1.26.0.jar byte-buddy
+ -1.10.20.jar spring-boot-starter-thymeleaf-2.4.3.jar jackson-core-2.11.
+ 4.jar phantomjsdriver-1.4.4.jar tomcat-embed-core-9.0.43.jar serializer
+ -2.7.2.jar juh-4.1.2.jar jjwt-0.7.0.jar junit-jupiter-api-5.7.1.jar nim
+ bus-jose-jwt-8.20.2.jar spring-boot-autoconfigure-2.4.3.jar commons-com
+ piler-3.1.3.jar opentest4j-1.2.0.jar tea-openapi-0.1.3.jar springfox-co
+ re-2.7.0.jar batik-all-1.13.jar mchange-commons-java-0.2.15.jar spring-
+ security-web-5.4.5.jar jettison-1.1.jar batik-util-1.13.jar checker-qua
+ l-2.11.1.jar spring-beans-5.3.4.jar minio-8.0.3.jar batik-svggen-1.13.j
+ ar xalan-2.7.2.jar aliyun-sdk-oss-3.11.2.jar ooxml-schemas-1.4.jar sele
+ nium-api-3.141.59.jar batik-slideshow-1.13.jar spring-aop-5.3.4.jar com
+ mons-logging-1.1.3.jar mybatis-generator-core-1.4.0.jar jakarta.xml.bin
+ d-api-2.3.3.jar aspectjweaver-1.9.8.M1.jar spring-plugin-core-1.2.0.REL
+ EASE.jar selenium-safari-driver-3.141.59.jar spring-data-commons-2.4.5.
+ jar failureaccess-1.0.1.jar avatica-core-1.17.0.jar selenium-java-3.141
+ .59.jar httpclient-4.5.13.jar netty-resolver-4.1.59.Final.jar spring-bo
+ ot-test-2.4.3.jar java-jwt-3.7.0.jar batik-bridge-1.13.jar shiro-spring
+ -boot-starter-1.8.0.jar mongodb-driver-sync-4.1.1.jar jakarta.activatio
+ n-1.2.2.jar cglib-3.3.0.jar swagger-annotations-1.5.13.jar minidao-pe-1
+ .9.0.jar spring-ldap-core-2.3.3.RELEASE.jar opentracing-util-0.33.0.jar
+  batik-svgbrowser-1.13.jar bcpkix-jdk15on-1.68.jar batik-swing-1.13.jar
+  spring-expression-5.3.4.jar springfox-swagger-common-2.7.0.jar spring-
+ web-5.3.4.jar jackson-dataformat-yaml-2.11.4.jar janino-3.1.3.jar ascii
+ table-0.3.2.jar aggdesigner-algorithm-6.0.jar freemarker-2.3.31.jar spr
+ ingfox-spi-2.7.0.jar jsonassert-1.5.0.jar tea-1.2.0.jar log4j-1.2.17.ja
+ r okio-1.13.0.jar tomcat-embed-websocket-9.0.43.jar jodconverter-core-4
+ .2.2.jar batik-gui-util-1.13.jar esri-geometry-api-2.2.0.jar javax.acti
+ vation-api-1.2.0.jar selenium-support-3.141.59.jar druid-1.1.22.jar unb
+ escape-1.1.6.RELEASE.jar commons-dbcp2-2.8.0.jar animal-sniffer-annotat
+ ions-1.14.jar thymeleaf-extras-java8time-3.0.4.RELEASE.jar mybatis-spri
+ ng-boot-starter-2.1.4.jar spring-context-5.3.4.jar poi-scratchpad-4.1.2
+ .jar attoparser-2.0.5.RELEASE.jar aliyun-java-sdk-ram-3.1.0.jar jsqlpar
+ ser-4.3.jar objenesis-3.1.jar commons-collections4-4.4.jar springfox-sw
+ agger-ui-2.7.0.jar json-smart-2.3.jar xml-apis-1.4.01.jar guava-25.0-jr
+ e.jar org.jacoco.agent-0.8.4-runtime.jar char-translation-0.0.2.jar spr
+ ing-tx-5.3.4.jar junit-jupiter-5.7.1.jar log4j-api-2.13.3.jar commons-b
+ eanutils-1.9.4.jar gson-2.8.6.jar apiguardian-api-1.1.0.jar logback-cor
+ e-1.2.3.jar spring-boot-starter-freemarker-2.4.3.jar jackson-module-par
+ ameter-names-2.11.4.jar logback-classic-1.2.3.jar protobuf-java-3.6.1.j
+ ar autopoi-1.4.0.jar mapstruct-1.1.0.Final.jar guava-21.0.jar shiro-spr
+ ing-1.8.0.jar spring-boot-starter-2.4.3.jar poi-5.0.0.jar selenium-chro
+ me-driver-3.141.59.jar springfox-schema-2.7.0.jar spring-boot-starter-l
+ ogging-2.4.3.jar jimureport-spring-boot-starter-1.5.2.jar jakarta.annot
+ ation-api-1.3.5.jar shiro-core-1.8.0.jar stax2-api-4.2.jar reflections-
+ 0.9.11.jar commons-math3-3.6.1.jar thymeleaf-3.0.12.RELEASE.jar spring-
+ webmvc-5.3.4.jar druid-spring-boot-starter-1.2.4.jar lombok-1.18.18.jar
+  jcip-annotations-1.0-1.jar commons-logging-1.2.jar javax.annotation-ap
+ i-1.3.2.jar javassist-3.28.0-GA.jar org.jacoco.agent-0.8.5-runtime.jar 
+ spring-boot-2.4.3.jar jackson-datatype-jdk8-2.11.4.jar batik-script-1.1
+ 3.jar jakarta.mail-1.6.5.jar poi-ooxml-schemas-4.1.2.jar h2-1.4.200.jar
+  spring-boot-starter-data-ldap-2.4.3.jar tea-util-0.2.13.jar spring-sec
+ urity-crypto-5.4.5.jar woodstox-core-5.2.1.jar lang-tag-1.4.4.jar jakar
+ ta.el-3.0.3.jar pinyin4j-2.5.1.jar batik-css-1.13.jar pagehelper-5.3.0.
+ jar commons-pool2-2.9.0.jar curvesapi-1.06.jar calcite-core-1.26.0.jar 
+ opentracing-noop-0.33.0.jar spring-security-oauth2-core-5.4.5.jar poi-o
+ oxml-lite-5.0.0.jar selenium-remote-driver-3.141.59.jar bcprov-jdk15on-
+ 1.68.jar fontbox-2.0.22.jar spring-data-redis-2.4.5.jar encoder-1.2.2.j
+ ar aspectjweaver-1.9.6.jar commons-lang-2.6.jar jboss-logging-3.4.1.Fin
+ al.jar spring-boot-starter-mail-2.4.3.jar selenium-edge-driver-3.141.59
+ .jar commons-collections-3.2.2.jar sketches-core-0.9.0.jar aliyun-java-
+ sdk-core-4.5.10.jar batik-gvt-1.13.jar commons-codec-1.15.jar spring-te
+ st-5.3.4.jar okio-1.14.0.jar uzaygezen-core-0.2.jar spring-security-oau
+ th2-client-5.4.5.jar simple-xml-safe-2.7.1.jar junit-jupiter-engine-5.7
+ .1.jar shiro-config-ogdl-1.8.0.jar avatica-metrics-1.17.0.jar ridl-4.1.
+ 2.jar jackson-datatype-jsr310-2.11.4.jar commons-io-2.4.jar xmlsec-2.2.
+ 1.jar spring-boot-starter-oauth2-client-2.4.3.jar batik-codec-1.13.jar 
+ batik-parser-1.13.jar byte-buddy-agent-1.10.20.jar antlr-runtime-3.5.2.
+ jar j2objc-annotations-1.3.jar core-3.3.1.jar mybatis-spring-2.0.6.jar 
+ unoil-4.1.2.jar oauth2-oidc-sdk-8.36.jar batik-rasterizer-ext-1.13.jar 
+ mybatis-3.5.6.jar mockito-junit-jupiter-3.6.28.jar commons-io-1.3.1.jar
+  mybatis-spring-boot-autoconfigure-2.1.4.jar batik-awt-util-1.13.jar jo
+ dconverter-spring-boot-starter-4.2.2.jar fastjson-1.2.78.jar thymeleaf-
+ spring5-3.0.12.RELEASE.jar jsqlparser-4.2.jar spring-context-support-5.
+ 3.4.jar accessors-smart-1.2.jar shiro-event-1.8.0.jar poi-ooxml-5.0.0.j
+ ar ascii-utf-themes-0.0.1.jar json-path-2.7.0.jar assertj-core-3.18.1.j
+ ar junit-platform-engine-1.7.1.jar batik-dom-1.13.jar quartz-2.3.2.jar 
+ batik-svg-dom-1.13.jar selenium-firefox-driver-3.141.59.jar mongodb-dri
+ ver-core-4.1.1.jar spring-boot-starter-json-2.4.3.jar spring-boot-test-
+ autoconfigure-2.4.3.jar checker-compat-qual-2.0.0.jar jodconverter-loca
+ l-4.2.2.jar xml-apis-ext-1.3.04.jar batik-svgrasterizer-1.13.jar error_
+ prone_annotations-2.3.4.jar spring-boot-starter-test-2.4.3.jar commons-
+ exec-1.3.jar xmlunit-core-2.7.0.jar lettuce-core-6.0.2.RELEASE.jar
 

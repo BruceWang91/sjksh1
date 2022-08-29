@@ -4,7 +4,7 @@ import datart.core.entity.JimuReportRewrite;
 
 import java.util.List;
 
-public interface JimuReportRewriteService {
+public interface JimuReportRewriteService  {
 
     JimuReportRewrite selectById(String id);
 

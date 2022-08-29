@@ -26,7 +26,8 @@ public interface FileClassMapperExt extends FileClassMapper {
         "<if test=\"name != null  and name != ''\"> and name like concat('%', #{name}, '%')</if>\n" +
         "<if test=\"parentId != null \"> and parent_id = #{parentId}</if>\n" +
         "<if test=\"orderNum != null \"> and order_num = #{orderNum}</if>\n" +
-        "<if test=\"status != null  and status != ''\"> and status = #{status}</if>",
+        "<if test=\"status != null  and status != ''\"> and status = #{status}</if>" +
+        "ORDER BY order_num ASC",
         "</script>"
     })
     List<FileClass> selectFileClassList(FileClass fileClass);

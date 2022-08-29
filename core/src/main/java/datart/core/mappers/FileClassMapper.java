@@ -47,6 +47,7 @@ public interface FileClassMapper extends CRUDMapper {
      * @return 结果
      */
     @InsertProvider(type = FileClassSqlProvider.class, method = "insertSelective")
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int insertFileClass(FileClass fileClass);
 
     /**

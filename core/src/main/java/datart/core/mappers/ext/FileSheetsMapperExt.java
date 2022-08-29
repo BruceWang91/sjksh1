@@ -43,14 +43,17 @@ public interface FileSheetsMapperExt extends FileSheetsMapper {
                     "        FROM file_sheets sheets\n" +
                     "        LEFT JOIN file_main main\n" +
                     "            ON main.file_id = sheets.file_id\n" +
-                    "        LEFT JOIN sys_user suser\n" +
-                    "            ON main.create_by = suser.user_id\n" +
+                    "        LEFT JOIN user suser\n" +
+                    "            ON main.create_by = suser.id\n" +
                     "        WHERE 1=1\n" +
                     "        <if test=\"classIds != null and classIds.size() > 0\">\n" +
                     "            AND main.class_id IN\n" +
                     "            <foreach item=\"classIds\" collection=\"classIds\" open=\"(\" separator=\",\" close=\")\">\n" +
                     "                #{classIds}\n" +
                     "            </foreach>\n" +
+                    "        </if>\n" +
+                    "        <if test=\"delFlag != null\">\n" +
+                    "            AND sheets.del_flag = #{delFlag}\n" +
                     "        </if>\n" +
                     "        <if test=\"depIds != null and depIds.size() > 0\">\n" +
                     "            AND suser.dept_id IN\n" +

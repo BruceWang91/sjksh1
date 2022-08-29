@@ -52,6 +52,7 @@ public interface FileSheetFieldMapper {
      * @return 结果
      */
     @InsertProvider(type = FileSheetFieldSqlProvider.class, method = "insertSelective")
+    @Options(useGeneratedKeys=true, keyProperty="fieldId", keyColumn="field_id")
     int insertFileSheetField(FileSheetField fileSheetField);
 
     /**
@@ -63,7 +64,7 @@ public interface FileSheetFieldMapper {
     @Update({
             "<script>",
             "update file_sheet_field\n" +
-                    "        <trim prefix=\"SET\" suffixOverrides=\",\">\n" +
+                    "<trim prefix=\"SET\" suffixOverrides=\",\">\n" +
                     "            <if test=\"fileId != null\">file_id = #{fileId},</if>\n" +
                     "            <if test=\"sheetId != null\">sheet_id = #{sheetId},</if>\n" +
                     "            <if test=\"cellNum != null\">cell_num = #{cellNum},</if>\n" +
@@ -77,8 +78,8 @@ public interface FileSheetFieldMapper {
                     "            <if test=\"updateBy != null\">update_by = #{updateBy},</if>\n" +
                     "            <if test=\"updateTime != null\">update_time = #{updateTime},</if>\n" +
                     "            <if test=\"remark != null\">remark = #{remark},</if>\n" +
-                    "        </trim>\n" +
-                    "        where field_id = #{fieldId}",
+                    "</trim>\n" +
+                    "where field_id = #{fieldId}",
             "</script>"
     })
     int updateFileSheetField(FileSheetField fileSheetField);

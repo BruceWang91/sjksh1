@@ -35,7 +35,7 @@ public interface DepartmentMapperExt extends DepartmentMapper {
                     "<if test=\"status != null and status != ''\">\n" +
                     "AND status = #{status}\n" +
                     "</if>\n" +
-                    "order by d.parent_id, d.order_num",
+                    "order by d.parent_id, d.order_num, d.dept_id asc",
             "</script>"
     })
     List<Department> selectDeptList(Department dept);

@@ -1,6 +1,7 @@
 package datart.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import datart.core.base.PageInfo;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 

@@ -21,8 +21,8 @@ public interface FileSaveMapper {
      */
     @Select({
             "select id, class_id, file_name, new_name, pdf_name, url, pdfurl, order_num, " +
-                    "status, del_flag, create_by, create_time, update_by, update_time, remark " +
-                    "from file_save where id = #{id}"
+            "status, del_flag, create_by, create_time, update_by, update_time, remark " +
+            "from file_save where id = #{id}"
     })
     @Results({
             @Result(column = "id", property = "id", jdbcType = JdbcType.BIGINT, id = true),
@@ -50,6 +50,7 @@ public interface FileSaveMapper {
      * @return 结果
      */
     @InsertProvider(type = FileSaveSqlProvider.class, method = "insertSelective")
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int insertFileSave(FileSave fileSave);
 
     /**

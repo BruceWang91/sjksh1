@@ -28,7 +28,7 @@ public interface FileSheetsMapper {
     })
     @Results({
             @Result(column = "sheet_id", property = "sheetId", jdbcType = JdbcType.BIGINT, id = true),
-            @Result(column = "file_id", property = "fieldId", jdbcType = JdbcType.BIGINT),
+            @Result(column = "file_id", property = "fileId", jdbcType = JdbcType.BIGINT),
             @Result(column = "sheet_name", property = "sheetName", jdbcType = JdbcType.VARCHAR),
             @Result(column = "entity_name", property = "entityName", jdbcType = JdbcType.VARCHAR),
             @Result(column = "order_num", property = "orderNum", jdbcType = JdbcType.INTEGER),
@@ -53,6 +53,7 @@ public interface FileSheetsMapper {
      * @return 结果
      */
     @InsertProvider(type = FileSheetsSqlProvider.class, method = "insertSelective")
+    @Options(useGeneratedKeys=true, keyProperty="sheetId", keyColumn="sheet_id")
     int insertFileSheets(FileSheets fileSheets);
 
     /**

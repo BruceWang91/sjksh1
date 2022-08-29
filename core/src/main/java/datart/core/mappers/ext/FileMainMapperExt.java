@@ -64,7 +64,7 @@ public interface FileMainMapperExt extends FileMainMapper {
                     "            id bigint(20)      not null auto_increment,\n" +
                     "            ${sqlstr}\n" +
                     "            primary key (id)\n" +
-                    "        )engine=innodb auto_increment=200"
+                    "        )engine=innodb auto_increment=200 CHARSET=utf8"
     })
     void createTable(HashMap<String, Object> map);
 

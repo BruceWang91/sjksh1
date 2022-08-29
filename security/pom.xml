@@ -53,13 +53,6 @@
             <artifactId>java-jwt</artifactId>
             <version>3.7.0</version>
         </dependency>
-
-        <!-- JimuReport依赖 -->
-        <dependency>
-            <groupId>org.jeecgframework.jimureport</groupId>
-            <artifactId>jimureport-spring-boot-starter</artifactId>
-            <version>1.5.2</version>
-        </dependency>
     </dependencies>
 
 

@@ -19,13 +19,19 @@
 package datart.server.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import datart.core.base.exception.Exceptions;
+import datart.core.base.exception.ParamException;
 import datart.core.common.MessageResolver;
 import datart.core.entity.User;
 import datart.security.manager.DatartSecurityManager;
-import datart.core.base.exception.ParamException;
+import datart.server.common.page.HttpStatus;
+import datart.server.common.page.PageUtils;
+import datart.server.common.page.TableDataInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class BaseController extends MessageResolver {
 
@@ -46,4 +52,31 @@ public class BaseController extends MessageResolver {
         }
     }
 
+    /**
+     * 设置请求分页数据
+     */
+    protected void startPage() {
+        PageUtils.startPage();
+    }
+
+    /**
+     * 清理分页的线程变量
+     */
+    protected void clearPage()
+    {
+        PageUtils.clearPage();
+    }
+
+    /**
+     * 响应请求分页数据
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    protected TableDataInfo getDataTable(List<?> list) {
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(list);
+        rspData.setTotal(new PageInfo(list).getTotal());
+        return rspData;
+    }
 }

@@ -43,7 +43,8 @@ public interface FileMainMapper {
      * @param fileMain 文件管理
      * @return 结果
      */
-    @InsertProvider(type = FileMainSqlProvider.class, method = "insertSelective")
+    @InsertProvider(type = FileMainSqlProvider.class, method = "insertSelective" )
+    @Options(useGeneratedKeys=true, keyProperty="fileId", keyColumn="file_id")
     int insertFileMain(FileMain fileMain);
 
     /**
@@ -54,7 +55,7 @@ public interface FileMainMapper {
      */
     @Update({
             "<script>",
-            "update file_class\n" +
+            "update file_main\n" +
                     "<trim prefix=\"SET\" suffixOverrides=\",\">\n" +
                     "            <if test=\"fileName != null\">file_name = #{fileName},</if>\n" +
                     "            <if test=\"orderNum != null\">order_num = #{orderNum},</if>\n" +

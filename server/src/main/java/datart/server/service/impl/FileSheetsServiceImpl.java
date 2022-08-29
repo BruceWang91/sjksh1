@@ -6,6 +6,7 @@ import datart.core.mappers.FileSheetsMapper;
 import datart.core.mappers.ext.FileSheetsMapperExt;
 import datart.server.common.Convert;
 import datart.server.common.DateUtils;
+import datart.server.enums.WhetherEnum;
 import datart.server.service.BaseService;
 import datart.server.service.IFileSheetsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,6 +118,7 @@ public class FileSheetsServiceImpl extends BaseService implements IFileSheetsSer
         if (!CollectionUtils.isEmpty(fileSheets.getDepIds())) {
             hashMap.put("depIds", fileSheets.getDepIds());
         }
+        hashMap.put("delFlag", WhetherEnum.NO.getValue());
         return fileSheetsMapper.getSheetList(hashMap);
     }
 }
