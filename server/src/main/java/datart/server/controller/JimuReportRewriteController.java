@@ -1,6 +1,5 @@
 package datart.server.controller;
 
-import datart.core.entity.FileSave;
 import datart.core.entity.JimuReportRewrite;
 import datart.server.base.dto.ResponseData;
 import datart.server.service.impl.JimuReportRewriteServiceImpl;
@@ -25,7 +24,6 @@ public class JimuReportRewriteController extends BaseController {
     /**
      * 报表列表 type: datainfo 数据报表、 chartinfo 图形报表、 printinfo 打印设计 ；
      * template: 1 是、 0 否
-     *
      */
     @ApiOperation("报表列表 type: datainfo 数据报表、 chartinfo 图形报表、 printinfo 打印设计 ；" +
             "template: 1 是、 0 否")
@@ -37,7 +35,7 @@ public class JimuReportRewriteController extends BaseController {
 
     @ApiOperation("根据ID查询报表信息")
     @GetMapping("/selectById/{id}")
-    public ResponseData<JimuReportRewrite> selectById(@PathVariable("id") String id){
+    public ResponseData<JimuReportRewrite> selectById(@PathVariable("id") String id) {
 
         return ResponseData.success(jimuReportRewriteService.selectById(id));
     }
