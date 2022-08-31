@@ -45,7 +45,8 @@ public interface JimuReportMapper {
                 "<if test=\"type != null and type != ''\"> and type like concat('%', #{type}, '%') </if>" +
                 "<if test=\"template != null\"> and template = #{type} </if>" +
                 "<if test=\"createBy != null and createBy != ''\"> and create_by = #{createBy} </if>" +
-                "order by cerate_time desc" +
+                "<if test=\"name != null and name != ''\"> and name like concat('%', #{name}, '%') </if>" +
+                "order by create_time desc" +
             "</script>"
     })
     List<JimuReportRewrite> selectJimuReportRewriteList(JimuReportRewrite jimuReportRewrite);

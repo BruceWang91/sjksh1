@@ -1,7 +1,9 @@
 package datart.server.controller;
 
+import datart.core.common.POIUtils;
 import datart.core.entity.JimuReportRewrite;
 import datart.server.base.dto.ResponseData;
+import datart.server.common.page.TableDataInfo;
 import datart.server.service.impl.JimuReportRewriteServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,9 +30,11 @@ public class JimuReportRewriteController extends BaseController {
     @ApiOperation("报表列表 type: datainfo 数据报表、 chartinfo 图形报表、 printinfo 打印设计 ；" +
             "template: 1 是、 0 否")
     @GetMapping(value = "/getlist")
-    public ResponseData<List<JimuReportRewrite>> getlist(JimuReportRewrite jimuReportRewrite) {
+    public TableDataInfo getlist(JimuReportRewrite jimuReportRewrite) {
 
-        return ResponseData.success(jimuReportRewriteService.getlist(jimuReportRewrite));
+        startPage();
+        List<JimuReportRewrite> list = jimuReportRewriteService.getlist(jimuReportRewrite);
+        return getDataTable(list);
     }
 
     @ApiOperation("根据ID查询报表信息")
