@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -75,6 +76,14 @@ public class VizController extends BaseController {
         checkBlank(datachartId, "datachartId");
         return ResponseData.success(vizService.getDatachart(datachartId));
     }
+
+    @ApiOperation(value = "get datacharts by folder")
+    @GetMapping(value = "/datachartsInFolder/{datachartId}")
+    public ResponseData<HashMap<String,Object>> datachartsInFolder(@PathVariable String datachartId) {
+        checkBlank(datachartId, "datachartId");
+        return ResponseData.success(vizService.datachartsInFolder(datachartId));
+    }
+
 
     @ApiOperation(value = "get datachart list")
     @GetMapping(value = "/datacharts")

@@ -8,7 +8,11 @@ import datart.server.base.params.BaseCreateParam;
 import datart.server.base.transfer.model.DatachartResourceModel;
 import datart.server.base.transfer.model.DatachartTemplateModel;
 
+import java.util.List;
+
 public interface DatachartService extends VizCRUDService<Datachart, DatachartMapperExt>, ResourceTransferService<Folder, DatachartResourceModel, DatachartTemplateModel, Folder> {
+
+    List<Folder> getFolders(String datachartId);
 
     DatachartDetail getDatachartDetail(String datachartId);
 

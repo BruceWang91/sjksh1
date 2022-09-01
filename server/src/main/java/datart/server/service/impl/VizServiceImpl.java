@@ -195,6 +195,18 @@ public class VizServiceImpl extends BaseService implements VizService {
     }
 
     @Override
+    public HashMap<String,Object> datachartsInFolder (String datachartId){
+
+        List<Folder> folders = datachartService.getFolders(datachartId);
+        HashMap<String,Object> map = new HashMap<>();
+        for (Folder folder : folders) {
+            DatachartDetail detail = datachartService.getDatachartDetail(folder.getRelId());
+            map.put(folder.getRelId(),detail);
+        }
+        return map;
+    }
+
+    @Override
     public DatachartDetailList getDatacharts(Set<String> datachartIds) {
         DatachartDetailList datachartDetailList = new DatachartDetailList();
         datachartDetailList.setDatacharts(new LinkedList<>());

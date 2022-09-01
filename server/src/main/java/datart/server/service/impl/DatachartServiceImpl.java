@@ -24,10 +24,7 @@ import datart.core.base.exception.NotFoundException;
 import datart.core.base.exception.ParamException;
 import datart.core.common.DateUtils;
 import datart.core.common.UUIDGenerator;
-import datart.core.entity.Datachart;
-import datart.core.entity.Folder;
-import datart.core.entity.Variable;
-import datart.core.entity.View;
+import datart.core.entity.*;
 import datart.core.mappers.ext.DatachartMapperExt;
 import datart.core.mappers.ext.FolderMapperExt;
 import datart.core.mappers.ext.RelRoleResourceMapperExt;
@@ -120,6 +117,49 @@ public class DatachartServiceImpl extends BaseService implements DatachartServic
         } else {
             folderService.requirePermission(folder, permission);
         }
+    }
+
+    @Override
+    public List<Folder> getFolders(String datachartId){
+
+        List<Folder> folders = getChilds(datachartId);
+        return folders;
+    }
+
+    public List<Folder> getChilds(String datachartId){
+
+        List<Folder> folders = folderMapper.selectByParentId(datachartId);
+        List<Folder> all = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(folders)) {
+            for (Folder folder : folders) {
+
+                if ("FOLDER".equals(folder.getRelType())) {
+
+                    all.addAll(gets(folder.getId()));
+                }else {
+
+                    all.add(folder);
+                }
+            }
+        }
+        return all;
+    }
+
+    public List<Folder> gets(String datachartId){
+
+        List<Folder> record = folderMapper.selectByParentId(datachartId);
+        List<Folder> list = new LinkedList();
+        if (!CollectionUtils.isEmpty(record)) {
+            for (Folder folder : record) {
+                if ("FOLDER".equals(folder.getRelType())) {
+                    list.addAll(gets(folder.getId()));
+                }else {
+
+                    list.add(folder);
+                }
+            }
+        }
+        return list;
     }
 
     @Override

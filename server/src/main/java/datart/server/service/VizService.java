@@ -11,6 +11,7 @@ import datart.server.base.transfer.ResourceTransferParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,8 @@ public interface VizService {
     Storyboard createStoryboard(StoryboardCreateParam createParam);
 
     DatachartDetail getDatachart(String datachartId);
+
+    HashMap<String,Object> datachartsInFolder (String datachartId);
 
     DatachartDetailList getDatacharts(Set<String> datachartIds);
 
