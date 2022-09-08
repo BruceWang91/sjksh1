@@ -31,11 +31,18 @@ public class DynamicDataSourceConfig {
     }
 
     @Bean
+    @ConfigurationProperties("spring.datasource.druid.slave2")
+    public DataSource slaveDataSource2() {
+        return DruidDataSourceBuilder.create().build();
+    }
+
+    @Bean
     @Primary
-    public DynamicDataSource dataSource(DataSource masterDataSource, DataSource slaveDataSource) {
+    public DynamicDataSource dataSource(DataSource masterDataSource, DataSource slaveDataSource, DataSource slaveDataSource2) {
         Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put(DataSourceNames.MASTER, masterDataSource);
         targetDataSources.put(DataSourceNames.SLAVE, slaveDataSource);
+        targetDataSources.put(DataSourceNames.SLAVE2, slaveDataSource2);
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
 
