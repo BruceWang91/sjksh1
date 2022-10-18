@@ -207,6 +207,24 @@ public class RoleServiceImpl extends BaseService implements RoleService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Role getPerDeptRole(String orgId, String deptId) {
+        Role role = roleMapper.selectPerDeptRole(orgId, deptId);
+        if (role == null) {
+            role = new Role();
+            role.setId(UUIDGenerator.generate());
+            role.setOrgId(orgId);
+            role.setName("per-dept-" + deptId);
+            role.setType(RoleType.PER_DEPT.name());
+            role.setCreateBy(deptId);
+            role.setCreateTime(new Date());
+            roleMapper.insert(role);
+        }
+        return role;
+    }
+
+
+    @Override
     public User getPerUserRoleUser(String roleId) {
         return roleMapper.selectPerUserRoleUser(roleId);
     }
@@ -255,6 +273,9 @@ public class RoleServiceImpl extends BaseService implements RoleService {
             relRoleResource.setRoleId(role.getId());
         } else if (permissionInfo.getSubjectType() == SubjectType.USER_ROLE) {
             Role role = getPerUserRole(permissionInfo.getOrgId(), permissionInfo.getSubjectId());
+            relRoleResource.setRoleId(role.getId());
+        } else if (permissionInfo.getSubjectType() == SubjectType.DEPT) {
+            Role role = getPerDeptRole(permissionInfo.getOrgId(), permissionInfo.getSubjectId());
             relRoleResource.setRoleId(role.getId());
         } else {
             relRoleResource.setRoleId(permissionInfo.getSubjectId());
@@ -396,6 +417,12 @@ public class RoleServiceImpl extends BaseService implements RoleService {
                     permissions.setOrgOwner(true);
                 }
             }
+        } else if (subjectType == SubjectType.DEPT) {
+            Role role = roleMapper.selectPerDeptRole(orgId, subjectId);
+            if (role != null) {
+                roleIds.add(role.getId());
+                permissions.setOrgOwner(role.getId().equals(orgOwnerRole.getId()));
+            }
         } else {
             roleIds.add(subjectId);
             permissions.setOrgOwner(orgOwnerRole.getId().equals(subjectId));
@@ -452,6 +479,10 @@ public class RoleServiceImpl extends BaseService implements RoleService {
                 User user = roleMapper.selectPerUserRoleUser(role.getId());
                 info.setSubjectType(SubjectType.USER_ROLE);
                 info.setSubjectId(user.getId());
+                permissions.getUserPermissions().add(info);
+            } else if (RoleType.PER_DEPT.name().equals(role.getType())) {
+                info.setSubjectType(SubjectType.DEPT);
+                info.setSubjectId(role.getCreateBy());
                 permissions.getUserPermissions().add(info);
             } else {
                 info.setSubjectType(SubjectType.ROLE);

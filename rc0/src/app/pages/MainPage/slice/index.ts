@@ -156,6 +156,7 @@ const slice = createSlice({
 
     // getLoggedInUserPermissions
     builder.addCase(getLoggedInUserPermissions.fulfilled, (state, action) => {
+    	console.log(action.payload)
       state.isOwner = action.payload.orgOwner || false;
       state.permissionMap = Object.values(
         ResourceTypes,

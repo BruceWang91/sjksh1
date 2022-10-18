@@ -46,7 +46,7 @@ public class UserSettingServiceImpl extends BaseService implements UserSettingSe
 
     @Override
     public boolean deleteByUserId(String userId) {
-        return userSettingsMapper.deleteByUser(userId)>0;
+        return userSettingsMapper.deleteByUser(userId) > 0;
     }
 
     @Override
@@ -58,6 +58,7 @@ public class UserSettingServiceImpl extends BaseService implements UserSettingSe
         userSettings.setCreateBy(getCurrentUser().getId());
         userSettings.setCreateTime(new Date());
         userSettings.setId(UUIDGenerator.generate());
+        userSettings.setDeptId(createParam.getDeptId());
         getDefaultMapper().insert(userSettings);
         return userSettings;
     }

@@ -13,4 +13,5 @@ public class UserSettingsUpdateParam extends BaseUpdateParam {
 
     private String config;
 
+    private Long deptId;
 }

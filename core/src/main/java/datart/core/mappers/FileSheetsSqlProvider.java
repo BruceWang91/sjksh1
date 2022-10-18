@@ -12,6 +12,10 @@ public class FileSheetsSqlProvider {
             sql.VALUES("file_id", "#{fileId,jdbcType=BIGINT}");
         }
 
+        if (record.getOrgId() != null) {
+            sql.VALUES("org_id", "#{orgId,jdbcType=VARCHAR}");
+        }
+
         if (record.getSheetName() != null) {
             sql.VALUES("sheet_name", "#{sheetName,jdbcType=VARCHAR}");
         }

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 文件管理Controller
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-27
  */
 @Api("文件管理")
@@ -129,5 +129,20 @@ public class FileMainController extends BaseController {
         return ResponseData.success(fileMainService.selectByBiname(new HashMap<String, Object>() {{
             put("biname", biaoname);
         }}));
+    }
+
+    @ApiOperation("添加表样文件夹")
+    @PostMapping("/addFileMainFolder")
+    public ResponseData<FileMain> addFileMainFolder(@RequestBody FileMain fileMain) {
+
+        fileMain.setIsFolder(1);
+        return ResponseData.success(fileMainService.insertFileMainFolder(fileMain));
+    }
+
+    @ApiOperation("修改表样上级")
+    @PostMapping("/updateFileMainParentId")
+    public ResponseData<Integer> updateFileMainParentId(@RequestBody FileMain fileMain) {
+
+        return ResponseData.success(fileMainService.updateFileMainParentId(fileMain));
     }
 }

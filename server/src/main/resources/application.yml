@@ -57,6 +57,8 @@ spring:
     officehome: D:/LibreOffice
     #officehome: /opt/libreoffice7.2
 
+  upload: D:\bosssoft\sjksh/files/resources/filesave/data/
+
 mybatis:
   type-aliases-package: datart.core.entity
   configuration:

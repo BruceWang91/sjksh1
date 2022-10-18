@@ -57,5 +57,31 @@ export const Base = createGlobalStyle`
     * {
       -webkit-overflow-scrolling: touch;
     }
+    a:hover{
+    	color:#D5AA44
+    }
+    .ant-menu-submenu-popup > ul{
+    	margin-top:-5px;
+    	border-radius:0;
+    }
+    .ant-collapse{
+    border:0;
+    background-color: transparent;
+    }
+
+    .ant-collapse > .ant-collapse-item{
+    border-top:1px solid ${p => p.theme.borderColorSplit};
+    border-bottom:0;
+
+    }
+    .ant-collapse-content{
+    border-top:0
+    }
+
+    .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+		    background-color: transparent;
+		    color:${p => p.theme.primary};
+		    font-weight:bold;
+		}
   }
 `;

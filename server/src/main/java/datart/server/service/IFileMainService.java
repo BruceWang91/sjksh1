@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 文件管理Service接口
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-27
  */
 public interface IFileMainService {
@@ -65,6 +65,8 @@ public interface IFileMainService {
      */
     public int deleteFileMainByFileId(Long fileId);
 
+    void requirePermission(FileMain file, int permission);
+
     void createTale(String biname, List<FileSheetField> list);
 
     void splitTableImport(HashMap<String, Object> hashMap);
@@ -81,4 +83,8 @@ public interface IFileMainService {
 
     //    @DataSource(value = DataSourceType.SLAVE)
     List<HashMap<String, Object>> selectByBiname(HashMap<String, Object> map);
+
+    int updateFileMainParentId(FileMain fileMain);
+
+    FileMain insertFileMainFolder(FileMain fileMain);
 }

@@ -3,7 +3,7 @@ package datart.server.enums;
 /**
  * 用户常量信息
  * 
- * @author ruoyi
+ * @author wangya
  */
 public class UserConstants
 {

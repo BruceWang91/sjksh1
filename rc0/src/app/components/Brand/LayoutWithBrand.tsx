@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { SPACE_TIMES } from 'styles/StyleConstants';
 import { Brand } from './Brand';
+import loginbg from 'app/assets/images/loginbg.png';
 
 interface LayoutWithBrandProps {
   className?: string;
@@ -18,6 +19,10 @@ export function LayoutWithBrand({ className, children }: LayoutWithBrandProps) {
 }
 
 const Layout = styled.div`
+
+  background: url(${loginbg}) no-repeat;
+  background-size: 100% auto;
+  background-position: center bottom;
   position: absolute;
   top: 0;
   right: 0;

@@ -12,6 +12,10 @@ public class FileSaveSqlProvider {
             sql.VALUES("class_id", "#{classId,jdbcType=BIGINT}");
         }
 
+        if (record.getOrgId() != null) {
+            sql.VALUES("org_id", "#{orgId,jdbcType=VARCHAR}");
+        }
+
         if (record.getFileName() != null) {
             sql.VALUES("file_name", "#{fileName,jdbcType=VARCHAR}");
         }
@@ -42,6 +46,14 @@ public class FileSaveSqlProvider {
 
         if (record.getDelFlag() != null) {
             sql.VALUES("del_flag", "#{delFlag,jdbcType=VARCHAR}");
+        }
+
+        if (record.getIsFolder() != null) {
+            sql.VALUES("is_folder", "#{isFolder,jdbcType=INTEGER}");
+        }
+
+        if (record.getParentId() != null) {
+            sql.VALUES("parent_id", "#{parentId,jdbcType=BIGINT}");
         }
 
         if (record.getCreateBy() != null) {

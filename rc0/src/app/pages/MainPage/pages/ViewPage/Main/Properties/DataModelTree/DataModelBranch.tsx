@@ -29,7 +29,7 @@ import { FC, memo, useState } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components/macro';
 import {
-  BLUE,
+  PRIMARY,
   FONT_SIZE_BASE,
   FONT_SIZE_HEADING,
   SPACE,
@@ -67,7 +67,7 @@ const DataModelBranch: FC<{
         node.role === ColumnRole.Hierarchy ? (
           <FolderOpenOutlined style={{ alignSelf: 'center', color: YELLOW }} />
         ) : (
-          <TableOutlined style={{ alignSelf: 'center', color: BLUE }} />
+          <TableOutlined style={{ alignSelf: 'center', color: PRIMARY }} />
         );
 
       return (

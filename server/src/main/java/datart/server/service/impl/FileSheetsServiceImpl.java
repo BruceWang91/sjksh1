@@ -1,8 +1,17 @@
 package datart.server.service.impl;
 
+import datart.core.base.consts.Const;
+import datart.core.base.exception.Exceptions;
+import datart.core.entity.FileSheetField;
 import datart.core.entity.FileSheets;
+import datart.core.entity.Role;
 import datart.core.entity.param.FileSheetsParam;
-import datart.core.mappers.ext.FileSheetsMapperExt;
+import datart.core.entity.result.FileSheetsResult;
+import datart.core.mappers.ext.*;
+import datart.security.base.ResourceType;
+import datart.security.exception.PermissionDeniedException;
+import datart.security.manager.shiro.ShiroSecurityManager;
+import datart.security.util.PermissionHelper;
 import datart.server.common.Convert;
 import datart.server.common.DateUtils;
 import datart.server.enums.WhetherEnum;
@@ -12,19 +21,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 文件工作簿Service业务层处理
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-27
  */
 @Service
 public class FileSheetsServiceImpl extends BaseService implements IFileSheetsService {
     @Autowired
     private FileSheetsMapperExt fileSheetsMapper;
+    @Autowired
+    private RoleMapperExt roleMapperExt;
+    @Autowired
+    private DepartmentMapperExt departmentMapperExt;
+    @Autowired
+    private FileClassMapperExt fileClassMapperExt;
+    @Autowired
+    private FileSheetFieldMapperExt fileSheetFieldMapper;
 
     /**
      * 查询文件工作簿
@@ -45,7 +65,35 @@ public class FileSheetsServiceImpl extends BaseService implements IFileSheetsSer
      */
     @Override
     public List<FileSheets> selectFileSheetsList(FileSheets fileSheets) {
+
         return fileSheetsMapper.selectFileSheetsList(fileSheets);
+    }
+
+    @Override
+    public void requirePermission(FileSheets file, int permission) {
+        if (securityManager.isOrgOwner(file.getOrgId())) {
+            return;
+        }
+        boolean hasPermission;
+        if (file.getCreateBy().equals(getCurrentUser().getId())) {
+            hasPermission = true;
+        } else {
+            List<Role> roles = roleMapperExt.selectUserRoles1(getCurrentUser().getId());
+            hasPermission = roles.stream().anyMatch(role -> hasPermission(role, file, permission));
+        }
+        if (!hasPermission) {
+            Exceptions.tr(PermissionDeniedException.class, "message.security.permission-denied",
+                    ResourceType.EXCEL_VIEW + ":" + file.getSheetId() + ":" + ShiroSecurityManager.expand2StringPermissions(permission));
+        }
+    }
+
+    private boolean hasPermission(Role role, FileSheets file, int permission) {
+        int a = rrrMapper.countRolePermission(file.getSheetId().toString(), role.getId());
+        if (file.getSheetId() == null || a == 0) {
+            return false;
+        } else {
+            return securityManager.hasPermission(PermissionHelper.fileSheetPermission(file.getOrgId(), role.getId(), file.getSheetId().toString(), permission));
+        }
     }
 
     /**
@@ -110,6 +158,18 @@ public class FileSheetsServiceImpl extends BaseService implements IFileSheetsSer
     @Override
     public List<FileSheets> getSheetList(FileSheetsParam fileSheets) {
 
+        if (null != fileSheets.getDeptId()) {
+            List<Long> ids = new ArrayList<>();
+            ids.add(fileSheets.getDeptId());
+            ids.addAll(departmentMapperExt.getAllChiledId(fileSheets.getDeptId()));
+            fileSheets.setDepIds(ids);
+        }
+        if (null != fileSheets.getClassId()) {
+            List<Long> ids = new ArrayList<>();
+            ids.add(fileSheets.getClassId());
+            ids.addAll(fileClassMapperExt.getAllChiledId(fileSheets.getClassId()));
+            fileSheets.setClassIds(ids);
+        }
         HashMap<String, Object> hashMap = new HashMap<>();
         if (!CollectionUtils.isEmpty(fileSheets.getClassIds())) {
             hashMap.put("classIds", fileSheets.getClassIds());
@@ -118,6 +178,38 @@ public class FileSheetsServiceImpl extends BaseService implements IFileSheetsSer
             hashMap.put("depIds", fileSheets.getDepIds());
         }
         hashMap.put("delFlag", WhetherEnum.NO.getValue());
-        return fileSheetsMapper.getSheetList(hashMap);
+        List<FileSheets> list = fileSheetsMapper.getSheetList(hashMap);
+        Map<Long, FileSheets> filtered = new HashMap<>();
+        List<FileSheets> permitted = list.stream().filter(file -> {
+            try {
+                requirePermission(file, Const.READ);
+                return true;
+            } catch (Exception e) {
+                filtered.put(file.getSheetId(), file);
+                return false;
+            }
+        }).collect(Collectors.toList());
+
+        return permitted;
+    }
+
+    @Override
+    public List<FileSheetsResult> getSheetsByTables(List<String> tables) {
+
+        List<FileSheetsResult> list = fileSheetsMapper.getSheetsByTables(tables);
+        if (!CollectionUtils.isEmpty(list)) {
+
+            for (FileSheetsResult fileSheetsResult : list) {
+
+                List<FileSheetField> fields = fileSheetFieldMapper.selectFileSheetFieldList(new FileSheetField() {{
+                    setSheetId(fileSheetsResult.getSheetId());
+                }});
+                if (!CollectionUtils.isEmpty(fields)){
+
+                    fileSheetsResult.setFieldList(fields);
+                }
+            }
+        }
+        return list;
     }
 }

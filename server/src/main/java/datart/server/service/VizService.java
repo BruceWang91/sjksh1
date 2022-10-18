@@ -29,7 +29,7 @@ public interface VizService {
 
     DatachartDetail getDatachart(String datachartId);
 
-    HashMap<String,Object> datachartsInFolder (String datachartId);
+    HashMap<String, Object> datachartsInFolder(String datachartId);
 
     DatachartDetailList getDatacharts(Set<String> datachartIds);
 
@@ -68,6 +68,8 @@ public interface VizService {
     boolean unarchiveViz(String vizId, ResourceType vizType, String newName, String parentId, double index);
 
     List<Folder> listViz(String orgId);
+
+    List<Folder> listViz(String orgId, String datatype);
 
     Folder createFolder(FolderCreateParam createParam);
 

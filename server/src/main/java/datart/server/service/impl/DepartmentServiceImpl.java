@@ -1,7 +1,7 @@
 package datart.server.service.impl;
 
 import datart.core.entity.Department;
-import datart.core.entity.TreeSelect;
+import datart.core.entity.User;
 import datart.core.mappers.ext.DepartmentMapperExt;
 import datart.server.common.Convert;
 import datart.server.common.StringUtils;
@@ -15,17 +15,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 部门管理 服务实现
  *
- * @author ruoyi
+ * @author wangya
  */
 @Service
 public class DepartmentServiceImpl extends BaseService implements IDepartmentService {
     @Autowired
     private DepartmentMapperExt deptMapper;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     /**
      * 查询部门管理数据
@@ -34,9 +36,16 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
      * @return 部门信息集合
      */
     @Override
-//    @DataScope(deptAlias = "d")
     public List<Department> selectDeptList(Department dept) {
-        return deptMapper.selectDeptList(dept);
+
+        List<Department> list = deptMapper.selectDeptList(dept);
+        for (Department department : list) {
+
+            Long deptId = department.getDeptId();
+            List<User> users = userService.getUsersByDeptId(deptId);
+            department.setUsers(users);
+        }
+        return list;
     }
 
     /**
@@ -155,7 +164,7 @@ public class DepartmentServiceImpl extends BaseService implements IDepartmentSer
 //            throw new Exception("部门停用，不允许新增");
             return 0;
         }
-        dept.setAncestors(null == info ?"0":info.getAncestors() + "," + dept.getParentId());
+        dept.setAncestors(null == info ? "0" : info.getAncestors() + "," + dept.getParentId());
         return deptMapper.insertDept(dept);
     }
 

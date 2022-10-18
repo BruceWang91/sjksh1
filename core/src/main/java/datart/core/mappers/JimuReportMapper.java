@@ -1,16 +1,14 @@
 package datart.core.mappers;
 
 import datart.core.entity.JimuReportRewrite;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import datart.core.mappers.ext.CRUDMapper;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
 
 @Mapper
-public interface JimuReportMapper {
+public interface JimuReportMapper extends CRUDMapper {
     @Select({
             "SELECT * FROM jimu_report where id = #{id,jdbcType = VARCHAR}"
     })
@@ -41,13 +39,46 @@ public interface JimuReportMapper {
 
     @Select({
             "<script>",
-                "select * from jimu_report where del_flag = 0 "+
-                "<if test=\"type != null and type != ''\"> and type like concat('%', #{type}, '%') </if>" +
-                "<if test=\"template != null\"> and template = #{type} </if>" +
-                "<if test=\"createBy != null and createBy != ''\"> and create_by = #{createBy} </if>" +
-                "<if test=\"name != null and name != ''\"> and name like concat('%', #{name}, '%') </if>" +
-                "order by create_time desc" +
-            "</script>"
+            "select * from jimu_report where del_flag = 0 " +
+                    "<if test=\"type != null and type != ''\"> and type like concat('%', #{type}, '%') </if>" +
+                    "<if test=\"template != null\"> and template = #{type} </if>" +
+                    "<if test=\"createBy != null and createBy != ''\"> and create_by = #{createBy} </if>" +
+                    "<if test=\"name != null and name != ''\"> and name like concat('%', #{name}, '%') </if>" +
+                    "<if test=\"isFolder != null\"> and is_folder = #{isFolder} </if>" +
+                    "<if test=\"parentId != null\"> and parent_id = #{parentId} </if>" +
+                    "order by create_time desc" +
+                    "</script>"
     })
     List<JimuReportRewrite> selectJimuReportRewriteList(JimuReportRewrite jimuReportRewrite);
+
+    @Insert({
+            "<script>",
+            "insert into jimu_report (id, org_id, code, ",
+            "name, type, create_by, create_time, ",
+            "del_flag, template, view_count, is_folder, parent_id)",
+            "values (#{id,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, ",
+            "#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, ",
+            "#{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, ",
+            "#{delFlag,jdbcType=INTEGER}, #{template,jdbcType=INTEGER}, #{viewCount,jdbcType=BIGINT}, ",
+            "#{isFolder,jdbcType=INTEGER}, #{parentId,jdbcType=VARCHAR})",
+            "</script>"
+    })
+    int insert(JimuReportRewrite jimuReport);
+
+    @Update({
+            "<script>",
+            "update jimu_report\n" +
+                    "<trim prefix=\"SET\" suffixOverrides=\",\">\n" +
+                    "   <if test=\"parentId != null and parentId != ''\"> parent_id = #{parentId}, \n</if>\n" +
+                    "   <if test=\"name != null and name != ''\"> name = #{name}, \n</if>\n" +
+                    "</trim>\n" +
+                    "where id = #{id}",
+            "</script>"
+    })
+    int updateParentId(JimuReportRewrite jimuReportRewrite);
+
+    @Delete({
+            "delete from jimu_report where is_folder = 1 and id = #{id}"
+    })
+    int deleteFolder(String id);
 }

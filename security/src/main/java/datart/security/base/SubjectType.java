@@ -11,4 +11,5 @@ public enum SubjectType {
 
     USER_ROLE,
 
+    DEPT,
 }

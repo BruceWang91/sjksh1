@@ -23,7 +23,10 @@ import datart.core.base.consts.FileOwner;
 import datart.core.base.consts.TransferFileType;
 import datart.core.base.consts.VariableTypeEnum;
 import datart.core.base.exception.Exceptions;
-import datart.core.common.*;
+import datart.core.common.FileUtils;
+import datart.core.common.SerializerUtils;
+import datart.core.common.TaskExecutor;
+import datart.core.common.UUIDGenerator;
 import datart.core.entity.*;
 import datart.core.mappers.ext.DownloadMapperExt;
 import datart.security.base.ResourceType;
@@ -111,6 +114,11 @@ public class VizServiceImpl extends BaseService implements VizService {
     }
 
     @Override
+    public List<Folder> listViz(String orgId, String datatype) {
+        return folderService.listOrgFolders(orgId, datatype);
+    }
+
+    @Override
     @Transactional
     public Folder createFolder(FolderCreateParam createParam) {
         return folderService.create(createParam);
@@ -195,13 +203,13 @@ public class VizServiceImpl extends BaseService implements VizService {
     }
 
     @Override
-    public HashMap<String,Object> datachartsInFolder (String datachartId){
+    public HashMap<String, Object> datachartsInFolder(String datachartId) {
 
         List<Folder> folders = datachartService.getFolders(datachartId);
-        HashMap<String,Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         for (Folder folder : folders) {
             DatachartDetail detail = datachartService.getDatachartDetail(folder.getRelId());
-            map.put(folder.getRelId(),detail);
+            map.put(folder.getRelId(), detail);
         }
         return map;
     }

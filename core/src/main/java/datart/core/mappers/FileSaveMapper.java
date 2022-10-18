@@ -4,12 +4,10 @@ import datart.core.entity.FileSave;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
-import java.util.List;
-
 /**
  * 文件保存Mapper接口
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-06-17
  */
 public interface FileSaveMapper {
@@ -20,13 +18,14 @@ public interface FileSaveMapper {
      * @return 文件保存
      */
     @Select({
-            "select id, class_id, file_name, new_name, pdf_name, url, pdfurl, order_num, " +
-            "status, del_flag, create_by, create_time, update_by, update_time, remark " +
-            "from file_save where id = #{id}"
+            "select id, class_id, org_id, file_name, new_name, pdf_name, url, pdfurl, order_num, " +
+                    "status, del_flag, is_folder, parent_id, create_by, create_time, update_by, update_time, remark " +
+                    "from file_save where id = #{id}"
     })
     @Results({
             @Result(column = "id", property = "id", jdbcType = JdbcType.BIGINT, id = true),
             @Result(column = "class_id", property = "classId", jdbcType = JdbcType.BIGINT),
+            @Result(column = "org_id", property = "orgId", jdbcType = JdbcType.VARCHAR),
             @Result(column = "file_name", property = "fileName", jdbcType = JdbcType.VARCHAR),
             @Result(column = "new_name", property = "newName", jdbcType = JdbcType.VARCHAR),
             @Result(column = "pdf_name", property = "pdfName", jdbcType = JdbcType.VARCHAR),
@@ -35,6 +34,8 @@ public interface FileSaveMapper {
             @Result(column = "order_num", property = "orderNum", jdbcType = JdbcType.INTEGER),
             @Result(column = "status", property = "status", jdbcType = JdbcType.VARCHAR),
             @Result(column = "del_flag", property = "delFlag", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "is_folder", property = "isFolder", jdbcType = JdbcType.INTEGER),
+            @Result(column = "parent_id", property = "parentId", jdbcType = JdbcType.BIGINT),
             @Result(column = "create_by", property = "createBy", jdbcType = JdbcType.VARCHAR),
             @Result(column = "create_time", property = "createTime", jdbcType = JdbcType.TIMESTAMP),
             @Result(column = "update_by", property = "updateBy", jdbcType = JdbcType.VARCHAR),
@@ -50,7 +51,7 @@ public interface FileSaveMapper {
      * @return 结果
      */
     @InsertProvider(type = FileSaveSqlProvider.class, method = "insertSelective")
-    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insertFileSave(FileSave fileSave);
 
     /**
@@ -64,6 +65,7 @@ public interface FileSaveMapper {
             "update file_save\n" +
                     "<trim prefix=\"SET\" suffixOverrides=\",\">\n" +
                     "            <if test=\"classId != null\">class_id = #{classId},</if>\n" +
+                    "            <if test=\"orgId != null\">org_id = #{orgId},</if>\n" +
                     "            <if test=\"fileName != null\">file_name = #{fileName},</if>\n" +
                     "            <if test=\"newName != null\">new_name = #{newName},</if>\n" +
                     "            <if test=\"pdfName != null\">pdf_name = #{pdfName},</if>\n" +
@@ -72,13 +74,15 @@ public interface FileSaveMapper {
                     "            <if test=\"orderNum != null\">order_num = #{orderNum},</if>\n" +
                     "            <if test=\"status != null\">status = #{status},</if>\n" +
                     "            <if test=\"delFlag != null\">del_flag = #{delFlag},</if>\n" +
+                    "            <if test=\"isFolder != null\">is_folder = #{isFolder},</if>\n" +
+                    "            <if test=\"parentId != null\">parent_id = #{parentId},</if>\n" +
                     "            <if test=\"createBy != null\">create_by = #{createBy},</if>\n" +
                     "            <if test=\"createTime != null\">create_time = #{createTime},</if>\n" +
                     "            <if test=\"updateBy != null\">update_by = #{updateBy},</if>\n" +
                     "            <if test=\"updateTime != null\">update_time = #{updateTime},</if>\n" +
                     "            <if test=\"remark != null\">remark = #{remark},</if>\n" +
                     "</trim>\n" +
-            "where id = #{id}",
+                    "where id = #{id}",
             "</script>"
     })
     int updateFileSave(FileSave fileSave);
@@ -102,7 +106,7 @@ public interface FileSaveMapper {
      */
     @Delete({
             "<script>",
-            "delete from file_main where file_save in ",
+            "delete from file_save where id in ",
             "<foreach collection='array' item='id' index='index' open='(' close=')' separator=','>#{id}</foreach>",
             "</script>"
     })

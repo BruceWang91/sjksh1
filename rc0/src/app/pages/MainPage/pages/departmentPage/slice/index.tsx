@@ -23,14 +23,17 @@ import {
   deleteDepartment,
   editDepartment,
   getDepartments,
+  getDepartmentsAndMembers,
 } from './thunks';
 import { DepartmentState } from './types';
 
 export const initialState: DepartmentState = {
   departments: [],
+  departmentsAndMembers:[],
   departmentListLoading: false,
   saveDepartmentLoading: false,
   deleteDepartmentsLoading: false,
+  departmentsAndMembersLoading:false
 };
 
 
@@ -50,6 +53,20 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+
+  	// getDepartmentsAndMembers
+    builder.addCase(getDepartmentsAndMembers.pending, state => {
+      state.departmentsAndMembersLoading = true;
+    });
+    builder.addCase(getDepartmentsAndMembers.fulfilled, (state, action) => {
+      state.departmentsAndMembersLoading = false;
+      state.departments = treeTs(action.payload) 
+    });
+    builder.addCase(getDepartmentsAndMembers.rejected, state => {
+      state.departmentsAndMembersLoading = false;
+    });
+
+
     // getDepartments
     builder.addCase(getDepartments.pending, state => {
       state.departmentListLoading = true;

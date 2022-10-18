@@ -1,7 +1,6 @@
 package datart.server.service.impl;
 
 import datart.core.entity.FileClass;
-import datart.core.mappers.FileClassMapper;
 import datart.core.mappers.ext.FileClassMapperExt;
 import datart.server.common.DateUtils;
 import datart.server.service.BaseService;
@@ -15,7 +14,7 @@ import java.util.List;
 /**
  * 文件分类Service业务层处理
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-06-17
  */
 @Service

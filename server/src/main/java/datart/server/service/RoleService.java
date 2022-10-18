@@ -4,14 +4,16 @@ import datart.core.entity.Role;
 import datart.core.entity.User;
 import datart.core.entity.ext.UserBaseInfo;
 import datart.core.mappers.ext.RoleMapperExt;
+import datart.security.base.PermissionInfo;
 import datart.security.base.ResourceType;
 import datart.security.base.SubjectType;
-import datart.security.base.PermissionInfo;
 import datart.server.base.dto.ResourcePermissions;
 import datart.server.base.dto.SubjectPermissions;
 import datart.server.base.dto.ViewPermission;
 import datart.server.base.params.GrantPermissionParam;
 import datart.server.base.params.ViewPermissionParam;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -23,6 +25,9 @@ public interface RoleService extends BaseCRUDService<Role, RoleMapperExt> {
     boolean updateRolesForUser(String userId, String orgId, Set<String> roleIds);
 
     Role getPerUserRole(String orgId, String userId);
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    Role getPerDeptRole(String orgId, String deptId);
 
     User getPerUserRoleUser(String roleId);
 

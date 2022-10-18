@@ -9,33 +9,46 @@ import java.util.List;
 
 /**
  * 文件分类对象 file_class
- * 
- * @author ruoyi
+ *
+ * @author wangya
  * @date 2022-06-17
  */
-public class FileClass
-{
+public class FileClass {
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     private Long id;
 
-    /** 分类名称 */
+    /**
+     * 分类名称
+     */
     private String name;
 
-    /** 上级分类id */
+    /**
+     * 上级分类id
+     */
     private Long parentId;
 
-    /** 显示顺序 */
+    /**
+     * 显示顺序
+     */
     private Integer orderNum;
 
-    /** 状态（0正常 1停用） */
+    /**
+     * 状态（0正常 1停用）
+     */
     private String status;
 
-    /** 删除标志（0代表存在 1代表删除） */
+    /**
+     * 删除标志（0代表存在 1代表删除）
+     */
     private String delFlag;
 
-    /** 下级分类 */
+    /**
+     * 下级分类
+     */
     private List<FileClass> lowClasses;
 
     /**
@@ -90,31 +103,27 @@ public class FileClass
         this.parentId = parentId;
     }
 
-    public void setOrderNum(Integer orderNum)
-    {
+    public void setOrderNum(Integer orderNum) {
         this.orderNum = orderNum;
     }
 
-    public Integer getOrderNum() 
-    {
+    public Integer getOrderNum() {
         return orderNum;
     }
-    public void setStatus(String status) 
-    {
+
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getStatus() 
-    {
+    public String getStatus() {
         return status;
     }
-    public void setDelFlag(String delFlag) 
-    {
+
+    public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
     }
 
-    public String getDelFlag() 
-    {
+    public String getDelFlag() {
         return delFlag;
     }
 
@@ -168,17 +177,17 @@ public class FileClass
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("name", getName())
-            .append("parentId", getParentId())
-            .append("orderNum", getOrderNum())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("id", getId())
+                .append("name", getName())
+                .append("parentId", getParentId())
+                .append("orderNum", getOrderNum())
+                .append("status", getStatus())
+                .append("delFlag", getDelFlag())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .toString();
     }
 }

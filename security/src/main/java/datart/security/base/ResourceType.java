@@ -11,11 +11,27 @@ public enum ResourceType {
     FOLDER,
     STORYBOARD("shareStoryPlayer"),
     VIZ,
-
+    FILE,
+    EXCEL_VIEW,
+    REPORT,
+    EXCEL_TEMPLATE,
+    SYSTEM,
+    DEPARTMENT,
+    PERMISSION,
+    CATEGORY,
+    VARIABLE,
+    RESOURCE_MIGRATION,
+    DATA_ACCESS,
+    DATA_IMPORT,
+    VIZ_DATACHART,
+    VIZ_DASHBOARD,
+    SHARE,
+    DOWNLOAD,
+    MANAGER,
     SCHEDULE,
-
     ROLE,
-    USER;
+    USER,
+    TASK;
 
     private String shareRoute;
 

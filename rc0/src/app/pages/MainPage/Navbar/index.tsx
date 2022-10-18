@@ -21,23 +21,8 @@ import {
   TableOutlined,
   ExportOutlined,
   FormOutlined,
-  FunctionOutlined,
-  GlobalOutlined,
   ProfileOutlined,
-  SafetyCertificateFilled,
-  SettingFilled,
-  SettingOutlined,
-  SkinOutlined,
-  UserOutlined,
-  ClusterOutlined,
-
-  FileExcelOutlined,
-  FolderOutlined,
-  FileZipOutlined,
-  DatabaseOutlined,
-  FileImageOutlined,
-  PrinterOutlined,
-
+  UserOutlined
 } from '@ant-design/icons';
 import { List, Menu, Tooltip } from 'antd';
 import logo from 'app/assets/images/logo.svg';
@@ -80,7 +65,7 @@ import themeSlice from 'styles/theme/slice';
 import { selectThemeKey } from 'styles/theme/slice/selectors';
 import { ThemeKeyType } from 'styles/theme/slice/types';
 import { changeAntdTheme, saveTheme } from 'styles/theme/utils';
-import { Access } from '../Access';
+import { Access ,MenuAccess} from '../Access';
 import {
   PermissionLevels,
   ResourceTypes,
@@ -91,6 +76,12 @@ import { ModifyPassword } from './ModifyPassword';
 import { OrganizationList } from './OrganizationList';
 import { Profile } from './Profile';
 import { loadTasks } from './service';
+import classnames from  'classnames';
+
+import {MENUS} from './Menus';
+
+
+
 
 export function Navbar() {
   const { actions } = useMainSlice();
@@ -132,208 +123,11 @@ export function Navbar() {
   );
 
 
-  const subnavs = useMemo(
-    () => {
-    	const settings = [
-	      {
-	        name: 'variables',
-	        title: t('settingSubnavs.variables.title'),
-	        icon: <FunctionOutlined />,
-	        module: ResourceTypes.Manager,
-	      },
-	      {
-	        name: 'orgSettings',
-	        title: t('settingSubnavs.orgSettings.title'),
-	        icon: <SettingOutlined />,
-	        module: ResourceTypes.Manager,
-	      },
-	      {
-	        name: 'resourceMigration',
-	        title: t('settingSubnavs.resourceMigration.title'),
-	        icon: <ExportOutlined />,
-	        module: ResourceTypes.Manager,
-	      },
-	    ];
-	    const excelTemplates = [
-	      {
-	        name: 'excelManager',
-	        title: t('excelTemplateSubnavs.excelManager.title'),
-	        icon: <FileExcelOutlined />,
-	        module: ResourceTypes.ExcelTemplate,
-	      },
-	      {
-	        name: 'reportSheets',
-	        title: t('excelTemplateSubnavs.reportSheets.title'),
-	        icon: <FileZipOutlined />,
-	        module: ResourceTypes.ExcelTemplate,
-	      },
-	      {
-	        name: 'categoryManager',
-	        title: t('excelTemplateSubnavs.categoryManager.title'),
-	        icon: <FolderOutlined />,
-	        module: ResourceTypes.ExcelTemplate,
-	      }
-	    ]
-	    const departments = [
-	      {
-	        name: 'departmentManager',
-	        title: t('departmentSubnavs.departmentManager.title'),
-	        icon: <FunctionOutlined />,
-	        module: ResourceTypes.Department,
-	      }
-	    ]
-
-	    const reports = [
-	      {
-	        name: 'dataReport',
-	        title: t('reportSubnavs.dataReport.title'),
-	        icon: <DatabaseOutlined />,
-	        module: ResourceTypes.Report,
-	      },
-	      {
-	        name: 'chartReport',
-	        title: t('reportSubnavs.chartReport.title'),
-	        icon: <FileImageOutlined />,
-	        module: ResourceTypes.Report,
-	      },
-	      {
-	        name: 'printReport',
-	        title: t('reportSubnavs.printReport.title'),
-	        icon: <PrinterOutlined />,
-	        module: ResourceTypes.Report,
-	      }
-	    ]
-    	const subnavOptions = [settings,excelTemplates,departments,reports]
-
-    	const index = subnavOptions.findIndex( item=> item.some(({name})=>name === matchModules?.params.moduleName));
-
-    	return {
-    		current:subnavOptions[index] || [],
-    		data:{
-    			departments,
-    			reports,
-    			excelTemplates,
-    			settings
-    		}
-    	}
-    },
-    [t,matchModules],
-  );
 
 
-  const navs = useMemo(
-    () => [
 
-      {
-        name: 'vizs',
-        title: t('nav.vizs'),
-        icon: <i className="iconfont icon-xietongzhihuidaping" />,
-        module: ResourceTypes.Viz,
-      },
 
-      {
-        name: 'views',
-        title: t('nav.views'),
-        icon: <i className="iconfont icon-24gf-table" />,
-        module: ResourceTypes.View,
-      },
-      {
-        name: 'sources',
-        title: t('nav.sources'),
-        icon: <i className="iconfont icon-shujukupeizhi" />,
-        module: ResourceTypes.Source,
-      },
-      {
-        name: 'schedules',
-        title: t('nav.schedules'),
-        icon: <i className="iconfont icon-fasongyoujian" />,
-        module: ResourceTypes.Schedule,
-      },
-
-      {
-        name: 'reports',
-        action:'toSub',
-        title: t('nav.reports'),
-        icon: <ProfileOutlined />,
-        isActive: (_, location) => {
-          const reg = new RegExp(
-            `\\/organizations\\/[\\w]{32}\\/(${subnavs.data.reports
-              .map(({ name }) => name)
-              .join('|')})`,
-          );
-          return !!location.pathname.match(reg);
-        },
-        module: ResourceTypes.Report,
-      },
-
-      {
-        name: 'excelTemplates',
-        action:'toSub',
-        title: t('nav.exceltemplates'),
-        icon: <TableOutlined />,
-        isActive: (_, location) => {
-          const reg = new RegExp(
-            `\\/organizations\\/[\\w]{32}\\/(${subnavs.data.excelTemplates
-              .map(({ name }) => name)
-              .join('|')})`,
-          );
-          return !!location.pathname.match(reg);
-        },
-        module: ResourceTypes.ExcelTemplate,
-      },
-
-      {
-        name: 'departments',
-        action:'toSub',
-        title: t('nav.departments'),
-        icon: <ClusterOutlined />,
-        isActive: (_, location) => {
-
-          const reg = new RegExp(
-            `\\/organizations\\/[\\w]{32}\\/(${subnavs.data.departments
-              .map(({ name }) => name)
-              .join('|')})`,
-          );
-
-          return !!location.pathname.match(reg);
-        },
-        module: ResourceTypes.Department,
-      },
-      {
-        name: 'members',
-        title: t('nav.members'),
-        icon: <i className="iconfont icon-users1" />,
-        isActive: (_, location) =>
-          !!location.pathname.match(
-            /\/organizations\/[\w]{32}\/(members|roles)/,
-          ),
-        module: ResourceTypes.User,
-      },
-      {
-        name: 'permissions',
-        title: t('nav.permissions'),
-        icon: <SafetyCertificateFilled />,
-        module: ResourceTypes.Manager,
-      },
-      {
-        name: 'settings',
-        action:'toSub',
-        title: t('nav.settings'),
-        icon: <SettingFilled />,
-        isActive: (_, location) => {
-          const reg = new RegExp(
-            `\\/organizations\\/[\\w]{32}\\/(${subnavs.data.settings
-              .map(({ name }) => name)
-              .join('|')})`,
-          );
-          return !!location.pathname.match(reg);
-        },
-        module: ResourceTypes.Manager,
-      },
-    ],
-    [subnavs, t],
-  );
-
+  
 
   const handleChangeThemeFn = useCallback(
     (theme: ThemeKeyType) => {
@@ -386,41 +180,92 @@ export function Navbar() {
     [dispatch, actions],
   );
 
+
+
+  const mainNavSelectKeys = useMemo(()=>{
+  	const search = new URLSearchParams(history.location.search);
+  	const moduleType = search.get('moduleType');
+  	const moduleName = matchModules?.params?.moduleName;
+  	if(moduleType){
+  		return [`${moduleName}_${moduleType}`]
+  	}
+  	return [moduleName]
+  },[matchModules,history]);
+
+
+
+  const getMenus = useCallback(( data ) => {
+		return data.map(({ name, children , type, group, action, title, icon, isActive, module }) => {
+			
+
+			let childs = title;
+
+			let props = {
+				ptype:"module",
+	      level:PermissionLevels.Enable,
+	      key:name,
+	      menuType:'Item',
+	      icon,
+	      module
+	      
+			}
+
+			if(Array.isArray(children)){
+				props.menuType = 'SubMenu';
+				props.title = title;
+				childs = getMenus(children)
+			}else{
+				
+			}
+
+
+			if(Array.isArray(group)){
+				props.menuType = 'ItemGroup';
+				props.title = title;
+				props.type = 'group';
+				props.icon = ''
+				childs = getMenus(group)
+			}
+
+			if( !Array.isArray(group) && !Array.isArray(children)){
+				props.onClick = event=>history.push(`/organizations/${orgId}/${name}`) 
+			}
+
+			if(type){
+				props.key = `${name}_${type}`;
+
+				if(props.onClick){
+					props.onClick = event=>history.push(`/organizations/${orgId}/${name}?moduleType=${type}`)
+				}
+			}
+
+
+			return <MenuAccess
+	      {...props}
+	    >
+	    	{childs}
+	    </MenuAccess>
+		})
+	},[history,orgId])
+  //console.log(mainNavSelectKeys)
+  //
+  
   return (
     <>
       <MainNav>
         <Brand onClick={brandClick}>
-          <img src={logo} alt="logo" />
-          <LogoText size={42} />
+          <img src={logo} alt="logo"/>
+          <LogoText size={48}/>
 
         </Brand>
+     
         <Nav>
-          {navs.map(({ name, action, title, icon, isActive, module }) => {
-
-
-            return action !== 'toSub' || subnavs.data[name]?.length > 0 ? (
-              <Access
-                key={name}
-                type="module"
-                module={module}
-                level={PermissionLevels.Enable}
-              >
-                <NavItem
-                  to={`/organizations/${orgId}/${
-                    action === 'toSub' ? subnavs.data[name]?.[0]?.name : name
-                  }`}
-                  activeClassName="active"
-                  {...(isActive && { isActive })}
-                >
-                  {icon} <span>{title}</span>
-                </NavItem>
-
-              </Access>
-            ) : null;
-          })}
+        	<Menu mode="horizontal" selectable className="header-nav" selectedKeys={mainNavSelectKeys} >
+        		{getMenus(MENUS)}
+          </Menu>
         </Nav>
         <Toolbar>
-          <DownloadListPopup
+          {/*<DownloadListPopup
             polling={downloadPolling}
             setPolling={onSetPolling}
             onLoadTasks={loadTasks}
@@ -431,11 +276,11 @@ export function Navbar() {
                 });
               }
             }}
-          />
+          />*/}
           {systemInfo?.tenantManagementMode ===
-            TenantManagementMode.Platform && (
+          TenantManagementMode.Platform && (
             <Popup
-              content={<OrganizationList />}
+              content={<OrganizationList/>}
               trigger={['click']}
               placement="bottomRight"
               onVisibleChange={organizationListVisibleChange}
@@ -445,7 +290,7 @@ export function Navbar() {
                   <Avatar
                     src={`${BASE_RESOURCE_URL}${currentOrganization?.avatar}`}
                   >
-                    <BankFilled />
+                    <BankFilled/>
                   </Avatar>
                 </Tooltip>
               </li>
@@ -458,47 +303,22 @@ export function Navbar() {
                 selectable={false}
                 onClick={userMenuSelect}
               >
-                {/*<MenuListItem*/}
-                {/*  key="language"*/}
-                {/*  prefix={<GlobalOutlined className="icon" />}*/}
-                {/*  title={<p>{t('nav.account.switchLanguage.title')}</p>}*/}
-                {/*  sub*/}
-                {/*>*/}
-                {/*  <MenuListItem key="zh">中文</MenuListItem>*/}
-                {/*  <MenuListItem key="en">English</MenuListItem>*/}
-                {/*</MenuListItem>*/}
-                {/*<MenuListItem*/}
-                {/*  key="theme"*/}
-                {/*  prefix={<SkinOutlined className="icon" />}*/}
-                {/*  title={<p>{t('nav.account.switchTheme.title')}</p>}*/}
-                {/*  sub*/}
-                {/*>*/}
-                {/*  <MenuListItem key="light" prefix={<ThemeBadge />}>*/}
-                {/*    {t('nav.account.switchTheme.light')}*/}
-                {/*  </MenuListItem>*/}
-                {/*  <MenuListItem*/}
-                {/*    key="dark"*/}
-                {/*    prefix={<ThemeBadge background={BLACK} />}*/}
-                {/*  >*/}
-                {/*    {t('nav.account.switchTheme.dark')}*/}
-                {/*  </MenuListItem>*/}
-                {/*</MenuListItem>*/}
-                <Menu.Divider />
+                <Menu.Divider/>
                 <MenuListItem
                   key="profile"
-                  prefix={<ProfileOutlined className="icon" />}
+                  prefix={<ProfileOutlined className="icon"/>}
                 >
                   <p>{t('nav.account.profile.title')}</p>
                 </MenuListItem>
                 <MenuListItem
                   key="password"
-                  prefix={<FormOutlined className="icon" />}
+                  prefix={<FormOutlined className="icon"/>}
                 >
                   <p>{t('nav.account.changePassword.title')}</p>
                 </MenuListItem>
                 <MenuListItem
                   key="logout"
-                  prefix={<ExportOutlined className="icon" />}
+                  prefix={<ExportOutlined className="icon"/>}
                 >
                   <p>{t('nav.account.logout.title')}</p>
                 </MenuListItem>
@@ -509,34 +329,18 @@ export function Navbar() {
           >
             <li>
               <Avatar src={`${BASE_RESOURCE_URL}${loggedInUser?.avatar}`}>
-                <UserOutlined />
+                <UserOutlined/>
               </Avatar>
             </li>
           </Popup>
         </Toolbar>
-        <Profile visible={profileVisible} onCancel={hideProfile} />
+        <Profile visible={profileVisible} onCancel={hideProfile}/>
         <ModifyPassword
           visible={modifyPasswordVisible}
           onCancel={hideModifyPassword}
         />
       </MainNav>
-      {subnavs.current.length > 0 && (
-        <SubNav>
-          <List
-            dataSource={ subnavs.current }
-            renderItem={({ name, title, icon }) => (
-              <SubNavTitle
-                key={name}
-                to={`/organizations/${orgId}/${name}`}
-                activeClassName="active"
-              >
-                {cloneElement(icon, { className: 'prefix' })}
-                <h4>{title}</h4>
-              </SubNavTitle>
-            )}
-          />
-        </SubNav>
-      )}
+     
     </>
   );
 }
@@ -550,8 +354,11 @@ const MainNav = styled.div`
   flex-shrink: 0;
   width: 100%;
   height:${SPACE_TIMES(12)};
-  background-color: ${p => p.theme.componentBackground};
+  background: #00534b;
   border-bottom: 1px solid ${p => p.theme.borderColorSplit};
+
+
+  
 `;
 
 const Brand = styled.div`
@@ -564,21 +371,72 @@ const Brand = styled.div`
   cursor: pointer;
 
 
-  color: ${p => p.theme.textColor};
+  color: #fff;
    img {
    	margin:0 6px;
     width: ${SPACE_TIMES(9)};
     height: ${SPACE_TIMES(9)};
   }
 
+
+
 `;
 
 const Nav = styled.nav`
-  display: flex;
+
+
+
+
   flex: 1;
-  flex-direction: row;
   padding: 0 ${SPACE_LG};
-  align-items: center;
+  .ant-menu{
+  	color:#fff
+  }
+  
+  .header-nav{
+		border-bottom:0;
+  	line-height:47px;
+  	background-color:transparent;
+
+  	>.ant-menu-item:after, >.ant-menu-submenu:after{
+	  	display:none;
+	  }
+
+	  > .ant-menu-submenu:not(.ant-menu-submenu-selected),
+  	> .ant-menu-item:not(.ant-menu-item-selected){
+  		color:#fff !important
+  	}
+  	> .ant-menu-submenu:not(.ant-menu-submenu-selected) {
+  		color:#fff !important
+  	}
+  	> .ant-menu-submenu:not(.ant-menu-submenu-selected):hover,
+  	> .ant-menu-item:not(.ant-menu-item-selected):hover{
+  		background:#024a43 !important;
+  		color:#fff !important
+  	}
+  	> .ant-menu-submenu-selected,
+  	> .ant-menu-item-selected{
+  		background:#fff !important;
+  		color:${p => p.theme.primary};
+  	}
+  	.ant-menu-submenu-title{
+  		padding: 0 20px;
+  	}
+  	.ant-menu-submenu:not(.ant-menu-submenu-selected) .ant-menu-submenu-title{
+  		color:#fff;
+
+    	
+
+  	}
+  	.ant-menu-submenu{
+			padding:0
+		}
+	}
+ 	
+
+
+  
+ 
 `;
 
 const NavItem = styled(NavLink)`

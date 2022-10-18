@@ -43,7 +43,7 @@ public interface UserService extends BaseCRUDService<User, UserMapperExt> {
 
     boolean register(UserRegisterParam user) throws MessagingException, UnsupportedEncodingException;
 
-    boolean register(UserRegisterParam user,boolean sendMail) throws MessagingException, UnsupportedEncodingException;
+    boolean register(UserRegisterParam user, boolean sendMail) throws MessagingException, UnsupportedEncodingException;
 
     String activeUser(String activeString);
 
@@ -70,4 +70,6 @@ public interface UserService extends BaseCRUDService<User, UserMapperExt> {
     UserUpdateByIdParam selectUserById(String userId, String orgId);
 
     boolean setupUser(UserRegisterParam user) throws MessagingException, UnsupportedEncodingException;
+
+    List<User> getUsersByDeptId(Long deptId);
 }

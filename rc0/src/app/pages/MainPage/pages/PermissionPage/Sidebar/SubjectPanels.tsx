@@ -17,7 +17,7 @@
  */
 
 import useI18NPrefix from 'app/hooks/useI18NPrefix';
-import { memo, useMemo } from 'react';
+import { memo, useMemo ,useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SubjectTypes } from '../constants';
 import {
@@ -38,6 +38,7 @@ export const SubjectPanels = memo(
     const roleListLoading = useSelector(selectRoleListLoading);
     const memberListLoading = useSelector(selectMemberListLoading);
     const t = useI18NPrefix('permission');
+    const [activeKeys,setActiveKeys] = useState([]);
 
     const subjectPanels = useMemo(
       () => [
@@ -58,14 +59,19 @@ export const SubjectPanels = memo(
     );
 
     return (
-      <FlexCollapse defaultActiveKeys={viewpointType && [viewpointType]}>
+      <FlexCollapse activeKeys={activeKeys} defaultActiveKeys={viewpointType && [viewpointType]}>
         {subjectPanels.map(
           ({ type: subjectType, label, dataSource, loading }) => (
             <Panel
               key={subjectType}
               id={subjectType}
               title={label}
-              onChange={onToggle}
+               onChange={(active,id)=>{
+	              	onToggle(active,id);
+	              	if(active){
+	              		setActiveKeys([id])
+	              	}
+	              }}
             >
               <SubjectList
                 viewpointId={viewpointId}

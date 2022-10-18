@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 文件保存Service接口
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-06-17
  */
 public interface IFileSaveService {
@@ -19,6 +19,8 @@ public interface IFileSaveService {
      */
     public FileSave selectFileSaveById(Long id);
 
+    FileSave rebuildFile(Long id);
+
     /**
      * 查询文件保存列表
      *
@@ -27,6 +29,8 @@ public interface IFileSaveService {
      */
     public List<FileSave> selectFileSaveList(FileSave fileSave);
 
+    void requirePermission(FileSave file, int permission);
+
     /**
      * 新增文件保存
      *
@@ -34,6 +38,8 @@ public interface IFileSaveService {
      * @return 结果
      */
     public int insertFileSave(FileSave fileSave);
+
+    public FileSave insertFileSaveFolder(FileSave fileSave);
 
     /**
      * 修改文件保存

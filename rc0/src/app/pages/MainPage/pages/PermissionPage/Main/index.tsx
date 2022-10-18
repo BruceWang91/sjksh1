@@ -23,7 +23,7 @@ import { useRouteMatch } from 'react-router';
 import styled from 'styled-components/macro';
 import { SPACE_LG } from 'styles/StyleConstants';
 import { ResourceTypes, SubjectTypes, Viewpoints } from '../constants';
-import { ResourcesPermissionSetting } from './ResourcesPermissionSetting';
+import { MenuPermissionSetting } from './MenuPermissionSetting';
 import { SubjectPermissionSetting } from './SubjectsPermissionSetting';
 
 export const Main = memo(() => {
@@ -35,12 +35,11 @@ export const Main = memo(() => {
     id: string;
   }>();
   const orgId = useSelector(selectOrgId);
-  console.log(SubjectTypes)
   return (
     <Wrapper>
       {viewpoint === Viewpoints.Subject ? (
-        <ResourcesPermissionSetting
-          viewpoint={viewpoint}
+        <MenuPermissionSetting 
+        	viewpoint={viewpoint}
           viewpointId={viewpointId}
           viewpointType={viewpointType}
           orgId={orgId}
@@ -59,7 +58,7 @@ export const Main = memo(() => {
 
 const Wrapper = styled.div`
   flex: 1;
-  padding: ${SPACE_LG};
+  padding: 0;
   overflow-y: auto;
 
   .ant-card-head {

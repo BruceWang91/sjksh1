@@ -506,4 +506,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     }
 
+    @Override
+    public List<User> getUsersByDeptId(Long deptId) {
+
+        List<User> users = userMapper.getUsersByDeptId(deptId);
+        return users;
+    }
 }

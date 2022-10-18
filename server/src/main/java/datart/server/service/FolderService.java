@@ -10,6 +10,8 @@ public interface FolderService extends BaseCRUDService<Folder, FolderMapper>, Re
 
     List<Folder> listOrgFolders(String orgId);
 
+    List<Folder> listOrgFolders(String orgId, String datatype);
+
     boolean checkUnique(String orgId, String parentId, String name);
 
     Folder getVizFolder(String vizId, String relType);

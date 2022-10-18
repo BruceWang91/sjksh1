@@ -6,7 +6,7 @@ import datart.server.common.StringUtils;
 /**
  * 分页数据
  *
- * @author ruoyi
+ * @author wangya
  */
 public class PageDomain {
     /**

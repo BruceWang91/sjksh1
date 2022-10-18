@@ -1,14 +1,13 @@
 package datart.server.service;
 
 import datart.core.entity.Department;
-import datart.core.entity.TreeSelect;
 
 import java.util.List;
 
 /**
  * 部门管理 服务层
  *
- * @author ruoyi
+ * @author wangya
  */
 public interface IDepartmentService {
     /**
@@ -98,4 +97,5 @@ public interface IDepartmentService {
      * @return 结果
      */
     public int deleteDeptById(Long deptId);
+
 }

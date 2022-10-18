@@ -6,11 +6,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.validation.constraints.Digits;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 文件工作簿对象 file_sheets
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-30
  */
 public class FileSheets {
@@ -25,6 +26,11 @@ public class FileSheets {
      * 文件id
      */
     private Long fileId;
+
+    /**
+     * 组织id
+     */
+    private String orgId;
 
     /**
      * 工作簿名称
@@ -97,6 +103,10 @@ public class FileSheets {
      */
     private String remark;
 
+    private Long deptId;
+
+    private List<Long> depIds;
+
     public void setSheetId(Long sheetId) {
         this.sheetId = sheetId;
     }
@@ -111,6 +121,14 @@ public class FileSheets {
 
     public Long getFileId() {
         return fileId;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
     }
 
     public void setSheetName(String sheetName) {
@@ -215,6 +233,22 @@ public class FileSheets {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
+    }
+
+    public List<Long> getDepIds() {
+        return depIds;
+    }
+
+    public void setDepIds(List<Long> depIds) {
+        this.depIds = depIds;
     }
 
     @Override

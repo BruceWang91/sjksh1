@@ -4,12 +4,10 @@ import datart.core.entity.FileSheetField;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
-import java.util.List;
-
 /**
  * 字段对应Mapper接口
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-27
  */
 public interface FileSheetFieldMapper {
@@ -52,7 +50,7 @@ public interface FileSheetFieldMapper {
      * @return 结果
      */
     @InsertProvider(type = FileSheetFieldSqlProvider.class, method = "insertSelective")
-    @Options(useGeneratedKeys=true, keyProperty="fieldId", keyColumn="field_id")
+    @Options(useGeneratedKeys = true, keyProperty = "fieldId", keyColumn = "field_id")
     int insertFileSheetField(FileSheetField fileSheetField);
 
     /**

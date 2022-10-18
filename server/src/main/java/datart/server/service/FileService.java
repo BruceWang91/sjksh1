@@ -12,7 +12,7 @@ public interface FileService {
 
     boolean deleteFiles(FileOwner fileOwner, String relId);
 
-    String getBasePath(FileOwner owner,String id);
+    String getBasePath(FileOwner owner, String id);
 
-    HashMap<String,Object> uploadtopdf(FileOwner fileData, Long classId, MultipartFile file) throws IOException;
+    HashMap<String, Object> uploadtopdf(FileOwner fileData, Long classId, Long parentId, String orgId, MultipartFile file) throws IOException;
 }

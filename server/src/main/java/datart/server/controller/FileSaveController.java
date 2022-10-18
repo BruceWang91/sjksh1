@@ -1,21 +1,23 @@
 package datart.server.controller;
 
-import datart.core.common.FileUtils;
 import datart.core.entity.FileSave;
 import datart.server.base.dto.ResponseData;
+import datart.server.common.page.TableDataInfo;
 import datart.server.service.IFileSaveService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 /**
  * 文件保存Controller
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-06-17
  */
 @Api("文件保存")
@@ -25,18 +27,21 @@ public class FileSaveController extends BaseController {
     @Autowired
     private IFileSaveService fileSaveService;
 
+    @Value("${spring.upload}")
+    private String localurl;
+
     /**
      * 查询文件保存列表
      */
     @ApiOperation("查询文件保存列表 文档id Long id，文件名称 String fileName，存入后名称 String newName，PDF文件名称 String pdfName，URL String url，PDFURL String pdfurl，" +
             "显示顺序 Integer orderNum，文件状态（0正常 1停用）String status，删除标志（0代表存在 2代表删除） String delFlag，创建者 String createBy，创建时间 Date createTime，" +
             "更新者 String updateBy，更新时间 Date updateTime，备注 String remark")
-//    @PreAuthorize("@ss.hasPermi('system:save:list')")
     @GetMapping("/list")
-    public ResponseData<List<FileSave>> list(FileSave fileSave) {
+    public TableDataInfo list(FileSave fileSave) {
 
+        startPage();
         List<FileSave> list = fileSaveService.selectFileSaveList(fileSave);
-        return ResponseData.success(list);
+        return getDataTable(list);
     }
 
     /**
@@ -48,21 +53,27 @@ public class FileSaveController extends BaseController {
     }
 
     /**
-     * 新增文件保存
+     * 新增文件上传文件夹
      */
-//    @Log(title = "文件保存", businessType = BusinessType.INSERT)
-    @PostMapping
-    public ResponseData<Integer> add(@RequestBody FileSave fileSave) {
+    @ApiOperation("新增文件上传文件夹")
+    @PostMapping("/addFolder")
+    public ResponseData<FileSave> add(@RequestBody FileSave fileSave) {
 
-        return ResponseData.success(fileSaveService.insertFileSave(fileSave));
+        fileSave.setIsFolder(1);
+        fileSave.setCreateBy(getCurrentUser().getId());
+        fileSave.setCreateTime(new Date());
+        return ResponseData.success(fileSaveService.insertFileSaveFolder(fileSave));
     }
 
     /**
-     * 修改文件保存
+     * 修改文件上传文件夹
      */
-//    @Log(title = "文件保存", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @ApiOperation("修改文件上传文件夹")
+    @PutMapping("/editFolder")
     public ResponseData<Integer> edit(@RequestBody FileSave fileSave) {
+
+        fileSave.setUpdateBy(getCurrentUser().getId());
+        fileSave.setUpdateTime(new Date());
         return ResponseData.success(fileSaveService.updateFileSave(fileSave));
     }
 
@@ -70,15 +81,16 @@ public class FileSaveController extends BaseController {
      * 删除文件保存
      */
     @ApiOperation("删除文件保存")
-//    @Log(title = "文件保存", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public ResponseData<Integer> remove(@PathVariable Long[] ids) {
-//        String filepath = WebConfig.getUploadPath();
+
         for (int i = 0; i < ids.length; i++) {
             Long id = ids[i];
             FileSave fileSave = fileSaveService.selectFileSaveById(id);
             String url = fileSave.getUrl();
+            url = url.replace("/upload/", localurl);
             String pdfurl = fileSave.getPdfurl();
+            pdfurl = pdfurl.replace("/upload/", localurl);
             File file = new File(url);
             file.delete();
             File pdffile = new File(pdfurl);

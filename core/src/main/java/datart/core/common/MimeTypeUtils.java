@@ -3,7 +3,7 @@ package datart.core.common;
 /**
  * 媒体类型工具类
  * 
- * @author ruoyi
+ * @author wangya
  */
 public class MimeTypeUtils
 {

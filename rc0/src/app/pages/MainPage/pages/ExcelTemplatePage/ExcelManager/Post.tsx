@@ -124,7 +124,7 @@ export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
 	      onFinish={async (values) => {
 	       	dispatch(
 	          importFilemain({
-	            filemain: { ...values,fileId:data.fileId, sheets:excelConvertToServerData(sheets,data.fileId)},
+	            filemain: { ...values,fileId:data.fileId, orgId, sheets:excelConvertToServerData(sheets,data.fileId)},
 	            resolve: () => {
 	              message.success('提交成功');
 	              ref.current.hide();

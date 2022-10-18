@@ -62,10 +62,10 @@ export const DG80 = '#CDCDDE';
 export const DG90 = '#FFFFFF';
 
 // theme color
-export const PRIMARY = '#769863';
+export const PRIMARY = '#026968';
 export const INFO = PRIMARY;
 export const SUCCESS = GREEN;
-export const PROCESSING = BLUE;
+export const PROCESSING = PRIMARY;
 export const ERROR = RED;
 export const HIGHLIGHT = RED;
 export const WARNING = ORANGE;

@@ -53,6 +53,11 @@ import { ReportSheets } from './pages/ExcelTemplatePage/ReportSheets';
 import { Reports } from './pages/ReportPage/Reports';
 import { ReportEditor } from './pages/ReportPage/ReportEditor';
 
+
+import { Files } from './pages/FilePage';
+
+
+
 import { ViewPage } from './pages/ViewPage';
 import { useViewSlice } from './pages/ViewPage/slice';
 import { VizPage } from './pages/VizPage';
@@ -260,7 +265,7 @@ export function MainPage() {
           <Route
             path="/organizations/:orgId/permissions/:viewpoint"
             render={() => (
-              <AccessRoute module={ResourceTypes.Manager}>
+              <AccessRoute module={ResourceTypes.Permission}>
                 <PermissionPage />
               </AccessRoute>
             )}
@@ -268,39 +273,47 @@ export function MainPage() {
           <Route
             path="/organizations/:orgId/variables"
             render={() => (
-              <AccessRoute module={ResourceTypes.Manager}>
+              <AccessRoute module={ResourceTypes.Variable}>
                 <VariablePage />
               </AccessRoute>
             )}
           />
 
            <Route
-            path="/organizations/:orgId/excelManager"
+            path="/organizations/:orgId/exceltemplates"
             render={() => (
               <AccessRoute module={ResourceTypes.ExcelTemplate}>
                 <ExcelManager />
               </AccessRoute>
             )}
           />
+
           <Route
-            path="/organizations/:orgId/reportSheets"
+            path="/organizations/:orgId/files"
             render={() => (
-              <AccessRoute module={ResourceTypes.ExcelTemplate}>
+              <AccessRoute module={ResourceTypes.File}>
+                <Files />
+              </AccessRoute>
+            )}
+          />
+          <Route
+            path="/organizations/:orgId/excelviews"
+            render={() => (
+              <AccessRoute module={ResourceTypes.ExcelView}>
                 <ReportSheets />
               </AccessRoute>
             )}
           />
           <Route
-            path="/organizations/:orgId/categoryManager"
-            render={() => (
-              <AccessRoute module={ResourceTypes.ExcelTemplate}>
+            path="/organizations/:orgId/categories"render={() => (
+              <AccessRoute module={ResourceTypes .ExcelTemplate}>
                 <CategoryManager />
               </AccessRoute>
             )}
           />
 
           <Route
-            path="/organizations/:orgId/departmentManager"
+            path="/organizations/:orgId/departments"
             render={() => (
               <AccessRoute module={ResourceTypes.Department}>
                 <DepartmentManager />
@@ -310,34 +323,14 @@ export function MainPage() {
 
 
           <Route
-            path="/organizations/:orgId/dataReport"
+            path="/organizations/:orgId/reports"
             render={() => (
               <AccessRoute module={ResourceTypes.Report}>
                 <Reports type="datainfo" />
               </AccessRoute>
             )}
           />
-          <Route
-            path="/organizations/:orgId/chartReport"
-            render={() => (
-              <AccessRoute module={ResourceTypes.Report}>
-                <Reports type="chartinfo"  />
-              </AccessRoute>
-            )}
-          />
-
-
           
-
-
-          <Route
-            path="/organizations/:orgId/printReport"
-            render={() => (
-              <AccessRoute module={ResourceTypes.Report}>
-                <Reports type="printinfo"  />
-              </AccessRoute>
-            )}
-          />
           <Route
             path="/organizations/:orgId/orgSettings"
             render={() => (
@@ -349,7 +342,7 @@ export function MainPage() {
           <Route
             path="/organizations/:orgId/resourceMigration"
             render={() => (
-              <AccessRoute module={ResourceTypes.Manager}>
+              <AccessRoute module={ResourceTypes.ResourceMigration}>
                 <ResourceMigrationPage />
               </AccessRoute>
             )}

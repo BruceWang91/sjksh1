@@ -69,4 +69,9 @@ public class Department {
      */
     private List<Department> children = new ArrayList<Department>();
 
+    /**
+     * 部门内人员
+     */
+    private List<User> users = new ArrayList<>();
+
 }

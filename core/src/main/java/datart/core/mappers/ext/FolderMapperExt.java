@@ -2,7 +2,10 @@ package datart.core.mappers.ext;
 
 import datart.core.entity.Folder;
 import datart.core.mappers.FolderMapper;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.CacheNamespace;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 import java.util.Set;
@@ -15,6 +18,11 @@ public interface FolderMapperExt extends FolderMapper {
             "SELECT * FROM folder t WHERE t.org_id = #{orgId}"
     })
     List<Folder> selectByOrg(String orgId);
+
+    @Select({
+            "SELECT * FROM folder t WHERE t.org_id = #{orgId} and t.rel_type != #{relType}"
+    })
+    List<Folder> selectByOrgAndRelType(String orgId, String relType);
 
     @Select({
             "SELECT * FROM folder t WHERE t.parent_id = #{parentId}"
@@ -65,6 +73,5 @@ public interface FolderMapperExt extends FolderMapper {
             "</script>"
     })
     List<Folder> selectByPrimaryKeys(Set<String> ids);
-
 
 }

@@ -38,7 +38,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
 import 'react-quill/dist/quill.core.css';
 import styled from 'styled-components/macro';
-import { BLUE } from 'styles/StyleConstants';
+import { PRIMARY } from 'styles/StyleConstants';
 import './RichTextPluginLoader';
 import { CustomColor, QuillPalette } from './RichTextPluginLoader/CustomColor';
 import {
@@ -400,6 +400,6 @@ const TextWrap = styled.div`
   }
 
   & .selectLink:hover {
-    color: ${BLUE};
+    color: ${PRIMARY};
   }
 `;

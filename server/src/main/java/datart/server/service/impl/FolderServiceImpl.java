@@ -141,6 +141,43 @@ public class FolderServiceImpl extends BaseService implements FolderService {
     }
 
     @Override
+    public List<Folder> listOrgFolders(String orgId, String datatype) {
+
+        List<Folder> folders = folderMapper.selectByOrgAndRelType(orgId, datatype);
+        if (securityManager.isOrgOwner(orgId)) {
+            return folders;
+        }
+
+        Map<String, Folder> filtered = new HashMap<>();
+
+        List<Folder> permitted = folders.stream()
+                .filter(folder -> {
+                    if (hasReadPermission(folder)) {
+                        return true;
+                    } else {
+                        filtered.put(folder.getId(), folder);
+                        return false;
+                    }
+                })
+                .collect(Collectors.toList());
+        while (!filtered.isEmpty()) {
+            boolean updated = false;
+            for (Folder folder : permitted) {
+                Folder parent = filtered.remove(folder.getParentId());
+                if (parent != null) {
+                    permitted.add(parent);
+                    updated = true;
+                    break;
+                }
+            }
+            if (!updated) {
+                break;
+            }
+        }
+        return permitted;
+    }
+
+    @Override
     @Transactional
     public boolean delete(String id) {
         List<Folder> folders = folderMapper.selectByParentId(id);

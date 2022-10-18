@@ -58,21 +58,21 @@ export const Sidebar = memo(
       }
     }, [vizId, storyboards, vizs]); // just switch when vizId changed
 
-    const listTitles = useMemo(
-      () => [
-        { key: 'folder', icon: <FolderAddFilled />, text: t('folder') },
-        {
-          key: 'presentation',
-          icon: <FundProjectionScreenOutlined />,
-          text: t('presentation'),
-        },
-      ],
-      [t],
-    );
-
-    const switchSelect = useCallback(key => {
-      setSelectedKey(key);
-    }, []);
+    // const listTitles = useMemo(
+    //   () => [
+    //     { key: 'folder', icon: <FolderAddFilled />, text: t('folder') },
+    //     {
+    //       key: 'presentation',
+    //       icon: <FundProjectionScreenOutlined />,
+    //       text: t('presentation'),
+    //     },
+    //   ],
+    //   [t],
+    // );
+    //
+    // const switchSelect = useCallback(key => {
+    //   setSelectedKey(key);
+    // }, []);
 
     return (
       <Wrapper
@@ -86,11 +86,11 @@ export const Sidebar = memo(
         ) : (
           ''
         )}
-        <ListSwitch
-          titles={listTitles}
-          selectedKey={selectedKey}
-          onSelect={switchSelect}
-        />
+        {/*<ListSwitch*/}
+        {/*  titles={listTitles}*/}
+        {/*  selectedKey={selectedKey}*/}
+        {/*  onSelect={switchSelect}*/}
+        {/*/>*/}
         <Folders
           sliderVisible={sliderVisible}
           handleSliderVisible={handleSliderVisible}
@@ -98,13 +98,13 @@ export const Sidebar = memo(
           i18nPrefix={i18nPrefix}
           className={classnames({ hidden: selectedKey !== 'folder' })}
         />
-        <Storyboards
-          sliderVisible={sliderVisible}
-          handleSliderVisible={handleSliderVisible}
-          selectedId={vizId}
-          className={classnames({ hidden: selectedKey !== 'presentation' })}
-          i18nPrefix={i18nPrefix}
-        />
+        {/*<Storyboards*/}
+        {/*  sliderVisible={sliderVisible}*/}
+        {/*  handleSliderVisible={handleSliderVisible}*/}
+        {/*  selectedId={vizId}*/}
+        {/*  className={classnames({ hidden: selectedKey !== 'presentation' })}*/}
+        {/*  i18nPrefix={i18nPrefix}*/}
+        {/*/>*/}
       </Wrapper>
     );
   },

@@ -17,6 +17,9 @@
  */
 package datart.server.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import datart.core.base.annotations.SkipLogin;
+import datart.core.data.provider.Dataframe;
 import datart.core.entity.*;
 import datart.security.base.ResourceType;
 import datart.server.base.dto.*;
@@ -25,10 +28,14 @@ import datart.server.base.transfer.DashboardTemplateParam;
 import datart.server.base.transfer.DatachartTemplateParam;
 import datart.server.base.transfer.ImportStrategy;
 import datart.server.base.transfer.ResourceTransferParam;
+import datart.server.service.DataProviderService;
+import datart.server.service.IDepartmentService;
 import datart.server.service.VizService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,11 +52,34 @@ import java.util.Set;
 public class VizController extends BaseController {
 
     private final VizService vizService;
+    @Autowired
+    private DataProviderService dataProviderService;
+    @Autowired
+    private IDepartmentService deptService;
 
     public VizController(VizService vizService) {
         this.vizService = vizService;
     }
 
+    @ApiOperation("getJson")
+    @GetMapping(value = "getJson", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @SkipLogin
+    public JSONObject getJson(String viewId) throws Exception {
+        Dataframe d = new Dataframe();
+        try {
+            d = dataProviderService.execute(new ViewExecuteParam() {{
+                setViewId(viewId);
+            }});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        d.getColumns();
+        d.getRows();
+        JSONObject jsonObject = new JSONObject();
+//        List<Department> depts = deptService.selectDeptList(new Department());
+        jsonObject.put("data", d.getColumns());
+        return jsonObject;
+    }
 
     @ApiOperation(value = "list viz folders")
     @PostMapping(value = "/check/name")
@@ -63,6 +93,11 @@ public class VizController extends BaseController {
         return ResponseData.success(vizService.listViz(orgId));
     }
 
+    @ApiOperation(value = "list viz folders by datatype")
+    @GetMapping(value = "/folders1")
+    public ResponseData<List<Folder>> listVizFolders(String orgId, String datatype) {
+        return ResponseData.success(vizService.listViz(orgId, datatype));
+    }
 
     @ApiOperation(value = "create a datachart")
     @PostMapping(value = "/datacharts")
@@ -77,9 +112,9 @@ public class VizController extends BaseController {
         return ResponseData.success(vizService.getDatachart(datachartId));
     }
 
-    @ApiOperation(value = "get datacharts by folder")
+    @ApiOperation(value = "获取文件夹目录下所有图表内容")
     @GetMapping(value = "/datachartsInFolder/{datachartId}")
-    public ResponseData<HashMap<String,Object>> datachartsInFolder(@PathVariable String datachartId) {
+    public ResponseData<HashMap<String, Object>> datachartsInFolder(@PathVariable String datachartId) {
         checkBlank(datachartId, "datachartId");
         return ResponseData.success(vizService.datachartsInFolder(datachartId));
     }

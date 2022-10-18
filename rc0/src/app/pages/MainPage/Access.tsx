@@ -25,6 +25,7 @@ import {
 } from './pages/PermissionPage/constants';
 import { selectIsOrgOwner, selectPermissionMap } from './slice/selectors';
 import { UserPermissionMap } from './slice/types';
+import { Menu } from 'antd';
 
 export interface AccessProps {
   type?: 'module' | 'privilege';
@@ -34,6 +35,7 @@ export interface AccessProps {
   denied?: ReactElement | null;
   children?: ReactElement | null;
 }
+
 
 export function Access({
   type = 'privilege',
@@ -54,6 +56,32 @@ export function Access({
   return (
     <AuthorizedComponent authority={isAuthorized} denied={denied}>
       {children}
+    </AuthorizedComponent>
+  );
+}
+
+export function MenuAccess({
+  ptype = 'privilege',
+  module,
+  id,
+  level,
+  denied = null,
+  children,
+  menuType,
+  ...rest
+}: AccessProps) {
+  const isOwner = useSelector(selectIsOrgOwner);
+  const permissionMap = useSelector(selectPermissionMap);
+  if (!permissionMap[module]) {
+    return null;
+  }
+
+  const isAuthorized = calcAc(isOwner, permissionMap, module, level, id, ptype);
+
+  const MenuItem = Menu[menuType];
+  return (
+    <AuthorizedComponent authority={isAuthorized} denied={denied}>
+      <MenuItem {...rest} >{children}</MenuItem>
     </AuthorizedComponent>
   );
 }
@@ -160,6 +188,7 @@ export function calcAc(
   id: string = '',
   type: 'module' | 'privilege' = 'privilege',
 ) {
+	//console.log(isOwner,permissionMap,module,level,id,type)
   return isOwner
     ? true
     : type === 'module'

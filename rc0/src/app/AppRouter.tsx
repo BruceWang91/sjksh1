@@ -67,11 +67,11 @@ export function AppRouter() {
     <ConfigProvider locale={antdLocales[i18n.language]}>
       <BrowserRouter>
         <Helmet
-          titleTemplate="%s - Seas"
-          defaultTitle="Seas"
+          titleTemplate="%s - 华夏产业公司-数说支撑平台"
+          defaultTitle="华夏产业公司-数说支撑平台"
           htmlAttributes={{ lang: i18n.language }}
         >
-          <meta name="description" content="Data Art" />
+          <meta name="description" content="华夏产业公司-数说支撑平台" />
         </Helmet>
         <Switch>
           <Route path="/setup" component={LazySetupPage} />

@@ -28,6 +28,35 @@ import {
 
 const selectDomain = (state: RootState) => state.permission || initialState;
 
+
+export const selectFilemains = createSelector(
+  [selectDomain],
+  permissionState => permissionState.filemains,
+);
+export const selectFiles = createSelector(
+  [selectDomain],
+  permissionState => permissionState.files,
+);
+export const selectSheets = createSelector(
+  [selectDomain],
+  permissionState => permissionState.sheets,
+);
+export const selectFilemainListLoading = createSelector(
+  [selectDomain],
+  permissionState => permissionState.filemainListLoading,
+);
+export const selectFileListLoading = createSelector(
+  [selectDomain],
+  permissionState => permissionState.fileListLoading,
+);
+export const selectSheetListLoading = createSelector(
+  [selectDomain],
+  permissionState => permissionState.sheetListLoading,
+);
+
+
+
+
 export const selectFolders = createSelector(
   [selectDomain],
   permissionState => permissionState.folders,

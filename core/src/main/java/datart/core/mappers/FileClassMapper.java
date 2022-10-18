@@ -8,7 +8,7 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * 文件分类Mapper接口
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-06-17
  */
 public interface FileClassMapper extends CRUDMapper {
@@ -47,7 +47,7 @@ public interface FileClassMapper extends CRUDMapper {
      * @return 结果
      */
     @InsertProvider(type = FileClassSqlProvider.class, method = "insertSelective")
-    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insertFileClass(FileClass fileClass);
 
     /**
@@ -96,7 +96,7 @@ public interface FileClassMapper extends CRUDMapper {
     @Delete({
             "<script>",
             "delete from file_class where id in ",
-                    "<foreach collection='array' item='id' index='index' open='(' close=')' separator=','>#{id}</foreach>",
+            "<foreach collection='array' item='id' index='index' open='(' close=')' separator=','>#{id}</foreach>",
             "</script>"
     })
     int deleteFileClassByIds(Long[] ids);

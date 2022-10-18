@@ -35,7 +35,7 @@ export const initialState: CategoryState = {
 
 
 const treeTs = (t) => {
-	return t.map(d=>{
+	return t?.map(d=>{
 		if(d?.lowClasses?.length > 0){
 			d.children = treeTs(d.lowClasses);
 		}else{

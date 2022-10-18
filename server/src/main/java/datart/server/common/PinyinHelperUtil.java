@@ -33,10 +33,10 @@ public class PinyinHelperUtil {
     public static String regReplace(String str, Boolean isname) {
 
         // '*','/',':','?','[','\\',']'
-        String s = str.replaceAll("[\\\\\\*/:?\\[\\][\\s*]&[+-]%=：（）()。._]", "");
+        String s = str.replaceAll("[\\\\\\*/:?\\[\\][\\s*]&[+-]%=：（）、()。._，,]", "");
         if (!isname) {
             Pattern pattern = Pattern.compile("[0-9]*");
-            Matcher isNum = pattern.matcher(str.charAt(0) + "");
+            Matcher isNum = pattern.matcher(s.charAt(0) + "");
             if (isNum.matches()) {
                 return 'A' + s;
             }
@@ -45,7 +45,7 @@ public class PinyinHelperUtil {
     }
 
     public static void main(String[] args) {
-        String a = "1sfkasdj-f =%131237&//：()（）.。";
+        String a = "-0.003";
 
         System.out.println(getPinYinHeadChar(a, false));
     }

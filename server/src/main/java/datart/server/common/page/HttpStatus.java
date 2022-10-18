@@ -2,11 +2,10 @@ package datart.server.common.page;
 
 /**
  * 返回状态码
- * 
- * @author ruoyi
+ *
+ * @author wanya
  */
-public class HttpStatus
-{
+public class HttpStatus {
     /**
      * 操作成功
      */

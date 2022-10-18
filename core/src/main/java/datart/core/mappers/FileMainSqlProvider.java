@@ -16,6 +16,10 @@ public class FileMainSqlProvider {
             sql.VALUES("file_name", "#{fileName,jdbcType=VARCHAR}");
         }
 
+        if (record.getOrgId() != null) {
+            sql.VALUES("org_id", "#{orgId,jdbcType=VARCHAR}");
+        }
+
         if (record.getOrderNum() != null) {
             sql.VALUES("order_num", "#{orderNum,jdbcType=INTEGER}");
         }
@@ -30,6 +34,14 @@ public class FileMainSqlProvider {
 
         if (record.getClassId() != null) {
             sql.VALUES("class_id", "#{classId,jdbcType=BIGINT}");
+        }
+
+        if (record.getIsFolder() != null) {
+            sql.VALUES("is_folder", "#{isFolder,jdbcType=INTEGER}");
+        }
+
+        if (record.getParentId() != null) {
+            sql.VALUES("parent_id", "#{parentId,jdbcType=BIGINT}");
         }
 
         if (record.getCreateBy() != null) {

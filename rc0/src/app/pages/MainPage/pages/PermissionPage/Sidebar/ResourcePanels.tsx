@@ -35,10 +35,18 @@ import {
   selectStoryboards,
   selectViewListLoading,
   selectViews,
+
+  selectFilemains,
+	selectFilemainListLoading,
+	selectFiles,
+	selectFileListLoading,
+	selectSheets,
+	selectSheetListLoading,
 } from '../slice/selectors';
 import { FlexCollapse } from './FlexCollapse';
 import { ResourceTree } from './ResourceTree';
 import { PanelsProps } from './types';
+
 const { Panel } = FlexCollapse;
 
 export const ResourcePanels = memo(
@@ -54,8 +62,20 @@ export const ResourcePanels = memo(
     const viewListLoading = useSelector(selectViewListLoading);
     const sourceListLoading = useSelector(selectSourceListLoading);
     const scheduleListLoading = useSelector(selectScheduleListLoading);
-    const t = useI18NPrefix('permission');
 
+
+    const filemains = useSelector(selectFilemains);
+    const files = useSelector(selectFiles);
+    const sheets = useSelector(selectSheets);
+
+    const filemainListLoading = useSelector(selectFilemainListLoading);
+    const fileListLoading = useSelector(selectFileListLoading);
+    const sheetListLoading = useSelector(selectSheetListLoading);
+
+
+
+    const t = useI18NPrefix('permission');
+    const [activeKeys,setActiveKeys] = useState([]);
     const resourcePanels = useMemo(
       () => [
         {
@@ -74,6 +94,21 @@ export const ResourcePanels = memo(
           loading: sourceListLoading,
         },
         {
+          type: ResourceTypes.ExcelTemplate,
+          dataSource: filemains,
+          loading: filemainListLoading,
+        },
+        {
+          type: ResourceTypes.ExcelView,
+          dataSource: sheets,
+          loading: sheetListLoading,
+        },
+        {
+          type: ResourceTypes.File,
+          dataSource: files,
+          loading: fileListLoading,
+        },
+        {
           type: ResourceTypes.Schedule,
           dataSource: schedules,
           loading: scheduleListLoading,
@@ -86,6 +121,9 @@ export const ResourcePanels = memo(
         viewListLoading,
         sourceListLoading,
         scheduleListLoading,
+        fileListLoading,
+        sheetListLoading,
+        filemainListLoading
       ],
     );
 
@@ -94,13 +132,18 @@ export const ResourcePanels = memo(
     }, []);
 
     return (
-      <FlexCollapse defaultActiveKeys={viewpointType && [viewpointType]}>
+      <FlexCollapse activeKeys={activeKeys}  defaultActiveKeys={viewpointType && [viewpointType]}>
         {resourcePanels.map(({ type: resourceType, dataSource, loading }) => (
           <Panel
             key={resourceType}
             id={resourceType}
             title={t(`module.${resourceType.toLowerCase()}`)}
-            onChange={onToggle}
+             onChange={(active,id)=>{
+	            	onToggle(active,id);
+	            	if(active){
+	            		setActiveKeys([id])
+	            	}
+	            }}
           >
             {resourceType === ResourceTypes.Viz ? (
               <>

@@ -97,4 +97,11 @@ public interface UserMapperExt extends UserMapper {
     })
     int updateToActiveById(String id);
 
+    @Select({
+            " select * ",
+            " from `user` u",
+            " where ",
+            " dept_id = #{deptId}",
+    })
+    List<User> getUsersByDeptId(@Param("deptId") Long deptId);
 }

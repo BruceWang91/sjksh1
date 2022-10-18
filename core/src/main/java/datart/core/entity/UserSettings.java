@@ -13,4 +13,7 @@ public class UserSettings extends BaseEntity {
     private String relId;
 
     private String config;
+
+    private Long deptId;
+
 }

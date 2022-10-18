@@ -54,6 +54,46 @@ public class PermissionHelper {
                 .build();
     }
 
+    public static Permission filePermission(String orgId, String roleId, String fileId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.FILE.name())
+                .resourceId(fileId)
+                .permission(permission)
+                .build();
+    }
+
+    public static Permission fileMainPermission(String orgId, String roleId, String fileId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.EXCEL_TEMPLATE.name())
+                .resourceId(fileId)
+                .permission(permission)
+                .build();
+    }
+
+    public static Permission fileSheetPermission(String orgId, String roleId, String fileId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.EXCEL_VIEW.name())
+                .resourceId(fileId)
+                .permission(permission)
+                .build();
+    }
+
+    public static Permission reportPermission(String orgId, String roleId, String fileId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.REPORT.name())
+                .resourceId(fileId)
+                .permission(permission)
+                .build();
+    }
+
     public static Permission rolePermission(String orgId, int permission) {
         return Permission.builder()
                 .orgId(orgId)

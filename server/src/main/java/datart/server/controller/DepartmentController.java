@@ -1,7 +1,6 @@
 package datart.server.controller;
 
 import datart.core.entity.Department;
-import datart.core.entity.TreeSelect;
 import datart.server.base.dto.ResponseData;
 import datart.server.common.StringUtils;
 import datart.server.enums.UserConstants;
@@ -39,6 +38,16 @@ public class DepartmentController extends BaseController {
     }
 
     /**
+     * 获取部门列表
+     */
+    @ApiOperation("获取部门列表")
+    @GetMapping("/deptAndUsers")
+    public ResponseData<List<Department>> deptAndUsers(Department dept) {
+        List<Department> depts = deptService.selectDeptList(dept);
+        return ResponseData.success(deptService.buildDeptTreeSelect(depts));
+    }
+
+    /**
      * 查询部门列表（排除节点）
      */
     @ApiOperation("查询部门列表（排除节点）")
@@ -48,8 +57,7 @@ public class DepartmentController extends BaseController {
         Iterator<Department> it = depts.iterator();
         while (it.hasNext()) {
             Department d = (Department) it.next();
-            if (d.getDeptId().intValue() == deptId
-                    || ArrayUtils.contains(StringUtils.split(d.getAncestors(), ","), deptId + "")) {
+            if (d.getDeptId().intValue() == deptId || ArrayUtils.contains(StringUtils.split(d.getAncestors(), ","), deptId + "")) {
                 it.remove();
             }
         }

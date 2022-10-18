@@ -3,7 +3,7 @@ import { Tooltip } from 'antd';
 import React from 'react';
 import { Resizable } from 'react-resizable';
 import styled from 'styled-components/macro';
-import { BLUE, LEVEL_1 } from 'styles/StyleConstants';
+import { PRIMARY, LEVEL_1 } from 'styles/StyleConstants';
 
 export const TableComponentsTd = ({
   children,
@@ -88,14 +88,14 @@ const Td = styled.td<any>`
     p.isLinkCell
       ? `
     :hover {
-      color: ${BLUE};
+      color: ${PRIMARY};
       cursor: pointer;
     }
     `
       : p.isJumpCell
       ? `
         :hover {
-          color: ${BLUE};
+          color: ${PRIMARY};
           cursor: pointer;
           text-decoration: underline;
         }

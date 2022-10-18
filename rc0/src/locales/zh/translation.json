@@ -75,7 +75,7 @@
     }
   },
   "setup": {
-    "welcome": "欢迎使用 datart",
+    "welcome": "欢迎使用 华夏产业公司-数说支撑平台",
     "welcomeDesc": "在首次使用之前，请设置一位初始用户",
     "success": "设置成功",
     "successDesc": "已成功设置初始用户，点击这里",
@@ -140,11 +140,13 @@
   },
   "main": {
     "nav": {
-    	"reports":"报表",
+    	"reports":"报表管理",
     	"departments":"组织",
-    	"exceltemplates": "表样",
-      "vizs": "可视化",
-      "views": "数据视图",
+    	"exceltemplates": "数据接入管理",
+      "vizs": "数据分析",
+      "tbgl": "图表管理",
+      "ybpgl": "仪表盘管理",
+      "views": "数据集管理",
       "sources": "数据源",
       "schedules": "定时任务",
       "members": "成员与角色",
@@ -204,8 +206,8 @@
       "categoryManager": {
         "title": "分类管理"
       }
-      
-      
+
+
     },
     "reportSubnavs": {
       "dataReport": {
@@ -217,14 +219,14 @@
       "printReport": {
         "title": "打印设计"
       }
-      
-      
+
+
     },
     "departmentSubnavs": {
       "departmentManager": {
         "title": "组织"
       }
-      
+
     },
     "settingSubnavs": {
       "variables": {
@@ -558,9 +560,9 @@
         "functions": "函数列表",
         "editField": "编辑",
         "deleteField": "删除",
-        "editViewTip": "回到数据视图会丢失当前编辑状态，是否继续？",
-        "editView": "编辑数据视图",
-        "toggleViewTip": "切换数据视图是否清空当前图表配置？",
+        "editViewTip": "回到数据集会丢失当前编辑状态，是否继续？",
+        "editView": "编辑数据集",
+        "toggleViewTip": "切换数据集是否清空当前图表配置？",
         "AGG_DATE_YEAR": "按年",
         "AGG_DATE_QUARTER": "按季度",
         "AGG_DATE_MONTH": "按月",
@@ -1336,14 +1338,14 @@
   "view": {
     "loading": "加载中...",
     "selectSource": "请选择数据源",
-    "empty": "请在左侧列表选择数据视图",
+    "empty": "请在左侧列表选择数据集",
     "resultEmpty1": "请点击 ",
     "resultEmpty2": " 按钮执行，运行结果将在此处展示",
     "errorTitle": "执行错误",
     "sqlRequired": "SQL 语句不能为空",
     "sqlRunWraning": "SQL 解析失败，欢迎一键提交 issue 帮助我们优化。",
     "detail": "查看详情",
-    "warningDescription": "Seas 默认使用 calcite 解析 SQL 语句；calcite 拥有的非常棒的语法解析器，但依然做不到解析所有数据库的所有语法。当发生解析异常时，datart 对 SQL 语句进行必要的处理之后仍然会发送到数据库执行，如果可以执行成功，我们会认为解析器需要针对该条 SQL 语句的语法进行优化。在这种情况下，datart 会显示该警告信息，方便用户将解析异常的语句提交到 github 或 gitee issue，帮助我们优化解析器。",
+    "warningDescription": "数说支撑平台 默认使用 calcite 解析 SQL 语句；calcite 拥有的非常棒的语法解析器，但依然做不到解析所有数据库的所有语法。当发生解析异常时，datart 对 SQL 语句进行必要的处理之后仍然会发送到数据库执行，如果可以执行成功，我们会认为解析器需要针对该条 SQL 语句的语法进行优化。在这种情况下，datart 会显示该警告信息，方便用户将解析异常的语句提交到 github 或 gitee issue，帮助我们优化解析器。",
     "close": "关闭",
     "computedFieldNameExistWarning": "计算字段名称已经存在，请重新输入",
     "tabs": {
@@ -1410,8 +1412,8 @@
       "all": "全部字段"
     },
     "sidebar": {
-      "title": "数据视图列表",
-      "addView": "新建数据视图",
+      "title": "数据集列表",
+      "addView": "新建数据集",
       "addFolder": "新建目录",
       "parent": "所属目录",
       "recycle": "回收站",
@@ -1419,7 +1421,7 @@
       "close": "收起"
     },
     "saveForm": {
-      "title": "数据视图",
+      "title": "数据集",
       "name": "名称",
       "folder": "目录",
       "root": "根目录",
@@ -1438,11 +1440,11 @@
       "typeAndCategory": "类型与分类"
     },
     "structView": {
-      "title": "请选择数据视图类型",
+      "title": "请选择数据集类型",
       "STRUCT": "表视图",
       "SQL": "SQL 视图",
-      "STRUCT_DESC": "通过配置表关系创建数据视图",
-      "SQL_DESC": "使用 SQL 语句创建数据视图",
+      "STRUCT_DESC": "通过配置表关系创建数据集",
+      "SQL_DESC": "使用 SQL 语句创建数据集",
       "file": "文件夹",
       "main": "主表：",
       "join": "表连接：",
@@ -1466,7 +1468,7 @@
     "createSuccess": "新建数据源成功",
     "archived": "已归档",
     "noPermission": "您没有权限访问该页面",
-    "creatView": "去新建数据视图",
+    "creatView": "去新建数据集",
     "syncDatabase": "同步数据库模式",
     "syncDatabaseSchemaSuccess": "已成功获取数据库模式",
     "lastUpdateTime": "最近同步时间",
@@ -1562,7 +1564,7 @@
     "member": "成员",
     "role": "角色",
     "modulePermission": "功能权限",
-    "modulePermissionDesc": "开启功能权限之后，用户才能在 Seas 界面上使用该功能",
+    "modulePermissionDesc": "开启功能权限之后，用户才能在 数说支撑平台 界面上使用该功能",
     "resourceDetail": "资源明细",
     "createStoryboard": "新增故事板",
     "resourceName": "资源名称",
@@ -1570,12 +1572,15 @@
     "privileges": "权限详情",
     "add": "新建",
     "viewpoint": {
-      "subject": "常规视图",
-      "resource": "资源视图"
+      "subject": "菜单访问控制",
+      "resource": "资源访问控制"
     },
     "module": {
+    	"excel_template": "表样设计",
+    	"excel_view": "数据预览",
+    	"file": "文件",
       "source": "数据源",
-      "view": "数据视图",
+      "view": "数据集",
       "viz": "可视化",
       "schedule": "定时任务"
     },

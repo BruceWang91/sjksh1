@@ -8,6 +8,7 @@ import java.util.Date;
 public class JimuReportRewrite {
 
     private String id;
+    private String orgId;
     private String code;
     private String name;
     private String note;
@@ -28,4 +29,6 @@ public class JimuReportRewrite {
     private String cssStr;
     private String jsStr;
     private String tenantId;
+    private Integer isFolder;
+    private String parentId;
 }

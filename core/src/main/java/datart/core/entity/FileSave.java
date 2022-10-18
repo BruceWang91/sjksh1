@@ -1,6 +1,7 @@
 package datart.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -10,18 +11,27 @@ import java.util.List;
 /**
  * 文件保存对象 file_save
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-06-19
  */
+@Data
 public class FileSave {
     private static final long serialVersionUID = 1L;
 
-    /** 文档id */
+    /**
+     * 文档id
+     */
     private Long id;
+
     /**
      * 分类id
      */
     private Long classId;
+
+    /**
+     * 组织id
+     */
+    private String orgId;
 
     /**
      * 文件名称
@@ -64,6 +74,16 @@ public class FileSave {
     private String delFlag;
 
     /**
+     * 是否文件夹 1是 0否
+     */
+    private Integer isFolder;
+
+    /**
+     * 上级ID
+     */
+    private Long parentId;
+
+    /**
      * 创建者
      */
     private String createBy;
@@ -90,11 +110,26 @@ public class FileSave {
      */
     private String remark;
 
+    /**
+     * 上传的文件二进制流
+     */
+    private byte[] fileBin;
+
+    /**
+     * 转换PDF文件二进制流
+     */
+    private byte[] pdfBin;
+
+    private Long deptId;
 
     /**
      * 部门ids
      */
     private List<Long> depIds;
+
+    private List<Long> classIds;
+
+    private boolean canShowFlag;
 
     public Long getId() {
         return id;
@@ -110,6 +145,14 @@ public class FileSave {
 
     public Long getClassId() {
         return classId;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
     }
 
     public void setFileName(String fileName) {
@@ -176,6 +219,22 @@ public class FileSave {
         return delFlag;
     }
 
+    public Integer getIsFolder() {
+        return isFolder;
+    }
+
+    public void setIsFolder(Integer isFolder) {
+        this.isFolder = isFolder;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
     public List<Long> getDepIds() {
         return depIds;
     }
@@ -222,6 +281,30 @@ public class FileSave {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public boolean isCanShowFlag() {
+        return canShowFlag;
+    }
+
+    public void setCanShowFlag(boolean canShowFlag) {
+        this.canShowFlag = canShowFlag;
+    }
+
+    public List<Long> getClassIds() {
+        return classIds;
+    }
+
+    public void setClassIds(List<Long> classIds) {
+        this.classIds = classIds;
+    }
+
+    public Long getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
     }
 
     @Override

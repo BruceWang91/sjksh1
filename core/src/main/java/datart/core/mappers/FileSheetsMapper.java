@@ -1,16 +1,16 @@
 package datart.core.mappers;
 
 import datart.core.entity.FileSheets;
+import datart.core.entity.result.FileSheetsResult;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * 文件工作簿Mapper接口
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-27
  */
 public interface FileSheetsMapper {
@@ -21,7 +21,7 @@ public interface FileSheetsMapper {
      * @return 文件工作簿
      */
     @Select({
-            "select sheet_id, file_id, sheet_name, entity_name, " +
+            "select sheet_id, file_id, org_id, sheet_name, entity_name, " +
                     "order_num, start_row, start_cell, cell_count, status, " +
                     "del_flag, create_by, create_time, update_by, update_time, remark " +
                     "from file_sheets where sheet_id = #{sheetId}"
@@ -29,6 +29,7 @@ public interface FileSheetsMapper {
     @Results({
             @Result(column = "sheet_id", property = "sheetId", jdbcType = JdbcType.BIGINT, id = true),
             @Result(column = "file_id", property = "fileId", jdbcType = JdbcType.BIGINT),
+            @Result(column = "org_id", property = "orgId", jdbcType = JdbcType.VARCHAR),
             @Result(column = "sheet_name", property = "sheetName", jdbcType = JdbcType.VARCHAR),
             @Result(column = "entity_name", property = "entityName", jdbcType = JdbcType.VARCHAR),
             @Result(column = "order_num", property = "orderNum", jdbcType = JdbcType.INTEGER),
@@ -53,7 +54,7 @@ public interface FileSheetsMapper {
      * @return 结果
      */
     @InsertProvider(type = FileSheetsSqlProvider.class, method = "insertSelective")
-    @Options(useGeneratedKeys=true, keyProperty="sheetId", keyColumn="sheet_id")
+    @Options(useGeneratedKeys = true, keyProperty = "sheetId", keyColumn = "sheet_id")
     int insertFileSheets(FileSheets fileSheets);
 
     /**
@@ -67,6 +68,7 @@ public interface FileSheetsMapper {
             "update file_sheets\n" +
                     "        <trim prefix=\"SET\" suffixOverrides=\",\">\n" +
                     "            <if test=\"fileId != null\">file_id = #{fileId},</if>\n" +
+                    "            <if test=\"orgId != null\">org_id = #{orgId},</if>\n" +
                     "            <if test=\"sheetName != null\">sheet_name = #{sheetName},</if>\n" +
                     "            <if test=\"entityName != null\">entity_name = #{entityName},</if>\n" +
                     "            <if test=\"orderNum != null\">order_num = #{orderNum},</if>\n" +
@@ -115,4 +117,17 @@ public interface FileSheetsMapper {
             "delete from file_sheets where file_id = #{fileId}"
     })
     int deleteSheetsByFileId(Long fileId);
+
+    @Select({
+            "<script>",
+            "select * from file_sheets where 1=1\n",
+            "<if test=\"tables != null and tables.size() > 0\">\n" +
+                    "AND entity_name IN\n" +
+                    "<foreach item=\"tables\" collection=\"tables\" open=\"(\" separator=\",\" close=\")\">\n" +
+                        "#{tables}\n" +
+                    "</foreach>\n" +
+                    "</if>",
+            "</script>"
+    })
+    List<FileSheetsResult> getSheetsByTables(List<String> tables);
 }

@@ -2,6 +2,7 @@ package datart.server.controller;
 
 import datart.core.entity.FileSheets;
 import datart.core.entity.param.FileSheetsParam;
+import datart.core.entity.result.FileSheetsResult;
 import datart.server.base.dto.ResponseData;
 import datart.server.common.page.TableDataInfo;
 import datart.server.service.IFileSheetsService;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * 文件工作簿Controller
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-27
  */
 @Api("文件工作簿")
@@ -65,5 +66,12 @@ public class FileSheetsController extends BaseController {
     @PostMapping("/remove")
     public ResponseData<Integer> remove(@RequestBody String ids) {
         return ResponseData.success(fileSheetsService.deleteFileSheetsBySheetIds(ids));
+    }
+
+    @ApiOperation("")
+    @GetMapping("/getSheetsByTables")
+    public ResponseData<List<FileSheetsResult>> getSheetsByTables(@RequestParam List<String> tables){
+
+        return ResponseData.success(fileSheetsService.getSheetsByTables(tables));
     }
 }

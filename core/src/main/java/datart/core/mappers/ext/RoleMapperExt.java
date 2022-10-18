@@ -49,6 +49,11 @@ public interface RoleMapperExt extends RoleMapper {
     Role selectPerUserRole(String orgId, String userId);
 
     @Select({
+            "SELECT * FROM role r WHERE r.type='PER_DEPT' AND r.org_id=#{orgId} AND r.create_by=#{deptId}"
+    })
+    Role selectPerDeptRole(String orgId, String deptId);
+
+    @Select({
             "SELECT " +
                     " *  " +
                     "FROM " +
@@ -134,5 +139,19 @@ public interface RoleMapperExt extends RoleMapper {
     })
     List<Role> selectUserRoles(@Param("orgId") String orgId, @Param("userId") String userId);
 
-
+    @Select({
+            "SELECT ",
+            "	r.*  ",
+            "FROM ",
+            "	role r ",
+            "	JOIN rel_role_user rru ON r.id IN ( ",
+            "	SELECT DISTINCT ",
+            "		r1.id  ",
+            "	FROM ",
+            "		role r1  ",
+            "	WHERE 1=1 )",
+            "	AND r.id = rru.role_id  ",
+            "	AND rru.user_id = #{userId}"
+    })
+    List<Role> selectUserRoles1(@Param("userId") String userId);
 }

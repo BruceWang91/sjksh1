@@ -22,12 +22,26 @@ export enum Viewpoints {
 }
 
 export enum ResourceTypes {
-	Report = 'REPORT',
-	ExcelTemplate = 'EXCEL_TEMPLATE',
+	System = 'SYSTEM',
 	Department = 'DEPARTMENT',
+	Permission = 'PERMISSION',
+	Category = 'CATEGORY',//分类
+	Variable = 'VARIABLE',
+	ResourceMigration = 'RESOURCE_MIGRATION',
+
+
+	
+	DataAccess='DATA_ACCESS',
+	DataImport='DATA_IMPORT',
+	ExcelView='EXCEL_VIEW',//表样数据预览
+	Report = 'REPORT',//报表
+	File = 'FILE',//文件上传
+	ExcelTemplate = 'EXCEL_TEMPLATE',//表样管理
   Source = 'SOURCE',
   View = 'VIEW',
   Viz = 'VIZ',
+  VizChart = 'VIZ_CHART',
+  VizDashboard = 'VIZ_DASHBOARD',
   Share = 'SHARE',
   Download = 'DOWNLOAD',
   Schedule = 'SCHEDULE',
@@ -45,6 +59,7 @@ export enum SubjectTypes {
   User = 'USER',
   Role = 'ROLE',
   UserRole = 'USER_ROLE',
+  Dept = 'DEPT',
 }
 
 export enum PermissionLevels {
@@ -59,9 +74,12 @@ export enum PermissionLevels {
 }
 
 export const RESOURCE_TYPE_PERMISSION_MAPPING = {
-
+	[ResourceTypes.System]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.DataAccess]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.DataImport]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.ExcelView]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.File]: [PermissionLevels.Read, PermissionLevels.Create],
 	[ResourceTypes.ExcelTemplate]: [PermissionLevels.Read, PermissionLevels.Create],
-	[ResourceTypes.Department]: [PermissionLevels.Read, PermissionLevels.Create],
 	[ResourceTypes.Report]: [PermissionLevels.Read, PermissionLevels.Create],
   [ResourceTypes.Viz]: [
     PermissionLevels.Read,
@@ -70,7 +88,6 @@ export const RESOURCE_TYPE_PERMISSION_MAPPING = {
     PermissionLevels.Create,
   ],
   [ResourceTypes.View]: [PermissionLevels.Read, PermissionLevels.Create],
-  
   [ResourceTypes.Source]: [PermissionLevels.Read, PermissionLevels.Create],
   [ResourceTypes.Schedule]: [PermissionLevels.Create],
 };

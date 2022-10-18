@@ -2,6 +2,7 @@ drop table if exists file_main;
 create table file_main (
     file_id           bigint(20)       not null auto_increment    comment '文件id',
     file_name         varchar(300)     default ''                 comment '文件名称',
+    org_id            varchar(32)      default ''                 comment '组织id',
     order_num         int(1)           default 0                  comment '显示顺序',
     status            char(1)          default '0'                comment '文件状态（0正常 1停用）',
     del_flag          char(1)          default '0'                comment '删除标志（0代表存在 2代表删除）',
@@ -18,6 +19,7 @@ drop table if exists file_sheets;
 create table file_sheets (
     sheet_id          bigint(20)      not null auto_increment    comment '工作簿id',
     file_id           bigint(20)                                 comment '文件id',
+    org_id            varchar(32)      default ''                comment '组织id',
     title             varchar(300)     default ''                comment '标题',
     sheet_name        varchar(300)     default ''                comment '工作簿名称',
     entity_name       VARCHAR(300)     default ''                comment '对应实体名称',
@@ -58,6 +60,7 @@ drop table if exists file_save;
 create table file_save (
     id                bigint(20)       not null auto_increment    comment '文档id',
     class_id          bigint(20)                                  comment '分类id',
+    org_id            varchar(32)      default ''                 comment '组织id',
     file_name         varchar(300)     default ''                 comment '文件名称',
     new_name          varchar(300)     default ''                 comment '存入后名称',
     pdf_name          varchar(300)     default ''                 comment 'PDF文件名称',
@@ -140,3 +143,4 @@ create table Data_analysis_management_table (
     REMARK                     varchar(500)                                  comment '备注',
     primary key (INDEX_ID)
 ) engine=innodb auto_increment=200 comment = '数据分析管理表' CHARSET=utf8;
+

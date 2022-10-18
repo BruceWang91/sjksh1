@@ -23,7 +23,8 @@ import datart.core.base.exception.Exceptions;
 import datart.core.common.Application;
 import datart.core.common.FileUtils;
 import datart.core.entity.*;
-import datart.server.base.dto.ResponseData;
+import datart.core.mappers.FileSaveStreamMapper;
+import datart.server.common.BinUtil;
 import datart.server.common.UniversalExcelReaderUtil;
 import datart.server.enums.WhetherEnum;
 import datart.server.service.*;
@@ -50,9 +51,14 @@ public class FileServiceImpl extends BaseService implements FileService {
     private IFileSheetFieldService fileSheetFieldService;
     @Autowired
     private IFileSaveService fileSaveService;
+    @Autowired
+    private FileSaveStreamMapper fileSaveStreamMapper;
 
     @Value("${spring.libreoffice.officehome}") // 从application.yml配置文件中获取
     private String home; // libreoffice安装位置
+
+    @Value("${spring.upload}")
+    private String localurl;
 
     @Override
     public String uploadFile(FileOwner fileOwner, String ownerId, MultipartFile file, String fileName) throws IOException {
@@ -230,7 +236,7 @@ public class FileServiceImpl extends BaseService implements FileService {
     }
 
     @Override
-    public HashMap<String,Object> uploadtopdf(FileOwner fileOwner, Long classId, MultipartFile file) throws IOException {
+    public HashMap<String, Object> uploadtopdf(FileOwner fileOwner, Long classId, Long parentId, String orgId, MultipartFile file) throws IOException {
 
 
         String filePath = FileUtils.concatPath(fileOwner.getPath(), classId.toString(), System.currentTimeMillis() + "-" + file.getOriginalFilename());
@@ -242,17 +248,50 @@ public class FileServiceImpl extends BaseService implements FileService {
         // 上传并返回新文件名称
         HashMap<String, String> fileName = FileUtils.uploadtopdf(home, fullPath, file);
         String url = fileName.get("filename");
+        byte[] fileStream = BinUtil.fileToBinArray(new File(url));
+        String newurl = url.replace(localurl, "/upload/");
         String pdfurl = fileName.get("pdfname");
+        if (StringUtils.isBlank(pdfurl)) {
+            FileSave fileSave = new FileSave();
+            fileSave.setClassId(classId);
+            fileSave.setParentId(parentId);
+            fileSave.setOrgId(orgId);
+            fileSave.setFileName(file.getOriginalFilename());
+            fileSave.setNewName(FileUtils.getName(fileName.get("filename")));
+            fileSave.setUrl(newurl);
+            fileSave.setCreateBy(getCurrentUser().getId());
+            fileSave.setCreateTime(new Date());
+            fileSaveService.insertFileSave(fileSave);
+            FileSaveStream fileSaveStream = new FileSaveStream();
+            fileSaveStream.setFileSaveId(fileSave.getId());
+            fileSaveStream.setFileStream(fileStream);
+            fileSaveStreamMapper.insertFileSaveStream(fileSaveStream);
+            HashMap map = new HashMap();
+            map.put("url", url);
+            map.put("fileName", fileName.get("filename"));
+            map.put("newFileName", FileUtils.getName(fileName.get("filename")));
+            map.put("originalFilename", file.getOriginalFilename());
+            return map;
+        }
+        byte[] pdfStream = BinUtil.fileToBinArray(new File(pdfurl));
+        String newpdfurl = pdfurl.replace(localurl, "/upload/");
         FileSave fileSave = new FileSave();
         fileSave.setClassId(classId);
+        fileSave.setParentId(parentId);
+        fileSave.setOrgId(orgId);
         fileSave.setFileName(file.getOriginalFilename());
         fileSave.setNewName(FileUtils.getName(fileName.get("filename")));
         fileSave.setPdfName(FileUtils.getName(fileName.get("pdfname")));
-        fileSave.setUrl(fileName.get("filename"));
-        fileSave.setPdfurl(fileName.get("pdfname"));
+        fileSave.setUrl(newurl);
+        fileSave.setPdfurl(newpdfurl);
         fileSave.setCreateBy(getCurrentUser().getId());
         fileSave.setCreateTime(new Date());
         fileSaveService.insertFileSave(fileSave);
+        FileSaveStream fileSaveStream = new FileSaveStream();
+        fileSaveStream.setFileSaveId(fileSave.getId());
+        fileSaveStream.setFileStream(fileStream);
+        fileSaveStream.setPdfStream(pdfStream);
+        fileSaveStreamMapper.insertFileSaveStream(fileSaveStream);
         HashMap map = new HashMap();
         map.put("url", url);
         map.put("pdfurl", pdfurl);

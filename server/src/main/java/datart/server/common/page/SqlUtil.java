@@ -6,7 +6,7 @@ import datart.server.common.StringUtils;
 /**
  * sql操作工具类
  *
- * @author ruoyi
+ * @author wangya
  */
 public class SqlUtil {
     /**

@@ -24,8 +24,21 @@ import { getSchedules } from '../../SchedulePage/slice/thunks';
 import { getSources } from '../../SourcePage/slice/thunks';
 import { getViews } from '../../ViewPage/slice/thunks';
 import { getFolders, getStoryboards } from '../../VizPage/slice/thunks';
+import { getFilemains } from '../../ExcelTemplatePage/ExcelManager/slice/thunks';
+import { getSheets } from '../../ExcelTemplatePage/ReportSheets/slice/thunks';
+import { getFiles } from '../../FilePage/slice/thunks';
+
+
 import { ResourceTypes, SubjectTypes, Viewpoints } from '../constants';
 import {
+	selectFilemains,
+	selectFilemainListLoading,
+	selectFiles,
+	selectFileListLoading,
+	selectSheets,
+	selectSheetListLoading,
+
+
   selectFolderListLoading,
   selectFolders,
   selectMemberListLoading,
@@ -87,6 +100,14 @@ export const getDataSource = createAsyncThunk<
     const schedules = selectSchedules(getState());
     const roles = selectRoles(getState());
     const members = selectMembers(getState());
+    const filemains = selectFilemains(getState());
+    const files = selectFiles(getState());
+    const sheets = selectSheets(getState());
+
+    const filemainListLoading = selectFilemainListLoading(getState());
+    const fileListLoading = selectFileListLoading(getState());
+    const sheetListLoading = selectSheetListLoading(getState());
+
     const folderListLoading = selectFolderListLoading(getState());
     const storyboardListLoading = selectStoryboardListLoading(getState());
     const viewListLoading = selectViewListLoading(getState());
@@ -95,6 +116,8 @@ export const getDataSource = createAsyncThunk<
     const roleListLoading = selectRoleListLoading(getState());
     const memberListLoading = selectMemberListLoading(getState());
     const orgId = selectOrgId(getState());
+
+
 
     switch (dataSourceType) {
       case SubjectTypes.Role:
@@ -123,6 +146,21 @@ export const getDataSource = createAsyncThunk<
       case ResourceTypes.Source:
         if (!sources && !sourceListLoading) {
           dispatch(getSources(orgId));
+        }
+        break;
+      case ResourceTypes.ExcelTemplate:
+        if (!filemains && !filemainListLoading) {
+          dispatch(getFilemains({pageSize:9999,pageNum:1}));
+        }
+        break;
+      case ResourceTypes.ExcelView:
+        if (!sheets && !sheetListLoading) {
+          dispatch(getSheets({pageSize:9999,pageNum:1}));
+        }
+        break;
+      case ResourceTypes.File:
+        if (!files && !fileListLoading) {
+          dispatch(getFiles({pageSize:9999,pageNum:1}));
         }
         break;
       case ResourceTypes.Schedule:

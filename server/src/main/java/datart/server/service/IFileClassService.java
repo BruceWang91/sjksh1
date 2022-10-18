@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 文件分类Service接口
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-06-17
  */
 public interface IFileClassService {

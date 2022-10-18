@@ -42,14 +42,14 @@ const treeTs = (t) => {
 export const getCategories = createAsyncThunk<Category[], string>(
   'category/getCategories',
   async ({orgId,parentId , resolve}) => {
-    const { data } = await request2<Category[]>({
+    const { rows,data } = await request2<Category[]>({
       url: '/file/class/list',
       method: 'GET',
       params: { parentId},
     });
 
-    resolve && resolve(treeTs(data))
-    return data;
+    resolve && resolve(treeTs(rows || data))
+    return rows || data;
   },
 );
 export const addCategory = createAsyncThunk<Category, AddCategoryParams>(

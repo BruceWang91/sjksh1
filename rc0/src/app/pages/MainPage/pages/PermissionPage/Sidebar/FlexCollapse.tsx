@@ -84,6 +84,7 @@ const Panel = memo(
     useEffect(() => {
       if (activeKeys) {
         setActive(activeKeys.includes(id));
+        
       }
     }, [id, activeKeys]);
 

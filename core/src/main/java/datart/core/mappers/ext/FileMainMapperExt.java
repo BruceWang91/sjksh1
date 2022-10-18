@@ -21,13 +21,15 @@ public interface FileMainMapperExt extends FileMainMapper {
      */
     @Select({
             "<script>",
-            "select file_id, file_name, order_num, status, del_flag, " +
-                    "class_id, create_by, create_time, update_by, update_time, remark " +
+            "select file_id, file_name, org_id, order_num, status, del_flag, " +
+                    "class_id, is_folder, parent_id, create_by, create_time, update_by, update_time, remark " +
                     "from file_main where 1=1",
-                    "<if test=\"fileName != null  and fileName != ''\"> and file_name like concat('%', #{fileName}, '%')</if>\n" +
+            "<if test=\"fileName != null  and fileName != ''\"> and file_name like concat('%', #{fileName}, '%')</if>\n" +
                     "<if test=\"orderNum != null \"> and order_num = #{orderNum}</if>\n" +
                     "<if test=\"status != null  and status != ''\"> and status = #{status}</if>\n" +
-                    "<if test=\"classId != null \"> and class_id = #{classId}</if>",
+                    "<if test=\"classId != null \"> and class_id = #{classId}\n</if>",
+            "<if test=\"isFolder != null \"> and is_folder = #{isFolder}\n</if>",
+            "<if test=\"parentId != null \"> and parent_id = #{parentId}\n</if>",
             "</script>"
     })
     List<FileMain> selectFileMainList(FileMain fileMain);
@@ -40,7 +42,9 @@ public interface FileMainMapperExt extends FileMainMapper {
                     "        LEFT JOIN user suser\n" +
                     "            ON filemain.create_by = suser.id\n" +
                     "        WHERE 1=1\n" +
-                    "        <if test=\"fileName != null  and fileName != ''\">\n" +
+                    "        <if test=\"isFolder != null \"> and is_folder = #{isFolder}\n</if>",
+            "        <if test=\"parentId != null \"> and parent_id = #{parentId}\n</if>",
+            "        <if test=\"fileName != null  and fileName != ''\">\n" +
                     "            and file_name like concat('%', #{fileName}, '%')\n" +
                     "        </if>\n" +
                     "        <if test=\"classIds != null and classIds.size() > 0\">\n" +
@@ -63,6 +67,8 @@ public interface FileMainMapperExt extends FileMainMapper {
             "create table ${biname} (\n" +
                     "            id bigint(20)      not null auto_increment,\n" +
                     "            ${sqlstr}\n" +
+                    "            create_by varchar(64),\n" +
+                    "            create_time varchar(64),\n" +
                     "            primary key (id)\n" +
                     "        )engine=innodb auto_increment=200 CHARSET=utf8"
     })

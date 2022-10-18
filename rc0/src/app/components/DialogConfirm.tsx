@@ -27,11 +27,18 @@ export class DialogConfirm extends React.Component<IDialogProps,{}> {
 	state = {}
   constructor( props:IDialogProps) {
     super(props);
+    this.onOk = this.onOk.bind(this)
   }
   componentWillUnmount(){
   	if(this.dialog){
   		this.dialog.destroy()
   	}
+  }
+  onOk(){
+
+  	this.props.onOk && this.props.onOk();
+		this.dialog && this.dialog.destroy()
+
   }
   render() {
     const {
@@ -44,6 +51,8 @@ export class DialogConfirm extends React.Component<IDialogProps,{}> {
     } = this.props;
 
     const child = React.Children.only(children);
+
+
     const newChild = React.cloneElement(child, { ...child.props,
 			onClick: event => {
 
@@ -51,7 +60,7 @@ export class DialogConfirm extends React.Component<IDialogProps,{}> {
 					this.dialog = Modal.confirm({
 						title,
 						content,
-						onOk,
+						onOk:this.onOk,
 						onCancel
 					})
 				}else{

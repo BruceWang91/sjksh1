@@ -1,7 +1,6 @@
 package datart.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import datart.core.base.PageInfo;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * 文件管理对象 file_main
  *
- * @author ruoyi
+ * @author wangya
  * @date 2022-05-27
  */
 public class FileMain {
@@ -27,6 +26,11 @@ public class FileMain {
      * 文件名称
      */
     private String fileName;
+
+    /**
+     * 组织id
+     */
+    private String orgId;
 
     /**
      * 显示顺序
@@ -48,6 +52,16 @@ public class FileMain {
      * 分类id
      */
     private Long classId;
+
+    /**
+     * 是否文件夹 1是 0否
+     */
+    private Integer isFolder;
+
+    /**
+     * 上级ID
+     */
+    private Long parentId;
 
     /**
      * 创建者
@@ -79,6 +93,8 @@ public class FileMain {
 
     private List<Long> classIds;
 
+    private Long deptId;
+
     private List<Long> depIds;
 
     public void setFileId(Long fileId) {
@@ -95,6 +111,14 @@ public class FileMain {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(String orgId) {
+        this.orgId = orgId;
     }
 
     public void setOrderNum(Integer orderNum) {
@@ -183,6 +207,30 @@ public class FileMain {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
+    }
+
+    public Integer getIsFolder() {
+        return isFolder;
+    }
+
+    public void setIsFolder(Integer isFolder) {
+        this.isFolder = isFolder;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     @Override

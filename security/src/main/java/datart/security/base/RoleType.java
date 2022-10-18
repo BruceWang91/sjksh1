@@ -35,4 +35,9 @@ public enum RoleType {
      */
     NORMAL,
 
+    /**
+     * 部门角色，每个部门都有独有的角色
+     */
+    PER_DEPT,
+
 }

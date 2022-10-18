@@ -26,6 +26,7 @@ public class UniversalExcelReaderUtil {
     private static final String DXLS = "XLS";
     private static final String XLSX = "xlsx";
     private static final String DXLSX = "XLSX";
+    private static final String ET = "et";
     private static Calendar calendar = Calendar.getInstance();
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -45,13 +46,13 @@ public class UniversalExcelReaderUtil {
         String fileName = file.getOriginalFilename();
         if (StringUtils.isEmpty(fileName)) {
             log.warn("文件名获取不到");
-            return null;
+            throw new RuntimeException("文件名获取不到");
         }
         // 获取Excel后缀名
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-        if (Arrays.asList(XLS, DXLS, XLSX, DXLSX).contains(fileType) == false) {
+        if (Arrays.asList(XLS, DXLS, XLSX, DXLSX, ET).contains(fileType) == false) {
             log.warn("文件后缀名不正确");
-            return null;
+            throw new RuntimeException("文件后缀名不正确");
         }
         // 开始获取工作簿对象
         Workbook excelObject = null;
@@ -59,10 +60,11 @@ public class UniversalExcelReaderUtil {
             excelObject = getExcelObject(file.getInputStream(), fileType);
         } catch (IOException e) {
             log.error("获取工作簿对象异常：", e);
+            throw new RuntimeException("获取工作簿对象异常");
         }
         if (excelObject == null) {
             log.warn("获取工作簿对象失败");
-            return null;
+            throw new RuntimeException("获取工作簿对象失败");
         }
         //开始获取excel文件中的数据
         List<List<Map<String, Object>>> lists = readExcelData(excelObject, fileSheetsList);
@@ -78,7 +80,7 @@ public class UniversalExcelReaderUtil {
         int numberOfSheets = workbook.getNumberOfSheets();
         if (numberOfSheets <= 0) {
             log.warn("没有读取到excle文件中的sheet表格");
-            return null;
+            throw new RuntimeException("没有读取到excle文件中的sheet表格");
         }
 
         /*
@@ -144,7 +146,7 @@ public class UniversalExcelReaderUtil {
      */
     private static Workbook getExcelObject(InputStream inputStream, String fileType) throws IOException {
         Workbook workbook = null;
-        if (fileType.equalsIgnoreCase(XLS)) {
+        if (fileType.equalsIgnoreCase(XLS) || fileType.equalsIgnoreCase(ET)) {
             workbook = new HSSFWorkbook(inputStream);
         } else if (fileType.equalsIgnoreCase(XLSX)) {
             workbook = new XSSFWorkbook(inputStream);

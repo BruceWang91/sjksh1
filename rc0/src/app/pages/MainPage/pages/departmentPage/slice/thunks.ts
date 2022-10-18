@@ -24,6 +24,8 @@ import {
   EditDepartmentParams,
   Department,
 } from './types';
+
+
 const treeTs = (t) => {
 	return t.map(d=>{
 		if(d?.children?.length > 0){
@@ -35,6 +37,23 @@ const treeTs = (t) => {
 		return {...d,label:d.deptName,value:d.deptId,displayValue:d.deptName,hideValue:d.deptId,leaf,isLeaf:leaf === 0}
 	})
 }
+
+
+
+export const getDepartmentsAndMembers = createAsyncThunk<Department[], string>(
+  'department/getDepartmentsAndMembers',
+  async ({orgId,parentId,resolve}) => {
+    const { data } = await request2<Department[]>({
+      url: '/system/dept/deptAndUsers',
+      method: 'GET',
+      params: { parentId},
+    });
+    console.log(data)
+    resolve && resolve()
+    return data;
+  },
+);
+
 export const getDepartments = createAsyncThunk<Department[], string>(
   'department/getDepartments',
   async ({orgId,parentId,resolve}) => {

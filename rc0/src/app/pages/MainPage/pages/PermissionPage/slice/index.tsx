@@ -23,6 +23,14 @@ import { getSchedules } from '../../SchedulePage/slice/thunks';
 import { getSources } from '../../SourcePage/slice/thunks';
 import { getViews } from '../../ViewPage/slice/thunks';
 import { getFolders, getStoryboards } from '../../VizPage/slice/thunks';
+
+
+import { getFilemains } from '../../ExcelTemplatePage/ExcelManager/slice/thunks';
+import { getSheets } from '../../ExcelTemplatePage/ReportSheets/slice/thunks';
+import { getFiles } from '../../FilePage/slice/thunks';
+
+
+
 import {
   ResourceTypes,
   SubjectTypes,
@@ -49,6 +57,13 @@ export const initialState: PermissionState = {
   schedules: void 0,
   roles: void 0,
   members: void 0,
+  filemains:void 0,
+  files:void 0,
+  sheets:void 0,
+  filemainListLoading:void 0,
+  fileListLoading:void 0,
+  sheetListLoading:void 0,
+
   folderListLoading: false,
   storyboardListLoading: false,
   viewListLoading: false,
@@ -68,11 +83,76 @@ export const initialState: PermissionState = {
   },
 };
 
+
+
 const slice = createSlice({
   name: 'permission',
   initialState,
   reducers: {},
   extraReducers: builder => {
+
+  	// getFilemains
+    builder.addCase(getFilemains.pending, state => {
+      state.filemainListLoading = true;
+    });
+    builder.addCase(getFilemains.fulfilled, (state, action) => {
+      state.filemainListLoading = false;
+      state.filemains = action.payload?.data?.map(({ fileId, fileName }) => ({
+        id: fileId,
+        name: fileName,
+        type: ResourceTypes.ExcelTemplate,
+        parentId: null,
+        index: null,
+        isFolder: false,
+        permissionArray: getDefaultPermissionArray(),
+      }));
+    });
+    builder.addCase(getFilemains.rejected, state => {
+      state.filemainListLoading = false;
+    });
+
+
+    // getSheets
+    builder.addCase(getSheets.pending, state => {
+      state.sheetListLoading = true;
+    });
+    builder.addCase(getSheets.fulfilled, (state, action) => {
+      state.sheetListLoading = false;
+      state.sheets = action.payload?.data?.map(({ sheetId, sheetName }) => ({
+        id: sheetId,
+        name: sheetName,
+        type: ResourceTypes.ExcelView,
+        parentId: null,
+        index: null,
+        isFolder: false,
+        permissionArray: getDefaultPermissionArray(),
+      }));
+    });
+    builder.addCase(getSheets.rejected, state => {
+      state.sheetListLoading = false;
+    });
+
+    // getFiles
+    builder.addCase(getFiles.pending, state => {
+      state.fileListLoading = true;
+    });
+    builder.addCase(getFiles.fulfilled, (state, action) => {
+      state.fileListLoading = false;
+      state.sheets = action.payload?.data?.map(({ id, fileName }) => ({
+        id: id,
+        name: fileName,
+        type: ResourceTypes.File,
+        parentId: null,
+        index: null,
+        isFolder: false,
+        permissionArray: getDefaultPermissionArray(),
+      }));
+    });
+    builder.addCase(getFiles.rejected, state => {
+      state.fileListLoading = false;
+    });
+
+
     // getMembers
     builder.addCase(getMembers.pending, state => {
       state.memberListLoading = true;

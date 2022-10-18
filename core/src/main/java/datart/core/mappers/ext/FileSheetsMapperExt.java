@@ -19,10 +19,11 @@ public interface FileSheetsMapperExt extends FileSheetsMapper {
      */
     @Select({
             "<script>",
-            "select sheet_id, file_id, sheet_name, entity_name, order_num, " +
-                    "start_row, start_cell, cell_count, status, del_flag, " +
-                    "create_by, create_time, update_by, update_time, remark " +
-                    "from file_sheets where 1=1 " +
+            "select sheets.*" +
+                    "from file_sheets sheets\n" +
+                    "LEFT JOIN user suser\n" +
+                    "    ON sheets.create_by = suser.id\n" +
+                    " where 1=1 \n" +
                     "<if test=\"fileId != null \"> and file_id = #{fileId}</if>\n" +
                     "            <if test=\"sheetName != null  and sheetName != ''\"> and sheet_name like concat('%', #{sheetName}, '%')</if>\n" +
                     "            <if test=\"entityName != null  and entityName != ''\"> and entity_name like concat('%', #{entityName}, '%')</if>\n" +
@@ -31,7 +32,13 @@ public interface FileSheetsMapperExt extends FileSheetsMapper {
                     "            <if test=\"startCell != null \"> and start_cell = #{startCell}</if>\n" +
                     "            <if test=\"cellCount != null \"> and cell_count = #{cellCount}</if>\n" +
                     "            <if test=\"delFlag != null and status != ''\"> and del_flag = #{delFlag}</if>\n" +
-                    "            <if test=\"status != null  and status != ''\"> and status = #{status}</if>",
+                    "            <if test=\"status != null  and status != ''\"> and status = #{status}</if>" +
+                    "            <if test=\"depIds != null and depIds.size() > 0\">\n" +
+                    "               AND suser.dept_id IN\n" +
+                    "               <foreach item=\"depIds\" collection=\"depIds\" open=\"(\" separator=\",\" close=\")\">\n" +
+                    "                   #{depIds}\n" +
+                    "               </foreach>\n" +
+                    "            </if>",
             "</script>"
     })
     List<FileSheets> selectFileSheetsList(FileSheets fileSheets);

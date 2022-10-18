@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * <p>
  * 优先级：先方法，后类，如果方法覆盖了类上的数据源类型，以方法的为准，否则以类上的为准
  *
- * @author ruoyi
+ * @author wangya
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
