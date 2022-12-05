@@ -17,80 +17,35 @@
  */
 
 import {
-  AxisLabel,
-  AxisLineStyle,
-  ChartDataSectionField,
-  FontStyle,
+  BorderStyle,
   FormatFieldAction,
   LabelStyle,
-  LineStyle,
   MarkArea,
   MarkLine,
 } from 'app/types/ChartConfig';
 
-export type DoubleYChartXAxis = {
-  axisPointer?: {
-    show: boolean;
-    type: string;
-  };
-  axisLabel: AxisLabel;
-  axisLine: AxisLineStyle;
-  axisTick: AxisLineStyle;
-  data: string[];
-  inverse: boolean;
-  splitLine: AxisLineStyle;
-  tooltip: { show: boolean };
-  type: string;
-};
-
-export type DoubleYChartYAxis = {
-  axisLabel: AxisLabel;
-  axisLine: AxisLineStyle;
-  inverse: undefined | boolean;
-  name: string;
-  nameGap: number;
-  nameLocation: string;
-  nameRotate: number;
-  nameTextStyle: FontStyle;
-  position: string;
-  showTitleAndUnit: boolean;
-  splitLine: AxisLineStyle;
-  type: string;
-  min?: number | string;
-  max?: number | string;
-  interval?: number;
-};
-
-export type Series = {
-  yAxisIndex: number;
-  name: string;
-  data: Array<
-    {
-      rowData: { [key: string]: any };
-      value: number | string;
-      total?: number;
-      format: FormatFieldAction | undefined;
-    } & ChartDataSectionField
-  >;
+export type BarBorderStyle = {
   color?: string;
-  smooth?: boolean | undefined;
-  stack?: boolean | undefined;
-  step?: boolean | undefined;
-  symbol?: string | undefined;
-  itemStyle: { color: string | undefined };
+  borderRadius?: number;
+} & BorderStyle;
+
+export type BarSeriesImpl = {
   type: string;
   sampling: string;
-  barWidth?: number | string;
-  lineStyle?: LineStyle;
+  barGap: number;
+  barWidth: number;
+  itemStyle?: BorderStyle;
   markLine: MarkLine;
   markArea: MarkArea;
 } & LabelStyle;
 
-export interface IntervalConfig {
-  leftMin?: number;
-  leftMax?: number;
-  rightMin?: number;
-  rightMax?: number;
-  leftInterval?: number;
-  rightInterval?: number;
-}
+export type Series = {
+  name: string;
+  data: Array<{
+    rowData: { [key: string]: any };
+    name: string;
+    value: number | string;
+    total?: number;
+    format: FormatFieldAction | undefined;
+  }>;
+} & BarSeriesImpl;

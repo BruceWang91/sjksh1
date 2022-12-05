@@ -37,6 +37,8 @@ const BasicSlider: FC<ItemLayoutProps<ChartStyleConfig>> = memo(
           max={!isUndefined(options?.max) ? Number(options?.max) : 10}
           step={!isUndefined(options?.step) ? Number(options?.step) : 1}
           dots={isUndefined(options?.dots) ? true : options?.dots}
+          range={isUndefined(options?.range) ? false : options?.range}
+           
           defaultValue={rest?.default}
           onChange={value => onChange?.(ancestors, value)}
         />

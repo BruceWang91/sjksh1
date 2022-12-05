@@ -1,34 +1,16 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
     druid:
       #    driver-class-name: org.h2.Driver
       #    type: com.alibaba.druid.pool.DruidDataSource
       #    url: jdbc:h2:file:./bin/h2/datart.demo;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORECASE=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;IFEXISTS=TRUE
       #    username:
       #    password:
-      # 主库数据源
-      master:
-        url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.database:datart}?&allowMultiQueries=true&characterEncoding=utf-8&&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
-        username: ${datasource.username:root}
-        password: ${datasource.password:123456}
-      # 从库数据源
-      slave:
-        # 从数据源开关/默认关闭
-        enabled: true
-        url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.importdatabase:ry_data}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        #        url: jdbc:mysql://58.22.61.222:57812/ry_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: ${datasource.username:root}
-        password: ${datasource.password:123456}
-      # 从库数据源1
-      slave2:
-        # 从数据源开关/默认关闭
-        enabled: true
-        url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.reportdatabase:report_data}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        #        url: jdbc:mysql://58.22.61.222:57812/ry_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: ${datasource.username:root}
-        password: ${datasource.password:123456}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://${datasource.ip:null}:${datasource.port:3306}/${datasource.database:datart}?&allowMultiQueries=true&characterEncoding=utf-8&&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+      username: ${datasource.username:root}
+      password: ${datasource.password:123456}
       # 初始连接数
       initialSize: 5
       # 最小连接池数量

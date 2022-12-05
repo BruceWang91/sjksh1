@@ -19,7 +19,7 @@ public interface FileSheetFieldMapper {
      */
     @Select({
             "select field_id, file_id, sheet_id, cell_num, cell_name, row_num, " +
-                    "entity_field, status, del_flag, create_by, create_time, update_by, " +
+                    "entity_field, status, del_flag, import_flag, create_by, create_time, update_by, " +
                     "update_time, remark " +
                     "from file_sheet_field where field_id = #{fieldId}"
     })
@@ -33,6 +33,7 @@ public interface FileSheetFieldMapper {
             @Result(column = "entity_field", property = "entityField", jdbcType = JdbcType.INTEGER),
             @Result(column = "status", property = "status", jdbcType = JdbcType.VARCHAR),
             @Result(column = "del_flag", property = "delFlag", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "import_flag", property = "importFlag", jdbcType= JdbcType.VARCHAR),
             @Result(column = "class_id", property = "classId", jdbcType = JdbcType.BIGINT),
             @Result(column = "create_by", property = "createBy", jdbcType = JdbcType.VARCHAR),
             @Result(column = "create_time", property = "createTime", jdbcType = JdbcType.TIMESTAMP),
@@ -71,6 +72,7 @@ public interface FileSheetFieldMapper {
                     "            <if test=\"entityField != null\">entity_field = #{entityField},</if>\n" +
                     "            <if test=\"status != null\">status = #{status},</if>\n" +
                     "            <if test=\"delFlag != null\">del_flag = #{delFlag},</if>\n" +
+                    "            <if test=\"importFlag != null\">import_flag = #{importFlag},</if>\n" +
                     "            <if test=\"createBy != null\">create_by = #{createBy},</if>\n" +
                     "            <if test=\"createTime != null\">create_time = #{createTime},</if>\n" +
                     "            <if test=\"updateBy != null\">update_by = #{updateBy},</if>\n" +

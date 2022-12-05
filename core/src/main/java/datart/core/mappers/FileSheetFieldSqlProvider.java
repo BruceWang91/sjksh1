@@ -40,6 +40,10 @@ public class FileSheetFieldSqlProvider {
             sql.VALUES("del_flag", "#{delFlag,jdbcType=VARCHAR}");
         }
 
+        if (record.getImportFlag() != null){
+            sql.VALUES("import_flag", "#{importFlag,jdbcType=VARCHAR}");
+        }
+
         if (record.getCreateBy() != null) {
             sql.VALUES("create_by", "#{createBy,jdbcType=VARCHAR}");
         }

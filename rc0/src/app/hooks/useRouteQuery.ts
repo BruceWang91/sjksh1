@@ -17,20 +17,36 @@
  */
 
 import { useLocation } from 'react-router-dom';
+import Query from 'query-string';
+import isPlainObject from 'lodash/isPlainObject';
+const useRouteQuery = (key) => {
 
-const useRouteQuery = ({ key }: { key?: string }) => {
-  const query = function useQuery() {
-    return new URLSearchParams(useLocation().search);
+  const qs = Query.parse( useLocation().search?.substr?.(1) );
+
+  const mc = {
+  	get:function( _key ){
+  		if(typeof _key === 'string'){
+  			return qs[_key]
+  		}
+  		if(isPlainObject(_key)){
+  			return qs[_key.key];
+  		}
+
+  		return null
+  	},
+  	has:function( _key){
+  		const v = this.get(_key);
+  		return v !== null && v !== undefined
+  	}
   };
+  
 
-  const get = () => {
-    if (!key) {
-      return query();
-    }
-    return query()?.get(key);
-  };
 
-  return get();
+  if(!key) {
+  	return mc;
+  }
+
+  return mc.get(key);
 };
 
 export default useRouteQuery;

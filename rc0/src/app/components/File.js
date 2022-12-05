@@ -5,13 +5,13 @@ UploadOutlined
 } from '@ant-design/icons';
 interface FileProps{
 	value:any;
-	defaultValue:any;
+
 	onChange:()=>void;
 }
 
 export class File extends React.Component<FileProps> {
 	state = {
-		file: this.props.value || this.props.defaultValue
+		file: this.props.value
 	}
 	static getDerivedStateFromProps(nextProps, prevState) {
     const { value } = nextProps;
@@ -31,14 +31,16 @@ export class File extends React.Component<FileProps> {
   	this.inputRef.current.click();
   }
   render() {
+
     const {
       onChange,
+      value,
       ...rest
     } = this.props
     return (
       <React.Fragment>
-        <Button icon={<UploadOutlined />} size="small" onClick={this.onClick}>{this.state.file ? '重新选择' : '选择文件'}</Button> <span>{this.state?.file?.name}</span>
-        <input   ref={this.inputRef} type="file" onChange={event=>{
+        <Button icon={<UploadOutlined />} size="small" onClick={this.onClick}>{this.state.file ? '重新选择' : '选择文件'}</Button> <span>{this.state?.file?.name || this.state?.value}</span>
+        <input  {...rest} ref={this.inputRef} type="file" onChange={event=>{
         	if(event.target.files[0]){
         		this.setState({file:event.target.files[0]});
         		onChange(event.target.files[0])
@@ -51,7 +53,6 @@ export class File extends React.Component<FileProps> {
 }
 
 File.defaultProps = {
-	value:null,
-	defaultValue:null,
+	value:'',
 	onChange: function onChange(){}
 }

@@ -90,7 +90,7 @@ export const ImportData: React.FC = ({ children  , title, data , onSuccess }) =>
 	}
 
 
-	const onShow = () => {
+	const onOpen = () => {
 		dispatch(getFilemain({fileId:data.fileId,resolve:result=>{
 			setSheets(serverDataconvertToExcel(result.sheets)  );
 		}})) 
@@ -138,7 +138,7 @@ export const ImportData: React.FC = ({ children  , title, data , onSuccess }) =>
   				const a1 = String(sheet.cells?.[row]?.[col]).trim() ;
   				const a2 =  String(tempSheet.cells?.[row]?.[col]).trim();
   				//console.log(a1,a2,a1 === a2 )
-  				if( a1 ===  a2 ){
+  				if( a1 ===  a2  || a2 === '' || a2 === 'undefined' ){
   					sheet.cellsOption.push({
   						row,
   						col,
@@ -201,6 +201,7 @@ export const ImportData: React.FC = ({ children  , title, data , onSuccess }) =>
 			file:selectfile,
 			fileId:data.fileId,
 			resolve:()=>{
+				onSuccess && onSuccess()
 				message.success('数据导入成功!');
 				ref.current.hide();
 			}
@@ -298,7 +299,7 @@ export const ImportData: React.FC = ({ children  , title, data , onSuccess }) =>
     	<Button key="cancel" onClick={event=>ref.current.hide()} size="small">取消</Button>,
     	<Button key="ok" onClick={event=>uploadHandler()} type="primary" disabled={result.checkResult.errorNum > 0 || tempLoading || loading} size="small">导入</Button>
     	]}
-    onShow={onShow}
+    onOpen={onOpen}
     ref={ref}
     destroyOnClose
    >

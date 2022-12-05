@@ -22,6 +22,14 @@ import { initialState } from '.';
 
 const selectDomain = (state: RootState) => state.filemain || initialState;
 
+
+export const selectSources = createSelector(
+  [selectDomain],
+  filemainState => filemainState.sources,
+);
+
+
+
 export const selectFilemains = createSelector(
   [selectDomain],
   filemainState => filemainState.filemains,
@@ -31,6 +39,8 @@ export const selectFilemain = createSelector(
   [selectDomain],
   filemainState => filemainState.filemain,
 );
+
+
 
 export const selectFilemainLoading = createSelector(
   [selectDomain],

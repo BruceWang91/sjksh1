@@ -32,4 +32,6 @@ public class FolderCreateParam extends VizCreateParam {
 
     private Double index;
 
+    private String relType;
+
 }

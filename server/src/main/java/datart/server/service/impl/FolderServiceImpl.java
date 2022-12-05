@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class FolderServiceImpl extends BaseService implements FolderService {
-
     private final FolderMapperExt folderMapper;
 
     private final RoleService roleService;
@@ -93,13 +92,25 @@ public class FolderServiceImpl extends BaseService implements FolderService {
         if (folder.getId() == null || rrrMapper.countRolePermission(folder.getId(), role.getId()) == 0) {
             Folder parent = folderMapper.selectByPrimaryKey(folder.getParentId());
             if (parent == null) {
-                return securityManager.hasPermission(PermissionHelper.vizPermission(folder.getOrgId(), role.getId(),
-                        ResourceType.FOLDER.name(), permission));
+                if (folder.getRelType().equals("DATACHART") || folder.getRelType().equals("DATACHART_FOLDER")) {
+                    return securityManager.hasPermission(PermissionHelper.vizDatachartPermission(folder.getOrgId(), role.getId(),
+                            ResourceType.DATACHART.name(), permission));
+                } else {
+                    return securityManager.hasPermission(PermissionHelper.vizDashboardPermission(folder.getOrgId(), role.getId(),
+                            ResourceType.DASHBOARD.name(), permission));
+                }
             } else {
+
                 return hasPermission(role, parent, permission);
             }
         } else {
-            return securityManager.hasPermission(PermissionHelper.vizPermission(folder.getOrgId(), role.getId(), folder.getId(), permission));
+            if (folder.getRelType().equals("DATACHART") || folder.getRelType().equals("DATACHART_FOLDER")) {
+
+                return securityManager.hasPermission(PermissionHelper.vizDatachartPermission(folder.getOrgId(), role.getId(), folder.getId(), permission));
+            } else {
+
+                return securityManager.hasPermission(PermissionHelper.vizDashboardPermission(folder.getOrgId(), role.getId(), folder.getId(), permission));
+            }
         }
     }
 
@@ -408,7 +419,6 @@ public class FolderServiceImpl extends BaseService implements FolderService {
         folder.setCreateBy(getCurrentUser().getId());
         folder.setCreateTime(new Date());
         folder.setId(UUIDGenerator.generate());
-        folder.setRelType(ResourceType.FOLDER.name());
         requirePermission(folder, Const.CREATE);
         // insert permissions
         if (!CollectionUtils.isEmpty(folderCreate.getPermissions())) {
@@ -431,6 +441,8 @@ public class FolderServiceImpl extends BaseService implements FolderService {
                 return retrieve(folder.getRelId(), Datachart.class).getStatus() == Const.VIZ_PUBLISH;
             } else if (ResourceType.DASHBOARD.name().equals(folder.getRelType())) {
                 return retrieve(folder.getRelId(), Dashboard.class).getStatus() == Const.VIZ_PUBLISH;
+            } else {
+                return true;
             }
         } catch (Exception ignored) {
         }

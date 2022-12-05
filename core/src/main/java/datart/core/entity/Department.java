@@ -60,6 +60,11 @@ public class Department {
     private Date updateTime;
 
     /**
+     * 类型 1 分组 2 公司 3 部门
+     */
+    private Integer type;
+
+    /**
      * 父部门名称
      */
     private String parentName;

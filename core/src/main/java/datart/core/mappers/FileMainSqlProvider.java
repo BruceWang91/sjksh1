@@ -63,6 +63,10 @@ public class FileMainSqlProvider {
         if (record.getRemark() != null) {
             sql.VALUES("remark", "#{remark,jdbcType=VARCHAR}");
         }
+
+        if (record.getSourceId() != null) {
+            sql.VALUES("source_id", "#{sourceId,jdbcType=VARCHAR}");
+        }
         return sql.toString();
     }
 }

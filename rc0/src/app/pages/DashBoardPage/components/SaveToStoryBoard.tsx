@@ -55,7 +55,7 @@ const SaveToStoryBoard: FC<SaveToStoryBoardTypes> = memo(
           const path = getPath(
             vizData as Array<{ id: string; parentId: string }>,
             { id: v.id, parentId: v.parentId },
-            VizResourceSubTypes.Folder,
+            VizResourceSubTypes.DashboardFolder,
           );
 
           const AllowManage = getCascadeAccess(

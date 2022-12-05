@@ -8,7 +8,8 @@ import {
   ProFormSelect,
   ProFormText,
   ProFormDigit,
-  ProFormTreeSelect
+  ProFormTreeSelect,
+  ProFormRadio
 } from '@ant-design/pro-components';
 
 import {message} from 'antd';
@@ -39,7 +40,7 @@ import {
 const renderForm = ( {isRoot,departments} ) => () => {
 	const nameLabel = isRoot ? "企业名称" : "部门名称";
 
-
+	const typeOptions = [{label:'分组',value:1}, {label:'企业',value:2},...(isRoot ? [] : [{label:'部门',value:3}])];
 	return <FormWrap>
 		
 		<ProForm.Group>
@@ -61,6 +62,16 @@ const renderForm = ( {isRoot,departments} ) => () => {
 				rules={[{ required: true, message: `请输入显示顺序` }]}
 			/>
 
+			
+    </ProForm.Group>
+   	<ProForm.Group>
+   		<ProFormRadio.Group
+        label="类型"
+        name="type"
+        options={typeOptions}
+        rules={[{ required: true, message: `请选择类型` }]}
+      />
+
 			{!isRoot && <ProFormTreeSelect
 				name="parentId" 
 				fieldProps={{size:'small',style:{minWidth:200}}}
@@ -70,7 +81,6 @@ const renderForm = ( {isRoot,departments} ) => () => {
 				request={()=>departments}
 			/>}
     </ProForm.Group>
-   	
     <Descp>
     	<h5>注意事项</h5>
     	<p>1、显示顺序按升序排序；</p>

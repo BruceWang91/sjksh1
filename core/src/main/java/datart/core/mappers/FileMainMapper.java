@@ -19,7 +19,7 @@ public interface FileMainMapper {
      */
     @Select({
             "select file_id, file_name, org_id, order_num, status, del_flag, " +
-                    "class_id, is_folder, parent_id, create_by, create_time, update_by, update_time, remark " +
+                    "class_id, is_folder, parent_id, create_by, create_time, update_by, update_time, remark, source_id " +
                     "from file_main where file_id = #{fileId}"
     })
     @Results({
@@ -36,7 +36,8 @@ public interface FileMainMapper {
             @Result(column = "create_time", property = "createTime", jdbcType = JdbcType.TIMESTAMP),
             @Result(column = "update_by", property = "updateBy", jdbcType = JdbcType.VARCHAR),
             @Result(column = "update_time", property = "updateTime", jdbcType = JdbcType.TIMESTAMP),
-            @Result(column = "remark", property = "remark", jdbcType = JdbcType.VARCHAR)
+            @Result(column = "remark", property = "remark", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "source_id", property = "sourceId", jdbcType = JdbcType.VARCHAR)
     })
     FileMain selectFileMainByFileId(Long fileId);
 
@@ -73,6 +74,7 @@ public interface FileMainMapper {
                     "            <if test=\"updateBy != null\">update_by = #{updateBy},</if>\n" +
                     "            <if test=\"updateTime != null\">update_time = #{updateTime},</if>\n" +
                     "            <if test=\"remark != null\">remark = #{remark},</if>\n" +
+                    "            <if test=\"sourceId != null\">source_id = #{sourceId},</if>\n" +
                     "</trim>",
             "where file_id = #{fileId}",
             "</script>"

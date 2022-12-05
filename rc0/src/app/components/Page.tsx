@@ -47,11 +47,13 @@ export const Page = ({
 	toolbar,
 	pagination,
 	query,
+	viewPortHeight,
+	fixedHeight,
 	...rest}) => {
 
 
 
-	const [viewHeight,setViewHeight] = useState(300);
+	const [viewHeight,setViewHeight] = useState(100);
 
 	const onResize = (queryHeight) => {
 		let footerHeight = 0,toolbarHeight = 0;
@@ -62,7 +64,7 @@ export const Page = ({
 		if(toolbar){
 			toolbarHeight = 50;
 		}
-		setViewHeight(document.body.clientHeight  - queryHeight - footerHeight - toolbarHeight - 80)
+		setViewHeight((viewPortHeight === 'auto' ? document.body.clientHeight : viewPortHeight)  - queryHeight - footerHeight - toolbarHeight - 80)
 	}
 
 	const onPaginationChange = (pageNum,pageSize) => {
@@ -100,8 +102,10 @@ export const Page = ({
   const childProps = {...child.props};
 
   if(isPlainObject(childProps.scroll)){
-  	childProps.scroll = {...childProps.scroll,y:viewHeight}
+  	childProps.scroll = {...childProps.scroll,y:fixedHeight||viewHeight}
   }
+
+
   const newChild = React.cloneElement(child, childProps);
 
 	return <Wrap>
@@ -130,13 +134,15 @@ Page.defaultProps = {
 	onQueriesChange:function onQueriesChange(){},
 	toolbar:toolbarDefaultProps,
 	query:queryDefaultProps,
-	pagination:paginationDefaultProps
+	pagination:paginationDefaultProps,
+	viewPortHeight:'auto'
 }
 
 
 
 const Wrap = styled.div`
   flex: 1;
+  width:100%;
   padding: 0 ${SPACE_TIMES(2)} 0 ${SPACE_TIMES(1)};
   .ant-card {
     background-color: ${p => p.theme.componentBackground};

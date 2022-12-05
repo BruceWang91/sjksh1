@@ -234,6 +234,7 @@ export const ChartDraggableTargetContainer: FC<ChartDataConfigSectionProps> =
 
     const onDraggableItemMove = (dragIndex: number, hoverIndex: number) => {
       const draggedItem = currentConfig.rows?.[dragIndex];
+      console.log(draggedItem)
       if (draggedItem) {
         const newCurrentConfig = updateBy(currentConfig, draft => {
           const columns = draft.rows || [];

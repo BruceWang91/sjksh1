@@ -46,7 +46,6 @@ export function SchemaComponent({ value, dataSource, onChange }: SchemaProps) {
       },
     [value, onChange],
   );
-
   return value ? (
     <SchemaTable
       width={600}

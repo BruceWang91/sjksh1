@@ -18,16 +18,19 @@
 
 package datart.server.controller;
 
-
 import datart.core.data.provider.SchemaInfo;
 import datart.core.entity.Source;
 import datart.server.base.dto.ResponseData;
-import datart.server.base.params.*;
+import datart.server.base.params.CheckNameParam;
+import datart.server.base.params.SourceBaseUpdateParam;
+import datart.server.base.params.SourceCreateParam;
+import datart.server.base.params.SourceUpdateParam;
 import datart.server.service.SourceService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -52,6 +55,21 @@ public class SourceController extends BaseController {
     public ResponseData<List<Source>> listOrgSources(@RequestParam String orgId) {
         checkBlank(orgId, "orgId");
         return ResponseData.success(sourceService.listSources(orgId, true));
+    }
+
+    @ApiOperation(value = "数据源列表只含JDBC类型")
+    @GetMapping("/listSources")
+    public ResponseData<List<Source>> listSources(@RequestParam String orgId) {
+        checkBlank(orgId, "orgId");
+        return ResponseData.success(sourceService.listSources(orgId, "JDBC", true));
+    }
+
+    @ApiOperation("获取表中备注字段名称")
+    @GetMapping("/getTableColumnName")
+    public ResponseData<List<HashMap<String, String>>> getTableColumnName(@RequestParam(value = "sourceId", required = true) String sourceId,
+                                                                          @RequestParam(value = "tableName", required = true) String tableName) {
+
+        return ResponseData.success(sourceService.getTableColumnName(sourceId, tableName));
     }
 
     @ApiOperation(value = "get source detail")

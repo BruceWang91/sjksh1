@@ -21,10 +21,10 @@ import styled from 'styled-components/macro';
 import { ExportPage } from './ExportPage';
 import { ImportPage } from './ImportPage';
 
-export const ResourceMigrationPage: FC<{}> = memo(() => {
+export const ResourceMigrationPage = memo(({vizDatatype}) => {
   return (
     <StyledWrapper>
-      <ExportPage />
+      <ExportPage vizDatatype={vizDatatype} />
       <ImportPage />
     </StyledWrapper>
   );

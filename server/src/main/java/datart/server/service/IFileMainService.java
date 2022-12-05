@@ -67,7 +67,7 @@ public interface IFileMainService {
 
     void requirePermission(FileMain file, int permission);
 
-    void createTale(String biname, List<FileSheetField> list);
+    void createTale(String sourceId, String biname, List<FileSheetField> list);
 
     void splitTableImport(HashMap<String, Object> hashMap);
 
@@ -81,10 +81,9 @@ public interface IFileMainService {
 
     List<FileMain> getList(FileMain fileMain);
 
-    //    @DataSource(value = DataSourceType.SLAVE)
-    List<HashMap<String, Object>> selectByBiname(HashMap<String, Object> map);
-
     int updateFileMainParentId(FileMain fileMain);
 
     FileMain insertFileMainFolder(FileMain fileMain);
+
+    List<HashMap<String, Object>> selectByBiname(String sourceId, HashMap<String, Object> map);
 }

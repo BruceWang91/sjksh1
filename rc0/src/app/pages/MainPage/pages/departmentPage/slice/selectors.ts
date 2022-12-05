@@ -31,7 +31,6 @@ export const selectDepartmentsAndMembers = createSelector(
   [selectDomain],
   departmentState => departmentState.departmentsAndMembers,
 );
-
 export const selectDepartmentsAndMembersLoading = createSelector(
   [selectDomain],
   departmentState => departmentState.departmentsAndMembersLoading,

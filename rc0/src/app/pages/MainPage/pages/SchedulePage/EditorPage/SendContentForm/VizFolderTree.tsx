@@ -31,7 +31,7 @@ export const VizFolderTree: FC<VizFolderTreeProps> = ({ value, onChange }) => {
   const onCheck = useCallback(
     (_, { checkedNodes }) => {
       const items: VizContentsItem[] = (checkedNodes as Folder[])
-        .filter(j => j?.relType !== 'FOLDER')
+        .filter(j => !['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(j?.relType))
         .map(v => ({
           vizId: v?.id,
           vizType: v?.relType,

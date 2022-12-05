@@ -156,14 +156,14 @@ const slice = createSlice({
 
     // getLoggedInUserPermissions
     builder.addCase(getLoggedInUserPermissions.fulfilled, (state, action) => {
-    	console.log(action.payload)
-      state.isOwner = action.payload.orgOwner || false;
+    	
+      state.isOwner = action.payload?.orgOwner || false;
       state.permissionMap = Object.values(
         ResourceTypes,
       ).reduce<UserPermissionMap>((map, type) => {
-        map[type] = action.payload.permissionInfos
+        map[type] = action.payload?.permissionInfos
           .filter(({ resourceType }) => resourceType === type)
-          .reduce((privilegeObject, { resourceId, permission }) => {
+          ?.reduce((privilegeObject, { resourceId, permission }) => {
             if (!privilegeObject[resourceId]) {
               privilegeObject[resourceId] = permission;
             }

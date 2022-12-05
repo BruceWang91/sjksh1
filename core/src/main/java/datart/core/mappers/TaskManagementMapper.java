@@ -23,6 +23,7 @@ public interface TaskManagementMapper extends CRUDMapper {
                     "     ON task.create_by = suser.id\n" +
                     "where 1=1\n",
             "<if test=\"createBy != null and createBy != ''\"> and task.create_by = #{createBy} \n</if>" +
+                    "<if test=\"userId != null and userId != ''\"> and task.task_id in (SELECT task_id FROM task_users WHERE user_id = #{userId}) \n</if>" +
                     "<if test=\"taskName != null and taskName != ''\"> and task.task_name like concat('%', #{taskName}, '%')\n</if>" +
                     "<if test=\"status != null  and status != ''\"> and task.status = #{status}\n</if>" +
                     "<if test=\"isFolder != null \"> and task.is_folder = #{isFolder}\n</if>",
@@ -33,6 +34,8 @@ public interface TaskManagementMapper extends CRUDMapper {
                     "                #{depIds}\n" +
                     "            </foreach>\n" +
                     "</if>",
+            "group by task.task_id\n" +
+                    "order by task.task_id desc\n" +
             "</script>"
     })
     List<TaskManagement> selectTaskManagementList(TaskManagement taskManagement);

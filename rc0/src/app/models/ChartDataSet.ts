@@ -170,6 +170,24 @@ export class ChartDataSet<T>
     }, {});
     return groupedChartDataSets;
   }
+
+  public filter( filterHandler ){
+
+  	let arr = [];
+  	for( let i=0; i< this.length; i++){
+  		arr.push(this[i])
+  		delete this[i]
+  	}
+
+  	arr = arr.filter(filterHandler);
+
+  	for( let i=0; i< arr.length; i++){
+  		this[i] = arr[i]
+  		
+  	}
+  	arr = null;
+  	return this
+  }
 }
 
 export class ChartDataSetRow<T>

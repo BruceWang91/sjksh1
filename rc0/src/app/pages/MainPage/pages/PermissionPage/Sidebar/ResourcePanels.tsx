@@ -26,7 +26,8 @@ import { SPACE_MD, SPACE_XS } from 'styles/StyleConstants';
 import { ResourceTypes } from '../constants';
 import {
   selectFolderListLoading,
-  selectFolders,
+  selectDatachartFolders,
+  selectDashboardFolders,
   selectScheduleListLoading,
   selectSchedules,
   selectSourceListLoading,
@@ -40,8 +41,14 @@ import {
 	selectFilemainListLoading,
 	selectFiles,
 	selectFileListLoading,
-	selectSheets,
-	selectSheetListLoading,
+	selectReports,
+	selectReportListLoading,
+
+	selectImmassets,
+	selectImmassetListLoading,
+
+	selectMiddleTables,
+	selectMiddleTableListLoading,
 } from '../slice/selectors';
 import { FlexCollapse } from './FlexCollapse';
 import { ResourceTree } from './ResourceTree';
@@ -52,7 +59,8 @@ const { Panel } = FlexCollapse;
 export const ResourcePanels = memo(
   ({ viewpointType, onToggle, onToDetail }: PanelsProps) => {
     const [vizType, setVizType] = useState<'folder' | 'presentation'>('folder');
-    const folders = useSelector(selectFolders);
+    const datachartFolders = useSelector(selectDatachartFolders);
+    const dashboardFolders = useSelector(selectDashboardFolders);
     const storyboards = useSelector(selectStoryboards);
     const views = useSelector(selectViews);
     const sources = useSelector(selectSources);
@@ -62,15 +70,19 @@ export const ResourcePanels = memo(
     const viewListLoading = useSelector(selectViewListLoading);
     const sourceListLoading = useSelector(selectSourceListLoading);
     const scheduleListLoading = useSelector(selectScheduleListLoading);
+    const immassetListLoading = useSelector(selectImmassetListLoading);
+    const middleTableListLoading = useSelector(selectMiddleTableListLoading);
 
 
     const filemains = useSelector(selectFilemains);
     const files = useSelector(selectFiles);
-    const sheets = useSelector(selectSheets);
+    const reports = useSelector(selectReports);
+    const immassets = useSelector(selectImmassets);
+    const middleTables = useSelector(selectMiddleTables);
 
     const filemainListLoading = useSelector(selectFilemainListLoading);
     const fileListLoading = useSelector(selectFileListLoading);
-    const sheetListLoading = useSelector(selectSheetListLoading);
+    const reportListLoading = useSelector(selectReportListLoading);
 
 
 
@@ -78,36 +90,53 @@ export const ResourcePanels = memo(
     const [activeKeys,setActiveKeys] = useState([]);
     const resourcePanels = useMemo(
       () => [
-        {
-          type: ResourceTypes.Viz,
-          dataSource: void 0,
-          loading: false,
-        },
-        {
-          type: ResourceTypes.View,
-          dataSource: views,
-          loading: viewListLoading,
-        },
-        {
-          type: ResourceTypes.Source,
-          dataSource: sources,
-          loading: sourceListLoading,
-        },
-        {
+      	{
           type: ResourceTypes.ExcelTemplate,
           dataSource: filemains,
           loading: filemainListLoading,
         },
         {
-          type: ResourceTypes.ExcelView,
-          dataSource: sheets,
-          loading: sheetListLoading,
+          type: ResourceTypes.Report,
+          dataSource: reports,
+          loading: reportListLoading,
         },
         {
           type: ResourceTypes.File,
           dataSource: files,
           loading: fileListLoading,
         },
+        {
+          type: ResourceTypes.VizDatachart,
+          dataSource: datachartFolders,
+          loading: folderListLoading,
+        },
+         {
+          type: ResourceTypes.VizDashboard,
+          dataSource: dashboardFolders,
+          loading: folderListLoading,
+        },
+        {
+          type: ResourceTypes.View,
+          dataSource: views,
+          loading: viewListLoading,
+        },
+
+        {
+          type: ResourceTypes.ImmAsset,
+          dataSource: immassets,
+          loading: immassetListLoading,
+        },
+        {
+          type: ResourceTypes.ImmData,
+          dataSource: middleTables,
+          loading: middleTableListLoading,
+        },
+        {
+          type: ResourceTypes.Source,
+          dataSource: sources,
+          loading: sourceListLoading,
+        },
+        
         {
           type: ResourceTypes.Schedule,
           dataSource: schedules,
@@ -118,12 +147,22 @@ export const ResourcePanels = memo(
         views,
         sources,
         schedules,
+        files,
+        filemains,
+        reports,
+        datachartFolders,
+        dashboardFolders,
+        immassets,
+        middleTables,
         viewListLoading,
         sourceListLoading,
         scheduleListLoading,
         fileListLoading,
-        sheetListLoading,
-        filemainListLoading
+        folderListLoading,
+        reportListLoading,
+        filemainListLoading,
+        middleTableListLoading,
+        immassetListLoading
       ],
     );
 
@@ -145,46 +184,13 @@ export const ResourcePanels = memo(
 	            	}
 	            }}
           >
-            {resourceType === ResourceTypes.Viz ? (
-              <>
-                <VizTypeSwitch key="switch">
-                  <Col>
-                    <Radio.Group value={vizType} onChange={vizTypeChange}>
-                      <Radio value="folder">{t('folder')}</Radio>
-                      <Radio value="presentation">{t('presentation')}</Radio>
-                    </Radio.Group>
-                  </Col>
-                </VizTypeSwitch>
-                <VizTreeWrapper
-                  key="folder"
-                  className={classNames({ selected: vizType === 'folder' })}
-                >
-                  <ResourceTree
-                    loading={folderListLoading}
-                    dataSource={folders}
-                    onSelect={onToDetail}
-                  />
-                </VizTreeWrapper>
-                <VizTreeWrapper
-                  key="persentation"
-                  className={classNames({
-                    selected: vizType === 'presentation',
-                  })}
-                >
-                  <ResourceTree
-                    loading={storyboardListLoading}
-                    dataSource={storyboards}
-                    onSelect={onToDetail}
-                  />
-                </VizTreeWrapper>
-              </>
-            ) : (
-              <ResourceTree
-                loading={loading}
-                dataSource={dataSource}
-                onSelect={onToDetail}
-              />
-            )}
+            
+            <ResourceTree
+              loading={loading}
+              dataSource={dataSource}
+              onSelect={onToDetail}
+            />
+           
           </Panel>
         ))}
       </FlexCollapse>

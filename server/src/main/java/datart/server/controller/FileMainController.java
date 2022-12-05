@@ -123,10 +123,12 @@ public class FileMainController extends BaseController {
     }
 
     @ApiOperation("查询已导入工作簿的内容")
-    @GetMapping("/getbiaoname/{biaoname}")
-    public ResponseData<List<HashMap<String, Object>>> getbiaoname(@PathVariable("biaoname") String biaoname) {
+    @GetMapping("/getbiaoname/{fileId}/{biaoname}")
+    public ResponseData<List<HashMap<String, Object>>> getbiaoname(@PathVariable("fileId") Long fileId,
+                                                                   @PathVariable("biaoname") String biaoname) {
 
-        return ResponseData.success(fileMainService.selectByBiname(new HashMap<String, Object>() {{
+        FileMain fileMain = fileMainService.selectFileMainByFileId(fileId);
+        return ResponseData.success(fileMainService.selectByBiname(fileMain.getSourceId(), new HashMap<String, Object>() {{
             put("biname", biaoname);
         }}));
     }

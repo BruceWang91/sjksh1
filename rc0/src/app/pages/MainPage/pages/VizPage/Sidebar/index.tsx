@@ -21,6 +21,7 @@ interface SidebarProps extends I18NComponentProps {
   width: number;
   sliderVisible: boolean;
   handleSliderVisible: (status: boolean) => void;
+  vizDatatype:string,
 }
 
 export const Sidebar = memo(
@@ -30,13 +31,14 @@ export const Sidebar = memo(
     i18nPrefix,
     sliderVisible,
     handleSliderVisible,
+    vizDatatype
   }: SidebarProps) => {
     const [selectedKey, setSelectedKey] = useState('folder');
     const vizs = useSelector(selectVizs);
     const storyboards = useSelector(selectStoryboards);
 
     const matchDetail = useRouteMatch<{ vizId: string }>(
-      '/organizations/:orgId/vizs/:vizId',
+      '/organizations/:orgId/'+vizDatatype+'/:vizId',
     );
     const vizId = matchDetail?.params.vizId;
     const t = useI18NPrefix(i18nPrefix);
@@ -76,7 +78,7 @@ export const Sidebar = memo(
 
     return (
       <Wrapper
-        sliderVisible={sliderVisible}
+        slidervisible={(sliderVisible as Boolean).toString()}
         className={sliderVisible ? 'close' : ''}
         isDragging={isDragging}
         width={width}
@@ -96,6 +98,7 @@ export const Sidebar = memo(
           handleSliderVisible={handleSliderVisible}
           selectedId={selectedFolderId}
           i18nPrefix={i18nPrefix}
+          vizDatatype={vizDatatype}
           className={classnames({ hidden: selectedKey !== 'folder' })}
         />
         {/*<Storyboards*/}
@@ -110,11 +113,7 @@ export const Sidebar = memo(
   },
 );
 
-const Wrapper = styled.div<{
-  sliderVisible: boolean;
-  isDragging: boolean;
-  width: number;
-}>`
+const Wrapper = styled.div`
   z-index: ${LEVEL_5};
   display: flex;
   flex-direction: column;
@@ -123,17 +122,17 @@ const Wrapper = styled.div<{
   border-color:${p => p.theme.borderColorSplit};
   border-style: solid;
   border-width:1px 0;
-  background-color: ${p => p.theme.componentBackground};
+  background: ${p => p.theme.siderBackground};
   box-shadow: ${p => p.theme.shadowSider};
   transition: ${p => (!p.isDragging ? 'width 0.3s ease' : 'none')};
   .hidden {
     display: none;
   }
   > ul {
-    display: ${p => (p.sliderVisible ? 'none' : 'block')};
+    display: ${p => (p.slidervisible === 'true' ? 'none' : 'block')};
   }
   > div {
-    display: ${p => (p.sliderVisible ? 'none' : 'flex')};
+    display: ${p => (p.slidervisible === 'true' ? 'none' : 'flex')};
   }
   &.close {
     position: absolute;
@@ -160,5 +159,10 @@ const Wrapper = styled.div<{
         }
       }
     }
+  }
+
+
+  .ant-tree{
+  	background-color:transparent;
   }
 `;

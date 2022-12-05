@@ -219,6 +219,7 @@ export const ChartStyleSectionComponentType = {
   FONT_ALIGNMENT: 'fontAlignment',
   NAME_LOCATION: 'nameLocation',
   LABEL_POSITION: 'labelPosition',
+  LABELS_POSITION: 'labelsPosition',
   LEGEND_TYPE: 'legendType',
   LEGEND_POSITION: 'legendPosition',
   SCORECARD_LIST_TEMPLATE: 'scorecardListTemplate',
@@ -233,6 +234,8 @@ export const ChartStyleSectionComponentType = {
   INTERACTION_VIEW_DETAIL_PANEL: 'interaction.viewDetail',
   DATA_ZOOM_PANEL: 'dataZoomPanel',
   Y_AXIS_NUMBER_FORMAT_PANEL: 'YAxisNumberFormatPanel',
+
+  TABLE_ALIGNMENT:'tableAlignment'
 };
 
 export enum DownloadFileType {

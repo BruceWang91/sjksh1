@@ -196,7 +196,7 @@ const slice = createSlice({
     });
     builder.addCase(getViews.fulfilled, (state, action) => {
       state.viewListLoading = false;
-      state.views = action.payload.map(v => ({ ...v, deleteLoading: false }));
+      state.views = action.payload?.map(v => ({ ...v, deleteLoading: false }));
     });
     builder.addCase(getViews.rejected, state => {
       state.viewListLoading = false;

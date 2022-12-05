@@ -186,7 +186,7 @@ export const widgetClickJumpAction =
           [jumpConfig?.filter?.filterId]: rowDataValue,
         });
         history.push(
-          `/organizations/${orgId}/vizs/${targetId}?${searchParamsStr}`,
+          `/organizations/${orgId}/vizdatacharts/${targetId}?${searchParamsStr}`,
         );
       }
     }

@@ -145,7 +145,7 @@
     	"exceltemplates": "数据接入管理",
       "vizs": "数据分析",
       "tbgl": "图表管理",
-      "ybpgl": "仪表盘管理",
+      "ybpgl": "数说分析管理",
       "views": "数据集管理",
       "sources": "数据源",
       "schedules": "定时任务",
@@ -532,7 +532,7 @@
         "goBack": "返回",
         "run": "执行",
         "save": "保存",
-        "saveToDashboard": "保存到仪表板",
+        "saveToDashboard": "保存到数说分析",
         "login": "登陆",
         "aggregationSwitch": "数据聚合",
         "aggregationSwitchTip": "开启/关闭数据聚合之前将会清空所有图表配置，确认继续？",
@@ -737,6 +737,7 @@
         "dimension": "维度",
         "metrics": "指标",
         "mixed": "字段",
+        "total":"合计行",
         "filter": "筛选",
         "colorize": "颜色",
         "colorRange": "Range Color",
@@ -770,7 +771,9 @@
             "unit": "单位",
             "useSeparator": "启用分隔符",
             "prefix": "前缀",
-            "suffix": "后缀"
+            "suffix": "后缀",
+            "trend":"趋势图标",
+            "replaceSign":"正负号由`高低`来表示"
           },
           "aggregation": "聚合",
           "aggregationlimit": "聚合",
@@ -793,7 +796,11 @@
           "y": {
             "left": "左指标轴",
             "right": "右指标轴"
-          }
+          },
+          "card": "指标卡",
+          "rowcard1":"行一指标卡",
+          "rowcard2":"行二指标卡",
+          "groupby":"定位指标"
         },
         "enum": {
           "actionType": {
@@ -880,7 +887,7 @@
             "category": {
               "title": "类型",
               "jumpToChart": "跳转到图表",
-              "jumpToDashboard": "跳转到仪表板",
+              "jumpToDashboard": "跳转到数说分析",
               "jumpToUrl": "跳转到URL"
             },
             "action": {
@@ -934,7 +941,7 @@
           "areaChart": "区域图",
           "barChart": "条形图",
           "funnelChart": "漏斗图",
-          "gaugeChart": "仪表盘",
+          "gaugeChart": "数说分析",
           "lineChart": "折线图",
           "outlineMap": "轮廓地图",
           "pieChart": "饼图",
@@ -955,7 +962,12 @@
           "stackBarChart": "堆叠条形图",
           "stackColumnChart": "堆叠柱状图",
           "waterfallChart": "瀑布图",
-          "wordCloudChart": "词云"
+          "wordCloudChart": "词云",
+          "templateChart":"指标卡+柱线图模板",
+          "templateChart2":"指标卡+饼图模板",
+          "templateChart3":"多指标卡模板",
+          "templateChart4":"表格模板",
+          "levelCardsChart":"扩展多指标卡模板"
         },
         "group": "维度",
         "aggregate": "指标",
@@ -1017,7 +1029,7 @@
       "archived": "已归档",
       "play": "播放",
       "syncData": "同步数据",
-      "addToDash": "添加到仪表板",
+      "addToDash": "添加到数说分析",
       "addToStory": "添加到故事板",
       "share": {
         "link": "链接",
@@ -1213,7 +1225,7 @@
       "title": "跳转设置",
       "mode": "跳转方式",
       "target": "跳转目标",
-      "INTERNAL": "仪表盘 / 数据图表",
+      "INTERNAL": "数说分析 / 数据图表",
       "URL": "URL",
       "parameters": "Parameters",
       "controller": "关联控制器",
@@ -1231,15 +1243,18 @@
       "folder": "目录",
       "presentation": "演示",
       "folders": {
-        "folderTitle": "仪表板 & 数据图表",
-        "dashboard": "新建仪表板",
+        "dashboard": "新建数说分析",
         "dataChart": "新建数据图表",
         "template": "导入模板",
         "folder": "新建目录",
         "recycle": "回收站",
         "open": "展开",
         "close": "收起",
-        "startAnalysis": "开始分析"
+        "startAnalysis": "新建图表",
+        "title": {
+        	"datachart":"图表设计",
+        	"dashboard":"数说分析设计"
+        }
       },
       "storyboards": {
         "title": "故事板列表",
@@ -1269,7 +1284,7 @@
       "noStartValue": "请填写 起始值",
       "noEndValue": "请填写 结束值",
       "endGTStartErr": "起始值 该小于 结束值",
-      "hasChartConfig": "图表已启用配置，当前仪表板启用后会覆盖图表配置。"
+      "hasChartConfig": "图表已启用配置，当前数说分析启用后会覆盖图表配置。"
     },
     "control": {
       "title": "控制器标题",
@@ -1321,8 +1336,9 @@
       "root": "根目录",
       "vizType": {
         "datachart": "数据图表",
-        "dashboard": "仪表板",
-        "folder": "目录",
+        "dashboard": "数说分析",
+        "dashboard_folder": "目录",
+        "datachart_folder": "目录",
         "template": "通过模板",
         "storyboard": "故事板"
       }
@@ -1576,13 +1592,18 @@
       "resource": "资源访问控制"
     },
     "module": {
-    	"excel_template": "表样设计",
+    	"excel_template": "表样",
     	"excel_view": "数据预览",
     	"file": "文件",
       "source": "数据源",
       "view": "数据集",
       "viz": "可视化",
-      "schedule": "定时任务"
+      "schedule": "定时任务",
+      "report":"报表",
+      "viz_dashboard":"数说分析",
+      "viz_datachart":"图表",
+      "imm_asset":"静态资源",
+      "imm_data":"指标管理"
     },
     "modulePermissionLabel": {
       "Enable": "启用",
@@ -1593,7 +1614,13 @@
       "Disable": "禁用"
     },
     "privilegeLabel": {
-      "viz": {
+      "viz_datachart": {
+        "0": "查看",
+        "1": "下载",
+        "2": "分享",
+        "3": "管理"
+      },
+      "viz_dashboard": {
         "0": "查看",
         "1": "下载",
         "2": "分享",
@@ -1603,7 +1630,35 @@
         "0": "使用",
         "1": "管理"
       },
+      "imm_data": {
+        "0": "浏览",
+        "1": "管理"
+      },
+      "imm_asset": {
+        "0": "浏览",
+        "1": "管理"
+      },
+      "excel_view": {
+        "0": "浏览",
+        "1": "管理"
+      },
+      "excel_template": {
+        "0": "浏览",
+        "1": "管理"
+      },
+      "task": {
+        "0": "浏览",
+        "1": "管理"
+      },
+       "file": {
+        "0": "浏览",
+        "1": "管理"
+      },
       "source": {
+        "0": "使用",
+        "1": "管理"
+      },
+      "report": {
         "0": "使用",
         "1": "管理"
       },
@@ -1698,9 +1753,9 @@
       "searchValue": "搜索名称关键字"
     },
     "saveToDashOrStory": {
-      "createDashboard": "新建仪表板",
+      "createDashboard": "新建数说分析",
       "searchValue": "搜索名称关键字",
-      "haveCharts": "仪表板中已有该图表，不能重复添加"
+      "haveCharts": "数说分析中已有该图表，不能重复添加"
     }
   }
 }

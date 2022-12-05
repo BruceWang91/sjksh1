@@ -42,11 +42,12 @@ export function handleDefaultConfig(defaultConfig, configType): any {
       draft.rows[i].aggregate = undefined;
     });
 
-    if (configType === ChartDataSectionType.Aggregate) {
+
+    if (configType === ChartDataSectionType.Aggregate &&  draft.actions  &&  !Array.isArray(draft.actions) ) {
       delete draft.actions.STRING;
     }
 
-    if (configType === ChartDataSectionType.Group) {
+    if (configType === ChartDataSectionType.Group &&  draft.actions  &&  !Array.isArray(draft.actions) ) {
       delete draft.actions.NUMERIC;
     }
 

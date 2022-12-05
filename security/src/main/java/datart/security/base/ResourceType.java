@@ -9,6 +9,8 @@ public enum ResourceType {
     WIDGET,
     DASHBOARD("shareDashboard"),
     FOLDER,
+    DATACHART_FOLDER,
+    DASHBOARD_FOLDER,
     STORYBOARD("shareStoryPlayer"),
     VIZ,
     FILE,
@@ -31,6 +33,10 @@ public enum ResourceType {
     SCHEDULE,
     ROLE,
     USER,
+    IMM,
+    IMM_ASSET,
+    IMM_DATA,
+    IMM_SCREEN,
     TASK;
 
     private String shareRoute;

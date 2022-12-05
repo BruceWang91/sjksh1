@@ -39,7 +39,7 @@ export const selectOrgId = createSelector(
 
 export const selectCurrentOrganization = createSelector(
   [selectOrganizations, selectOrgId],
-  (organizations, orgId) => organizations.find(({ id }) => id === orgId),
+  (organizations, orgId) => organizations?.find(({ id }) => id === orgId),
 );
 
 export const selectIsOrgOwner = createSelector(

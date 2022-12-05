@@ -40,7 +40,7 @@ export const RED = '#E62412';
  * G80 - font
  */
 export const WHITE = '#FFFFFF';
-export const G10 = '#F5F8FA';
+export const G10 = '#fbfbfb';
 export const G20 = '#EFF2F5';
 export const G30 = '#E4E6EF';
 export const G40 = '#B5B5C3';
@@ -60,6 +60,8 @@ export const DG60 = '#6D6D80';
 export const DG70 = '#92929F';
 export const DG80 = '#CDCDDE';
 export const DG90 = '#FFFFFF';
+export const GG10 = '#e6e9e9';
+export const GG20 = '#c7d8d7'
 
 // theme color
 export const PRIMARY = '#026968';

@@ -16,6 +16,8 @@ public enum FileOwner {
 
     FILE_SAVE_DATA("resources/filesave/data/"),
 
+    STATIC_FILE_SAVE_DATA("resources/staticfile/data/"),
+
     SCHEDULE("schedule/files/"),
 
     DOWNLOAD("download/"),

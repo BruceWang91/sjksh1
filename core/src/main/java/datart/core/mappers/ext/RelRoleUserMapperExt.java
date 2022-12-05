@@ -83,5 +83,8 @@ public interface RelRoleUserMapperExt extends RelRoleUserMapper {
     })
     int deleteByUserAndRoles(String userId, List<String> roleIds);
 
-
+    @Select({
+            "SELECT role_id FROM rel_role_user WHERE user_id = #{userId}"
+    })
+    List<String> getRoleIdsByUserId(String userId);
 }

@@ -112,6 +112,7 @@ public interface TaskTemplateMapper extends CRUDMapper {
                     "management.end_time as endTime,\n" +
                     "file.file_id as fileId,\n" +
                     "file.file_name as fileName,\n" +
+                    "file.source_id as sourceId,\n" +
                     "u.id as userId,\n" +
                     "u.`name` as userName,\n" +
                     "dept.dept_id as deptId,\n" +
@@ -129,7 +130,7 @@ public interface TaskTemplateMapper extends CRUDMapper {
                     "on file.file_id = template.file_id \n" +
                     "where 1=1 \n" +
                     "<if test=\"taskId != null\">and management.task_id = #{taskId}\n</if>\n" +
-                    "<if test=\"userId != null\">and u.id = #{userId} or management.create_by = #{userId} \n</if>\n" +
+                    "<if test=\"userId != null\">and u.id = #{userId} \n</if>\n" +
                     "</script>"
     })
     List<TaskInformationResult> getTaskResult(TaskInformationParam param);

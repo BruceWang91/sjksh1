@@ -46,6 +46,7 @@ export const Folders = memo(
     i18nPrefix,
     sliderVisible,
     handleSliderVisible,
+    vizDatatype,
   }: FoldersProps) => {
     const dispatch = useDispatch();
     const orgId = useSelector(selectOrgId);
@@ -110,59 +111,69 @@ export const Folders = memo(
     );
 
     const titles = useMemo(
-      () => [
-        {
-          subTitle: t('folders.folderTitle'),
-          add: {
-            items: [
-              { key: 'DATACHART', text: t('folders.startAnalysis') },
-              { key: 'DASHBOARD', text: t('folders.dashboard') },
-              { key: 'FOLDER', text: t('folders.folder') },
-              { key: 'TEMPLATE', text: t('folders.template') },
-            ],
-            callback: add,
-          },
-          more: {
-            items: [
-              {
-                key: 'recycle',
-                text: t('folders.recycle'),
-                prefix: <DeleteOutlined className="icon" />,
-              },
-              {
-                key: 'collapse',
-                text: t(sliderVisible ? 'folders.open' : 'folders.close'),
-                prefix: sliderVisible ? (
-                  <MenuUnfoldOutlined className="icon" />
-                ) : (
-                  <MenuFoldOutlined className="icon" />
-                ),
-              },
-            ],
-            callback: (key, _, onNext) => {
-              switch (key) {
-                case 'recycle':
-                  onNext();
-                  break;
-                case 'collapse':
-                  handleSliderVisible(!sliderVisible);
-                  dispatchResize();
-                  break;
-              }
-            },
-          },
-          search: true,
-          onSearch: treeSearch,
-        },
-        {
-          key: 'recycle',
-          subTitle: t('folders.recycle'),
-          back: true,
-          search: true,
-          onSearch: listSearch,
-        },
-      ],
-      [add, treeSearch, listSearch, t, sliderVisible, handleSliderVisible],
+      () => {
+
+      	const  vizDatatypeAddMenus = {
+        	DATACHART: [
+            { key: 'DATACHART', text: t('folders.startAnalysis') },
+            { key: 'DATACHART_FOLDER', text: t('folders.folder') },
+          ],
+        	DASHBOARD:[
+            { key: 'DASHBOARD', text: t('folders.dashboard') },
+            { key: 'DASHBOARD_FOLDER', text: t('folders.folder') },
+            { key: 'TEMPLATE', text: t('folders.template') },
+          ],
+        }
+      	return [
+	        {
+	          subTitle: t('folders.title.'+vizDatatype.toLowerCase()),
+	          add: {
+	            items: vizDatatypeAddMenus[vizDatatype],
+	            
+	            callback: add,
+	          },
+	          more: {
+	            items: [
+	              {
+	                key: 'recycle',
+	                text: t('folders.recycle'),
+	                prefix: <DeleteOutlined className="icon" />,
+	              },
+	              {
+	                key: 'collapse',
+	                text: t(sliderVisible ? 'folders.open' : 'folders.close'),
+	                prefix: sliderVisible ? (
+	                  <MenuUnfoldOutlined className="icon" />
+	                ) : (
+	                  <MenuFoldOutlined className="icon" />
+	                ),
+	              },
+	            ],
+	            callback: (key, _, onNext) => {
+	              switch (key) {
+	                case 'recycle':
+	                  onNext();
+	                  break;
+	                case 'collapse':
+	                  handleSliderVisible(!sliderVisible);
+	                  dispatchResize();
+	                  break;
+	              }
+	            },
+	          },
+	          search: true,
+	          onSearch: treeSearch,
+	        },
+	        {
+	          key: 'recycle',
+	          subTitle: t('folders.recycle'),
+	          back: true,
+	          search: true,
+	          onSearch: listSearch,
+	        },
+	      ]
+      },
+      [add, treeSearch, listSearch, t, sliderVisible, handleSliderVisible , vizDatatype],
     );
 
     return (
@@ -173,12 +184,14 @@ export const Folders = memo(
             treeData={filteredTreeData}
             selectedId={selectedId}
             i18nPrefix={i18nPrefix}
+            vizDatatype={vizDatatype}
           />
         </ListPane>
         <ListPane key="recycle">
           <ListTitle {...titles[1]} />
           <Recycle
-            type="viz"
+            type={vizDatatype}
+            vizDatatype={vizDatatype}
             orgId={orgId}
             list={filteredListData}
             listLoading={archivedDashboardLoading || archivedDataChartLoading}
@@ -197,5 +210,5 @@ const Wrapper = styled(ListNav)`
   flex-direction: column;
   min-height: 0;
   padding: ${SPACE_XS} 0;
-  background-color: ${p => p.theme.componentBackground};
+  background-color:transparent;
 `;

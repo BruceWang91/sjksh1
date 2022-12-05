@@ -62,6 +62,9 @@ public interface FileSheetsMapperExt extends FileSheetsMapper {
                     "        <if test=\"delFlag != null\">\n" +
                     "            AND sheets.del_flag = #{delFlag}\n" +
                     "        </if>\n" +
+                    "        <if test=\"fileId != null\">\n" +
+                    "            AND sheets.file_id = #{fileId}\n" +
+                    "        </if>\n" +
                     "        <if test=\"depIds != null and depIds.size() > 0\">\n" +
                     "            AND suser.dept_id IN\n" +
                     "            <foreach item=\"depIds\" collection=\"depIds\" open=\"(\" separator=\",\" close=\")\">\n" +

@@ -1,6 +1,9 @@
 package datart.server.config;
 
-import com.sun.javafx.sg.prism.web.NGWebView;
+import datart.security.exception.AuthException;
+import datart.server.base.dto.ResponseData;
+import datart.server.config.datasource.DynamicDataSource;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -22,149 +25,216 @@ public class RestCtrlExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(RestCtrlExceptionHandler.class);
 
     //括号内可填写具体的异常，这样这个方法就只会捕捉这个异常
-    /** 除数不能为0 */
+
+    /**
+     * 除数不能为0
+     */
     @ExceptionHandler(ArithmeticException.class)
-    public String numberException(ArithmeticException e, HttpServletRequest request){
+    public ResponseData<String> numberException(ArithmeticException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 运行时异常 */
+    /**
+     * 运行时异常
+     */
     @ExceptionHandler(RuntimeException.class)
-    public String runtimeException(RuntimeException e, HttpServletRequest request){
+    public ResponseData<String> runtimeException(RuntimeException e, HttpServletRequest request) {
+
         StringBuffer requestURL = request.getRequestURL();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+//        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
     }
 
-    /** 空指针异常 */
+    /**
+     * 未登录异常
+     * @param e
+     * @param request
+     * @return
+     */
+    @ExceptionHandler(AuthException.class)
+    public ResponseData<String> authException(AuthException e, HttpServletRequest request){
+
+        StringBuffer requestURL = request.getRequestURL();
+        return ResponseData.failure(e.getMessage(),401);
+    }
+
+    /**
+     * token校验异常
+     * @param e
+     * @param request
+     * @return
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseData<String> jwtException(ExpiredJwtException e,HttpServletRequest request){
+
+        StringBuffer requestURL = request.getRequestURL();
+        return ResponseData.failure(requestURL + " token超时校验异常" ,401);
+    }
+
+    /**
+     * 空指针异常
+     */
     @ExceptionHandler(NullPointerException.class)
-    public String nullPointerException(NullPointerException e, HttpServletRequest request){
+    public ResponseData<String> nullPointerException(NullPointerException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 类型转换异常 */
+    /**
+     * 类型转换异常
+     */
     @ExceptionHandler(ClassCastException.class)
-    public String classCastException(ClassCastException e, HttpServletRequest request){
+    public ResponseData<String> classCastException(ClassCastException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 文件未找到异常 */
+    /**
+     * 文件未找到异常
+     */
     @ExceptionHandler(FileNotFoundException.class)
-    public String fileNotFoundException(FileNotFoundException e, HttpServletRequest request){
+    public ResponseData<String> fileNotFoundException(FileNotFoundException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 数字格式异常 */
+    /**
+     * 数字格式异常
+     */
     @ExceptionHandler(NumberFormatException.class)
-    public String numberFormatException(NumberFormatException e, HttpServletRequest request){
+    public ResponseData<String> numberFormatException(NumberFormatException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 安全异常 */
+    /**
+     * 安全异常
+     */
     @ExceptionHandler(SecurityException.class)
-    public String securityException(SecurityException e, HttpServletRequest request){
+    public ResponseData<String> securityException(SecurityException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** sql异常 */
+    /**
+     * sql异常
+     */
     @ExceptionHandler(SQLException.class)
-    public String sqlException(SQLException e, HttpServletRequest request){
+    public ResponseData<String> sqlException(SQLException e, HttpServletRequest request) {
+        DynamicDataSource.clear();
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
         log.error(e.getMessage());
-        return requestURL+"地址出现错误，错误信息为SQL脚本异常";
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为SQL脚本异常");
     }
 
-    /** 类型不存在异常 */
+    /**
+     * 类型不存在异常
+     */
     @ExceptionHandler(TypeNotPresentException.class)
-    public String typeNotPresentException(TypeNotPresentException e, HttpServletRequest request){
+    public ResponseData<String> typeNotPresentException(TypeNotPresentException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** IO异常 */
+    /**
+     * IO异常
+     */
     @ExceptionHandler(IOException.class)
-    public String ioException(IOException e, HttpServletRequest request){
+    public ResponseData<String> ioException(IOException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 未知方法异常 */
+    /**
+     * 未知方法异常
+     */
     @ExceptionHandler(NoSuchMethodException.class)
-    public String noSuchMethodException(NoSuchMethodException e, HttpServletRequest request){
+    public ResponseData<String> noSuchMethodException(NoSuchMethodException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** sql语法错误异常 */
+    /**
+     * sql语法错误异常
+     */
     @ExceptionHandler(BadSqlGrammarException.class)
-    public String badSqlGrammarException(BadSqlGrammarException e, HttpServletRequest request){
+    public ResponseData<String> badSqlGrammarException(BadSqlGrammarException e, HttpServletRequest request) {
+        DynamicDataSource.clear();
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
         log.error(e.getMessage());
-        return requestURL+"地址出现错误，错误信息为sql语法错误异常";
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为sql语法错误异常");
     }
 
-    /** 无法注入bean异常 */
+    /**
+     * 无法注入bean异常
+     */
     @ExceptionHandler(NoSuchBeanDefinitionException.class)
-    public String noSuchBeanDefinitionException(NoSuchBeanDefinitionException e, HttpServletRequest request){
+    public ResponseData<String> noSuchBeanDefinitionException(NoSuchBeanDefinitionException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** Http消息不可读异常 */
+    /**
+     * Http消息不可读异常
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public String httpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request){
+    public ResponseData<String> httpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 400错误 */
+    /**
+     * 400错误
+     */
     @ExceptionHandler(TypeMismatchException.class)
-    public String typeMismatchException(TypeMismatchException e, HttpServletRequest request){
+    public ResponseData<String> typeMismatchException(TypeMismatchException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 500错误 */
+    /**
+     * 500错误
+     */
     @ExceptionHandler(ConversionNotSupportedException.class)
-    public String conversionNotSupportedException(ConversionNotSupportedException e, HttpServletRequest request){
+    public ResponseData<String> conversionNotSupportedException(ConversionNotSupportedException e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 栈溢出 */
+    /**
+     * 栈溢出
+     */
     @ExceptionHandler(StackOverflowError.class)
-    public String stackOverflowError(StackOverflowError e, HttpServletRequest request){
+    public ResponseData<String> stackOverflowError(StackOverflowError e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 
-    /** 其他错误 */
+    /**
+     * 其他错误
+     */
     @ExceptionHandler(Exception.class)
-    public String exception(Exception e, HttpServletRequest request){
+    public ResponseData<String> exception(Exception e, HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         //返回信息可以自定义，例如自定义response结构来设置code和message
-        return requestURL+"地址出现错误，错误信息为"+e.getMessage();
+        return ResponseData.failure(requestURL + "地址出现错误，错误信息为" + e.getMessage());
     }
 }

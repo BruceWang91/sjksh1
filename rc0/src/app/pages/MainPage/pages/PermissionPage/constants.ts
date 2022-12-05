@@ -29,8 +29,11 @@ export enum ResourceTypes {
 	Variable = 'VARIABLE',
 	ResourceMigration = 'RESOURCE_MIGRATION',
 
-
-	
+	Task = 'TASK',
+	Imm = 'IMM',
+	ImmAsset = 'IMM_ASSET',
+	ImmData = 'IMM_DATA',
+	ImmScreen = 'IMM_SCREEN',
 	DataAccess='DATA_ACCESS',
 	DataImport='DATA_IMPORT',
 	ExcelView='EXCEL_VIEW',//表样数据预览
@@ -40,7 +43,7 @@ export enum ResourceTypes {
   Source = 'SOURCE',
   View = 'VIEW',
   Viz = 'VIZ',
-  VizChart = 'VIZ_CHART',
+  VizDatachart = 'VIZ_DATACHART',
   VizDashboard = 'VIZ_DASHBOARD',
   Share = 'SHARE',
   Download = 'DOWNLOAD',
@@ -50,8 +53,10 @@ export enum ResourceTypes {
   Manager = 'MANAGER',
 }
 
+
 export enum VizResourceSubTypes {
-  Folder = 'FOLDER',
+  DatachartFolder = 'DATACHART_FOLDER',
+  DashboardFolder = 'DASHBOARD_FOLDER',
   Storyboard = 'STORYBOARD',
 }
 
@@ -74,14 +79,25 @@ export enum PermissionLevels {
 }
 
 export const RESOURCE_TYPE_PERMISSION_MAPPING = {
-	[ResourceTypes.System]: [PermissionLevels.Read, PermissionLevels.Create],
-	[ResourceTypes.DataAccess]: [PermissionLevels.Read, PermissionLevels.Create],
-	[ResourceTypes.DataImport]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.ImmAsset]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.ImmData]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.ImmScreen]: [],
+	
+	[ResourceTypes.Task]: [PermissionLevels.Read, PermissionLevels.Create],
+	[ResourceTypes.System]: [],
+	[ResourceTypes.DataAccess]: [],
+	[ResourceTypes.DataImport]: [],
 	[ResourceTypes.ExcelView]: [PermissionLevels.Read, PermissionLevels.Create],
 	[ResourceTypes.File]: [PermissionLevels.Read, PermissionLevels.Create],
 	[ResourceTypes.ExcelTemplate]: [PermissionLevels.Read, PermissionLevels.Create],
 	[ResourceTypes.Report]: [PermissionLevels.Read, PermissionLevels.Create],
-  [ResourceTypes.Viz]: [
+  [ResourceTypes.VizDatachart]: [
+    PermissionLevels.Read,
+    PermissionLevels.Download,
+    PermissionLevels.Share,
+    PermissionLevels.Create,
+  ],
+  [ResourceTypes.VizDashboard]: [
     PermissionLevels.Read,
     PermissionLevels.Download,
     PermissionLevels.Share,

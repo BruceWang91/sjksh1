@@ -110,6 +110,14 @@ public class FileSave {
      */
     private String remark;
 
+    private String createName;
+
+    private String userName;
+
+    private String deptName;
+
+    private Long deptId;
+
     /**
      * 上传的文件二进制流
      */
@@ -119,8 +127,6 @@ public class FileSave {
      * 转换PDF文件二进制流
      */
     private byte[] pdfBin;
-
-    private Long deptId;
 
     /**
      * 部门ids

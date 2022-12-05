@@ -178,19 +178,23 @@ public class FileSheetsServiceImpl extends BaseService implements IFileSheetsSer
             hashMap.put("depIds", fileSheets.getDepIds());
         }
         hashMap.put("delFlag", WhetherEnum.NO.getValue());
+        if (null != fileSheets.getFileId()) {
+            hashMap.put("fileId", fileSheets.getFileId());
+        }
         List<FileSheets> list = fileSheetsMapper.getSheetList(hashMap);
-        Map<Long, FileSheets> filtered = new HashMap<>();
-        List<FileSheets> permitted = list.stream().filter(file -> {
-            try {
-                requirePermission(file, Const.READ);
-                return true;
-            } catch (Exception e) {
-                filtered.put(file.getSheetId(), file);
-                return false;
-            }
-        }).collect(Collectors.toList());
-
-        return permitted;
+        return list;
+//        Map<Long, FileSheets> filtered = new HashMap<>();
+//        List<FileSheets> permitted = list.stream().filter(file -> {
+//            try {
+//                requirePermission(file, Const.READ);
+//                return true;
+//            } catch (Exception e) {
+//                filtered.put(file.getSheetId(), file);
+//                return false;
+//            }
+//        }).collect(Collectors.toList());
+//
+//        return permitted;
     }
 
     @Override
@@ -204,7 +208,7 @@ public class FileSheetsServiceImpl extends BaseService implements IFileSheetsSer
                 List<FileSheetField> fields = fileSheetFieldMapper.selectFileSheetFieldList(new FileSheetField() {{
                     setSheetId(fileSheetsResult.getSheetId());
                 }});
-                if (!CollectionUtils.isEmpty(fields)){
+                if (!CollectionUtils.isEmpty(fields)) {
 
                     fileSheetsResult.setFieldList(fields);
                 }

@@ -20,16 +20,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFilemainSlice } from './slice';
 import { selectOrgId } from '../../../slice/selectors';
 import {
-  selectDeleteFilemainsLoading,
   selectSaveFilemainLoading,
-  selectFilemainListLoading,
-  selectFilemains,
 } from './slice/selectors';
 import {
-  deleteFilemain,
-  editFilemain,
-  getFilemains,
-  importFilemain
+  editFilemain
 } from './slice/thunks';
 import {
   Filemain,
@@ -37,12 +31,13 @@ import {
 } from './slice/types';
 
 
-import {
-  getCategories,
-} from '../CategoryManager/slice/thunks';
+import {selectCategories} from '../CategoryManager/slice/selectors';
 
 
-
+import { listToTree } from 'utils/utils';
+import treeNodeIconFn from 'utils/treeNodeIconFn'
+import {selectFolder} from 'app/pages/MainPage/Sider/slice/selectors';
+import {ResourceTypes} from 'app/pages/MainPage/pages/PermissionPage/constants';
 
 interface PostProps{
 	data:Filemain;
@@ -64,6 +59,25 @@ export const UpdateInfo: React.FC = ({ children  , title, data , onSuccess }) =>
 	const dispatch = useDispatch();
   const orgId = useSelector(selectOrgId);
 
+  const folderMap = useSelector(selectFolder);
+ 	const categories = useSelector(selectCategories);
+
+ 	const folders = useMemo(()=>[{
+		title:'根目录',
+		path:[],
+		key:'',
+		isFolder:1,
+		icon:treeNodeIconFn,
+
+		value:'',
+		id:'',
+		children:listToTree(
+      folderMap[ResourceTypes.ExcelTemplate]?.list,
+      null,
+      [],
+      {getIcon: () => treeNodeIconFn}
+  	)
+	}],[folderMap])
 
 	
 
@@ -80,7 +94,7 @@ export const UpdateInfo: React.FC = ({ children  , title, data , onSuccess }) =>
     );
  	};
 
-	const formElements = <>
+	const formElements = useMemo(()=>(<>
 		<ProForm.Group>
       <ProFormText
         width="md"
@@ -90,22 +104,21 @@ export const UpdateInfo: React.FC = ({ children  , title, data , onSuccess }) =>
         rules={[{ required: true, message: `请输入文件名` }]}
         fieldProps={{size:"small"}}
       />
-
-     <ProFormTreeSelect
+      <ProFormTreeSelect
+				name="parentId" 
+				fieldProps={{treeIcon:true,size:'small',style:{minWidth:200}}}
+				label={  "目录" }
+				placeholder={"根目录"}
+				rules={[{ required: false, message: `请选择目录` }]}
+				request={()=>folders}
+			/>
+			<ProFormTreeSelect
 				name="classId" 
 				fieldProps={{size:'small',style:{minWidth:200}}}
-				label={  "分类" }
-				placeholder={"请选择分类"}
-				rules={[{ required: true, message: `请选择分类` }]}
-				request={()=> {
-					return new Promise((resolve,reject)=>{
-						dispatch(
-							getCategories({orgId,parentId:0,resolve:data=>{
-							resolve(data)
-							}})
-						)
-					})
-				}}
+				label={  "标签" }
+				placeholder={"请选择标签"}
+				rules={[{ required: true, message: `请选择标签` }]}
+				request={()=>categories}
 			/>
       <ProFormText 
         fieldProps={{size:"small"}} 
@@ -121,7 +134,9 @@ export const UpdateInfo: React.FC = ({ children  , title, data , onSuccess }) =>
   		name="remark" 
   		label="备注 " 
   		placeholder="请输入备注" />
-  </>
+  </>),[folders,categories]);
+
+
 	return <DialogForm
   
 		loading={loading}
@@ -144,9 +159,7 @@ UpdateInfo.defaultProps = {
 }
 const FormWrap = styled.div`
 	
-.ant-form-item-label{
-	padding:4px 4px 0 0 !important
-}
+
 .ant-form-item-explain-error{
 	font-size:12px;
 	color:${p => p.theme.error};

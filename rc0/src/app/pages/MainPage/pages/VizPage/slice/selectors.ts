@@ -11,7 +11,10 @@ export const selectVizs = createSelector(
   [selectDomain],
   vizState => vizState.vizs,
 );
-
+export const selectDatacharts = createSelector(
+  [selectDomain],
+  vizState => vizState.datacharts,
+);
 export const makeSelectVizTree = () =>
   createSelector(
     [
@@ -21,7 +24,7 @@ export const makeSelectVizTree = () =>
     ],
     (vizs, getIcon, getDisabled) =>
       listToTree(
-        vizs.map(v => ({ ...v, isFolder: v.relType === 'FOLDER' })),
+        vizs.map(v => ({ ...v, isFolder:['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(v.relType) })),
         null,
         [VizResourceSubTypes.Folder],
         { getIcon, getDisabled },
@@ -39,7 +42,7 @@ export const makeSelectVizFolderTree = () =>
       listToTree(
         vizs &&
           vizs
-            .filter(v => v.relType === 'FOLDER' && v.id !== id)
+            .filter(v => ['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(v.relType) && v.id !== id)
             .map(v => ({ ...v, isFolder: true })),
         null,
         [VizResourceSubTypes.Folder],

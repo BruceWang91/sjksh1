@@ -79,18 +79,34 @@ public class BinUtil {
         try {
             File fout = new File(parentPath, fileName);
             fout.createNewFile();
-            byte[] bytes1 = bin.getBytes("ISO-8859-1");
-            FileCopyUtils.copy(bytes1, fout);
-
-            //FileOutputStream outs = new FileOutputStream(fout);
-            //outs.write(bytes1);
-            //outs.flush();
-            //outs.close();
-
+            byte[] bytes = bin.getBytes("ISO-8859-1");
+            FileCopyUtils.copy(bytes, fout);
             return fout;
         } catch (Exception ex) {
             throw new RuntimeException("transform bin into File 出错", ex);
         }
+    }
+
+    public static byte[] str2byte(String str){
+
+        byte[] bytes = new byte[0];
+        try {
+            bytes = str.getBytes("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return bytes;
+    }
+
+    public static String byte2str (byte[] bytes){
+
+        String str = null;
+        try {
+            str = new String(bytes,"utf-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return str;
     }
 
     public static void main(String[] args) {

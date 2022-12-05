@@ -68,13 +68,13 @@ export function Container() {
   return (
     <StyledContainer
       sizes={sizes}
-      minSize={[256, 0]}
+      minSize={[289, 0]}
       maxSize={[768, Infinity]}
       gutterSize={0}
       onDragStart={siderDragStart}
       onDragEnd={siderDragEnd}
       className="datart-split"
-      sliderVisible={sliderVisible}
+      slidervisible={(sliderVisible as Boolean).toString()}
     >
       <Sidebar
         width={sizes[0]}
@@ -95,12 +95,12 @@ export function Container() {
   );
 }
 
-const StyledContainer = styled(Split)<{ sliderVisible: boolean }>`
+const StyledContainer = styled(Split)`
   display: flex;
   flex: 1;
   min-width: 0;
   min-height: 0;
   .gutter-horizontal {
-    display: ${p => (p.sliderVisible ? 'none' : 'block')};
+    display: ${p => (p.slidervisible === 'true' ? 'none' : 'block')};
   }
 `;

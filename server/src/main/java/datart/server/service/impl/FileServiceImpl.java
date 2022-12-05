@@ -53,10 +53,8 @@ public class FileServiceImpl extends BaseService implements FileService {
     private IFileSaveService fileSaveService;
     @Autowired
     private FileSaveStreamMapper fileSaveStreamMapper;
-
     @Value("${spring.libreoffice.officehome}") // 从application.yml配置文件中获取
     private String home; // libreoffice安装位置
-
     @Value("${spring.upload}")
     private String localurl;
 
@@ -135,9 +133,7 @@ public class FileServiceImpl extends BaseService implements FileService {
 
         FileUtils.mkdirParentIfNotExist(fullPath);
 
-        Thumbnails.of(file.getInputStream())
-                .size(Const.IMAGE_WIDTH, Const.IMAGE_HEIGHT)
-                .toFile(fullPath);
+        Thumbnails.of(file.getInputStream()).size(Const.IMAGE_WIDTH, Const.IMAGE_HEIGHT).toFile(fullPath);
 
         UserService userService = Application.getBean(UserService.class);
 
@@ -157,9 +153,7 @@ public class FileServiceImpl extends BaseService implements FileService {
 
         FileUtils.mkdirParentIfNotExist(fullPath);
 
-        Thumbnails.of(file.getInputStream())
-                .size(Const.IMAGE_WIDTH, Const.IMAGE_HEIGHT)
-                .toFile(fullPath);
+        Thumbnails.of(file.getInputStream()).size(Const.IMAGE_WIDTH, Const.IMAGE_HEIGHT).toFile(fullPath);
 
         OrgService orgService = Application.getBean(OrgService.class);
 
@@ -209,30 +203,43 @@ public class FileServiceImpl extends BaseService implements FileService {
                     }});
                     // 获取到的excel的sheet(i)数据行遍历
                     for (Map<String, Object> map : list.get(i)) {
+                        boolean whetherImport = true;
                         HashMap<String, Object> hashMap = new HashMap<>();
                         for (FileSheetField fileSheetField : fileSheetFieldList) {
+
+                            if (WhetherEnum.YES.getValue().toString().equals(fileSheetField.getImportFlag()) &&
+                                    StringUtils.isBlank(map.get(fileSheetField.getCellNum() + "").toString())) {
+
+                                whetherImport = false;
+                                continue;
+                            }
                             if (null != map.get(fileSheetField.getCellNum() + "")) {
-                                hashMap.put(fileSheetField.getEntityField(), map.get(fileSheetField.getCellNum() + ""));
+                                hashMap.put(fileSheetField.getEntityField(), map.get(fileSheetField.getCellNum() + "").toString());
+                            } else {
+                                hashMap.put(fileSheetField.getEntityField(), "");
                             }
                         }
-                        domainname = fileSheets.getEntityName();
+                        if (!whetherImport) {
+                            continue;
+                        }
                         objectList.add(hashMap);
                     }
+                    domainname = fileSheets.getEntityName();
                 }
             }
             importMap.put(domainname, objectList);
         }
         fileMainService.splitTableImport(importMap);
 
-        String filePath = FileUtils.concatPath(fileOwner.getPath(), ownerId, System.currentTimeMillis() + "-" + file.getOriginalFilename());
+//        String filePath = FileUtils.concatPath(fileOwner.getPath(), ownerId, System.currentTimeMillis() + "-" + file.getOriginalFilename());
+//
+//        String fullPath = FileUtils.withBasePath(filePath);
+//
+//        FileUtils.mkdirParentIfNotExist(fullPath);
+//
+//        file.transferTo(new File(fullPath));
 
-        String fullPath = FileUtils.withBasePath(filePath);
-
-        FileUtils.mkdirParentIfNotExist(fullPath);
-
-        file.transferTo(new File(fullPath));
-
-        return filePath;
+        return "success";
     }
 
     @Override
@@ -300,6 +307,27 @@ public class FileServiceImpl extends BaseService implements FileService {
         map.put("newFileName", FileUtils.getName(fileName.get("filename")));
         map.put("pdfFileName", FileUtils.getName(fileName.get("pdfname")));
         map.put("originalFilename", file.getOriginalFilename());
+        return map;
+    }
+
+    @Override
+    public HashMap<String, Object> uploadstaticfile(FileOwner fileOwner, Long parentId, MultipartFile file) throws IOException {
+
+
+        String filePath = FileUtils.concatPath(fileOwner.getPath(), parentId.toString(), System.currentTimeMillis() + "-" + file.getOriginalFilename());
+
+        String fullPath = FileUtils.withBasePath(filePath);
+
+        FileUtils.mkdirParentIfNotExist(fullPath);
+
+        file.transferTo(new File(fullPath));
+
+        byte[] fileStream = BinUtil.fileToBinArray(new File(fullPath));
+        String newurl = fullPath.replace(localurl, "/upload/");
+        HashMap map = new HashMap();
+        map.put("url", newurl);
+        map.put("fileName", fullPath);
+        map.put("fileStream", fileStream);
         return map;
     }
 }

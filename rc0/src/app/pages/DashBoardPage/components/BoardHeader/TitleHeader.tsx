@@ -64,9 +64,9 @@ export const TitleHeader: FC = memo(() => {
     const pathName = history.location.pathname;
     if (pathName.includes(boardId)) {
       history.push(`${pathName.split(boardId)[0]}${boardId}/boardEditor`);
-    } else if (pathName.includes('/vizs')) {
+    } else if (pathName.includes('/vizdashboards')) {
       history.push(
-        `${pathName.split('/vizs')[0]}${'/vizs/'}${boardId}/boardEditor`,
+        `${pathName.split('/vizdashboards')[0]}${'/vizdashboards/'}${boardId}/boardEditor`,
       );
     }
   };
@@ -74,7 +74,7 @@ export const TitleHeader: FC = memo(() => {
   const saveToStoryOk = useCallback(
     (storyId: string) => {
       history.push({
-        pathname: `/organizations/${orgId}/vizs/storyEditor/${storyId}`,
+        pathname: `/organizations/${orgId}/vizdashboards/storyEditor/${storyId}`,
         state: {
           addDashboardId: boardId,
         },

@@ -160,7 +160,7 @@ const Title = styled.div`
   align-items: center;
   padding: 0 ${SPACE_XS} 0 ${SPACE_MD};
   line-height: ${LINE_HEIGHT_ICON_LG};
-
+  background-color: ${p => p.theme.emphasisSiderBackground};
   h3 {
     flex: 1;
     padding: ${SPACE_MD} 0;

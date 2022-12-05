@@ -43,6 +43,10 @@ public class DepartmentSqlProvider {
         if (record.getUpdateTime() != null) {
             sql.VALUES("update_time", "#{updateTime,jdbcType=TIMESTAMP}");
         }
+
+        if (record.getType() != null){
+            sql.VALUES("type","#{type,jdbcType=INTEGER}");
+        }
         return sql.toString();
     }
 }

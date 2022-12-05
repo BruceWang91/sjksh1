@@ -65,6 +65,7 @@ import {
   Department
 } from '../../departmentPage/slice/types';
 import { useDepartmentSlice } from '../../departmentPage/slice';
+import { StarOutlined, StarFilled, StarTwoTone } from '@ant-design/icons';
 
 
 export function MemberDetailPage() {
@@ -370,6 +371,7 @@ export function MemberDetailPage() {
                 <TreeSelect
                   placeholder={'请选择部门'}
                   loading={departmentLoading}
+                  
                   treeData={departments}
                 />
               )}

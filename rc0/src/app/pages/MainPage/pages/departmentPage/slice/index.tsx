@@ -37,17 +37,33 @@ export const initialState: DepartmentState = {
 };
 
 
-const treeTs = (t) => {
-	return t.map(d=>{
+const treeTs = (t,p = []) => {
+	return t?.map(d=>{
+		
+		const value = String(d.id || d.deptId);
+		const label = String( d.name || d.deptName );
+		const isFolder = !d.id ;
+		const path = [...p,value]
 		if(d?.children?.length > 0){
-			d.children = treeTs(d.children);
+			d.children = treeTs(d.children,path);
 		}else{
 			delete d.children
 		}
+
+		if(d?.users?.length > 0){
+			d.children = [...(d.children||[]),...treeTs(d.users,path)];
+		}else{
+			delete d.users
+		}
 		const leaf = d?.children?.length ?? 0;
-		return {...d,label:d.deptName,value:d.deptId,displayValue:d.deptName,hideValue:d.deptId,leaf,isLeaf:leaf === 0}
+		return {...d,
+			label,
+			value,
+			title:label,path,isFolder,displayValue:label,hideValue:value,key:value,leaf,isLeaf:leaf === 0}
 	})
 }
+
+
 const slice = createSlice({
   name: 'department',
   initialState,
@@ -60,7 +76,7 @@ const slice = createSlice({
     });
     builder.addCase(getDepartmentsAndMembers.fulfilled, (state, action) => {
       state.departmentsAndMembersLoading = false;
-      state.departments = treeTs(action.payload) 
+      state.departmentsAndMembers = treeTs(action.payload) 
     });
     builder.addCase(getDepartmentsAndMembers.rejected, state => {
       state.departmentsAndMembersLoading = false;

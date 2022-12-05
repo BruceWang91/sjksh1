@@ -33,11 +33,13 @@ import {
 interface FolderTreeProps extends I18NComponentProps {
   selectedId?: string;
   treeData?: LocalTreeDataNode[];
+  vizDatatype:string;
 }
 
 export function FolderTree({
   selectedId,
   treeData,
+  vizDatatype,
   i18nPrefix,
 }: FolderTreeProps) {
   const tg = useI18NPrefix('global');
@@ -50,27 +52,27 @@ export function FolderTree({
   const saveAsViz = useSaveAsViz();
 
   useEffect(() => {
-    dispatch(getFolders(orgId));
-  }, [dispatch, orgId]);
+    dispatch(getFolders({orgId,vizDatatype}));
+  }, [dispatch, orgId,vizDatatype]);
 
   const redirect = useCallback(
     tabKey => {
       if (tabKey) {
-        history.push(`/organizations/${orgId}/vizs/${tabKey}`);
+        history.push(`/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s/${tabKey}`);
       } else {
-        history.push(`/organizations/${orgId}/vizs`);
+        history.push(`/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s`);
       }
     },
-    [history, orgId],
+    [history, orgId,vizDatatype],
   );
 
   const menuSelect = useCallback(
     (_, { node }) => {
-      if (node.relType !== 'FOLDER') {
-        history.push(`/organizations/${orgId}/vizs/${node.relId}`);
+      if (!['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(node.relType)) {
+        history.push(`/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s/${node.relId}`);
       }
     },
-    [history, orgId],
+    [history, orgId,vizDatatype],
   );
 
   const archiveViz = useCallback(
@@ -184,13 +186,13 @@ export function FolderTree({
                   >
                     <Popconfirm
                       title={`${
-                        relType === 'FOLDER'
+                        ['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(relType)
                           ? tg('operation.deleteConfirm')
                           : tg('operation.archiveConfirm')
                       }`}
                       onConfirm={archiveViz(node)}
                     >
-                      {relType === 'FOLDER'
+                      {['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(relType)
                         ? tg('button.delete')
                         : tg('button.archive')}
                     </Popconfirm>

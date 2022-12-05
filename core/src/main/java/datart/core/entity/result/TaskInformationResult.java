@@ -38,4 +38,6 @@ public class TaskInformationResult {
      * 任务完成人数
      */
     private int numOfPeopleCompleted;
+
+    private String sourceId;
 }

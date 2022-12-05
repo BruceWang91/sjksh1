@@ -58,6 +58,7 @@ import {
   DrillThroughPanel,
   FontAlignment,
   LabelPosition,
+  LabelsPosition,
   LegendPosition,
   LegendType,
   ListTemplatePanel,
@@ -69,6 +70,7 @@ import {
   ViewDetailPanel,
   WidgetBorder,
   YAxisNumberFormatPanel,
+  TableAlignmentPanel,
 } from '../Customize';
 import { FormGeneratorLayoutProps } from '../types';
 import { groupLayoutComparer, invokeDependencyWatcher } from '../utils';
@@ -136,7 +138,6 @@ const ItemLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
         dataConfigs,
         context,
       };
-
       switch (data.comType) {
         case ChartStyleSectionComponentType.CHECKBOX:
           return <BasicCheckbox {...props} />;
@@ -190,6 +191,8 @@ const ItemLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
           return <NameLocation {...props} />;
         case ChartStyleSectionComponentType.LABEL_POSITION:
           return <LabelPosition {...props} />;
+        case ChartStyleSectionComponentType.LABELS_POSITION:
+          return <LabelsPosition {...props} />;
         case ChartStyleSectionComponentType.LEGEND_TYPE:
           return <LegendType {...props} />;
         case ChartStyleSectionComponentType.LEGEND_POSITION:
@@ -216,6 +219,8 @@ const ItemLayout: FC<FormGeneratorLayoutProps<ChartStyleConfig>> = memo(
           return <DataZoomPanel {...props} />;
         case ChartStyleSectionComponentType.Y_AXIS_NUMBER_FORMAT_PANEL:
           return <YAxisNumberFormatPanel {...props} />;
+        case ChartStyleSectionComponentType.TABLE_ALIGNMENT:
+          return <TableAlignmentPanel {...props} />;
         default:
           return <div>{`no matched component comType of ${data.comType}`}</div>;
       }

@@ -21,10 +21,14 @@ import {
   DataChart,
   WidgetContentChartType,
 } from 'app/pages/DashBoardPage/pages/Board/slice/types';
-import { selectVizs } from 'app/pages/MainPage/pages/VizPage/slice/selectors';
+import { selectDatacharts } from 'app/pages/MainPage/pages/VizPage/slice/selectors';
+import { getFolders3 } from 'app/pages/MainPage/pages/VizPage/slice/thunks';
+import { useVizSlice } from 'app/pages/MainPage/pages/VizPage/slice/';
+
+
 import { selectOrgId } from 'app/pages/MainPage/slice/selectors';
 import { BOARD_SELF_CHART_PREFIX } from 'globalConstants';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useEffect,useContext, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uuidv4 } from 'utils/utils';
 import { addDataChartWidgets, addWrapChartWidget } from '../../../slice/thunk';
@@ -33,12 +37,13 @@ import { BoardToolBarContext } from '../context/BoardToolBarContext';
 import { ChartWidgetDropdown } from './ChartWidgetDropdown';
 
 export const AddChart = () => {
+	useVizSlice();
   const dispatch = useDispatch();
   const { boardId, boardType } = useContext(BoardToolBarContext);
   const orgId = useSelector(selectOrgId);
-  const chartOptionsMock = useSelector(selectVizs);
+  const chartOptionsMock = useSelector(selectDatacharts);
   const chartOptions = useMemo(
-    () => chartOptionsMock.filter(item => item.relType !== 'DASHBOARD'),
+    () => chartOptionsMock.filter(item => !['DASHBOARD','DASHBOARD_FOLDER'].includes(item.relType)),
     [chartOptionsMock],
   );
 
@@ -52,7 +57,7 @@ export const AddChart = () => {
     },
     [boardId, boardType, dispatch],
   );
-  const onShowCharts = useCallback(() => {
+  const onOpenCharts = useCallback(() => {
     setDataChartVisible(true);
   }, []);
   const onCreateCharts = useCallback(() => {
@@ -74,9 +79,15 @@ export const AddChart = () => {
     },
     [boardId, boardType, dispatch],
   );
+
+
+  useEffect(()=>{
+  	console.log(orgId)
+  	dispatch(getFolders3({orgId}))
+  },[dispatch,orgId])
   return (
     <>
-      <ChartWidgetDropdown onSelect={onShowCharts} onCreate={onCreateCharts} />
+      <ChartWidgetDropdown onSelect={onOpenCharts} onCreate={onCreateCharts} />
 
       <ChartSelectModalModal
         dataCharts={chartOptions}

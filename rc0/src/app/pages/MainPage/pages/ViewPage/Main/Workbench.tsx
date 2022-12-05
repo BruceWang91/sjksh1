@@ -63,7 +63,7 @@ export const Workbench = memo(() => {
   const viewType = useSelector(state =>
     selectCurrentEditingViewAttr(state, { name: 'type' }),
   ) as string;
-
+console.log(sourceId,id)
   const path = useMemo(
     () =>
       views
@@ -107,7 +107,6 @@ export const Workbench = memo(() => {
     },
     [editorInstance],
   );
-
   const handleSelectViewType = useCallback(
     viewType => {
       dispatch(

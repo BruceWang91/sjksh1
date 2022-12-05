@@ -28,6 +28,7 @@ import datart.server.base.params.SourceUpdateParam;
 import datart.server.base.transfer.model.SourceResourceModel;
 import datart.server.base.transfer.model.TransferModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface SourceService extends BaseCRUDService<Source, SourceMapperExt>, ResourceTransferService<Source, SourceResourceModel, TransferModel, Folder> {
@@ -35,6 +36,8 @@ public interface SourceService extends BaseCRUDService<Source, SourceMapperExt>,
     boolean checkUnique(String orgId, String parentId, String name);
 
     List<Source> listSources(String orgId, boolean active);
+
+    List<Source> listSources(String orgId, String type, boolean active);
 
     SchemaInfo getSourceSchemaInfo(String sourceId);
 
@@ -46,4 +49,5 @@ public interface SourceService extends BaseCRUDService<Source, SourceMapperExt>,
 
     boolean updateBase(SourceBaseUpdateParam updateParam);
 
+    List<HashMap<String, String>> getTableColumnName(String sourceId, String tableName);
 }

@@ -22,14 +22,16 @@ import { getMembers, getRoles } from '../../MemberPage/slice/thunks';
 import { getSchedules } from '../../SchedulePage/slice/thunks';
 import { getSources } from '../../SourcePage/slice/thunks';
 import { getViews } from '../../ViewPage/slice/thunks';
-import { getFolders, getStoryboards } from '../../VizPage/slice/thunks';
+import { getFolders2, getStoryboards } from '../../VizPage/slice/thunks';
 
 
 import { getFilemains } from '../../ExcelTemplatePage/ExcelManager/slice/thunks';
 import { getSheets } from '../../ExcelTemplatePage/ReportSheets/slice/thunks';
 import { getFiles } from '../../FilePage/slice/thunks';
-
-
+import { getReports } from '../../ReportPage/slice/thunks';
+import { getMiddleTables2 } from '../../MiddleTablePage/slice/thunks';
+import { getImmassets2 } from '../../ImmassetPage/slice/thunks';
+import capitalize from 'lodash/capitalize';
 
 import {
   ResourceTypes,
@@ -50,7 +52,8 @@ import {
 } from './types';
 
 export const initialState: PermissionState = {
-  folders: void 0,
+  dashboardFolders: void 0,
+  datachartFolders: void 0,
   storyboards: void 0,
   views: void 0,
   sources: void 0,
@@ -60,11 +63,21 @@ export const initialState: PermissionState = {
   filemains:void 0,
   files:void 0,
   sheets:void 0,
+  reports:void 0,
+
+  middleTables:void 0,
+	middleTableListLoading: false,
+	immassets:void 0,
+	immassetListLoading: false,
+
   filemainListLoading:void 0,
   fileListLoading:void 0,
   sheetListLoading:void 0,
+  reportListLoading:void 0,
 
   folderListLoading: false,
+
+
   storyboardListLoading: false,
   viewListLoading: false,
   sourceListLoading: false,
@@ -96,19 +109,90 @@ const slice = createSlice({
       state.filemainListLoading = true;
     });
     builder.addCase(getFilemains.fulfilled, (state, action) => {
+     
+
+      const root = generateRootNode(
+        ResourceTypes.ExcelTemplate,
+        null,
+      );
       state.filemainListLoading = false;
-      state.filemains = action.payload?.data?.map(({ fileId, fileName }) => ({
-        id: fileId,
-        name: fileName,
-        type: ResourceTypes.ExcelTemplate,
-        parentId: null,
-        index: null,
-        isFolder: false,
-        permissionArray: getDefaultPermissionArray(),
-      }));
+      state.filemains = [root].concat(
+        action.payload?.data?.map(({ fileId, fileName, parentId, index, isFolder  }) => ({
+          id:fileId,
+          name:fileName,
+          type: root.type,
+          parentId: parentId === null ? root.id : parentId,
+          index,
+          isFolder: +isFolder,
+        
+          permissionArray: getDefaultPermissionArray(),
+        })),
+      );
     });
     builder.addCase(getFilemains.rejected, state => {
       state.filemainListLoading = false;
+    });
+
+
+
+    // getMiddleTables2
+    builder.addCase(getMiddleTables2.pending, state => {
+      state.middleTableListLoading = true;
+    });
+    builder.addCase(getMiddleTables2.fulfilled, (state, action) => {
+     
+
+      const root = generateRootNode(
+        ResourceTypes.ImmData,
+        null,
+      );
+      state.middleTableListLoading = false;
+      state.middleTables = [root].concat(
+        action.payload?.map(({ id, name, parentId, index, isFolder  }) => ({
+          id:id,
+          name:name,
+          type: root.type,
+          parentId: (parentId === null || parentId === 0 ) ? root.id : parentId,
+          index,
+          isFolder: +isFolder,
+        
+          permissionArray: getDefaultPermissionArray(),
+        })),
+      );
+    });
+    builder.addCase(getMiddleTables2.rejected, state => {
+      state.middleTableListLoading = false;
+    });
+
+
+
+    // getImmassets2
+    builder.addCase(getImmassets2.pending, state => {
+      state.immassetListLoading = true;
+    });
+    builder.addCase(getImmassets2.fulfilled, (state, action) => {
+     
+
+      const root = generateRootNode(
+        ResourceTypes.ImmAsset,
+        null,
+      );
+      state.immassetListLoading = false;
+      state.immassets = [root].concat(
+        action.payload?.map(({ id, moduleName, parentId, index, isFolder  }) => ({
+          id:id,
+          name:moduleName,
+          type: root.type,
+          parentId: (parentId === null || parentId === 0 ) ? root.id : parentId,
+          index,
+          isFolder: +isFolder,
+        
+          permissionArray: getDefaultPermissionArray(),
+        })),
+      );
+    });
+    builder.addCase(getImmassets2.rejected, state => {
+      state.immassetListLoading = false;
     });
 
 
@@ -118,7 +202,7 @@ const slice = createSlice({
     });
     builder.addCase(getSheets.fulfilled, (state, action) => {
       state.sheetListLoading = false;
-      state.sheets = action.payload?.data?.map(({ sheetId, sheetName }) => ({
+      state.sheets = action.payload?.data?.map(({ sheetId,  sheetName }) => ({
         id: sheetId,
         name: sheetName,
         type: ResourceTypes.ExcelView,
@@ -127,6 +211,8 @@ const slice = createSlice({
         isFolder: false,
         permissionArray: getDefaultPermissionArray(),
       }));
+
+
     });
     builder.addCase(getSheets.rejected, state => {
       state.sheetListLoading = false;
@@ -137,19 +223,55 @@ const slice = createSlice({
       state.fileListLoading = true;
     });
     builder.addCase(getFiles.fulfilled, (state, action) => {
+      const root = generateRootNode(
+        ResourceTypes.File,
+        null,
+      );
       state.fileListLoading = false;
-      state.sheets = action.payload?.data?.map(({ id, fileName }) => ({
-        id: id,
-        name: fileName,
-        type: ResourceTypes.File,
-        parentId: null,
-        index: null,
-        isFolder: false,
-        permissionArray: getDefaultPermissionArray(),
-      }));
+      state.files = [root].concat(
+        action.payload?.data?.map(({ id, fileName, parentId, index, isFolder  }) => ({
+          id,
+          name:fileName,
+          type: root.type,
+          parentId: parentId === null ? root.id : parentId,
+          index,
+          isFolder: +isFolder,
+        
+          permissionArray: getDefaultPermissionArray(),
+        })),
+      );
     });
     builder.addCase(getFiles.rejected, state => {
       state.fileListLoading = false;
+    });
+
+
+    // getReports
+    builder.addCase(getReports.pending, state => {
+      state.reportListLoading = true;
+    });
+    builder.addCase(getReports.fulfilled, (state, action) => {
+      const root = generateRootNode(
+        ResourceTypes.Report,
+        null,
+      );
+      state.reportListLoading = false;
+      state.reports = [root].concat(
+        action.payload?.data?.map(({ id, name, parentId, index, isFolder  }) => ({
+          id,
+          name,
+          type: root.type,
+          parentId: parentId === null ? root.id : parentId,
+          index,
+          isFolder: +isFolder,
+        
+          permissionArray: getDefaultPermissionArray(),
+        })),
+      );
+      
+    });
+    builder.addCase(getReports.rejected, state => {
+      state.reportListLoading = false;
     });
 
 
@@ -159,7 +281,7 @@ const slice = createSlice({
     });
     builder.addCase(getMembers.fulfilled, (state, action) => {
       state.memberListLoading = false;
-      state.members = action.payload.map(({ id, username, name }) => ({
+      state.members = action.payload?.map(({ id, username, name }) => ({
         id,
         name: name ? `${name}(${username})` : username,
         type: SubjectTypes.UserRole,
@@ -179,7 +301,7 @@ const slice = createSlice({
     });
     builder.addCase(getRoles.fulfilled, (state, action) => {
       state.roleListLoading = false;
-      state.roles = action.payload.map(({ id, name }) => ({
+      state.roles = action.payload?.map(({ id, name }) => ({
         id,
         name,
         type: SubjectTypes.Role,
@@ -199,7 +321,7 @@ const slice = createSlice({
     });
     builder.addCase(getSchedules.fulfilled, (state, action) => {
       state.scheduleListLoading = false;
-      state.schedules = action.payload.map(({ id, name }) => ({
+      state.schedules = action.payload?.map(({ id, name }) => ({
         id,
         name,
         type: ResourceTypes.Schedule,
@@ -219,7 +341,7 @@ const slice = createSlice({
     });
     builder.addCase(getSources.fulfilled, (state, action) => {
       state.sourceListLoading = false;
-      state.sources = action.payload.map(({ id, name }) => ({
+      state.sources = action.payload?.map(({ id, name }) => ({
         id,
         name,
         type: ResourceTypes.Source,
@@ -241,7 +363,7 @@ const slice = createSlice({
       const root = generateRootNode(ResourceTypes.View);
       state.viewListLoading = false;
       state.views = [root].concat(
-        action.payload.map(({ id, name, parentId, index, isFolder }) => ({
+        action.payload?.map(({ id, name, parentId, index, isFolder }) => ({
           id,
           name,
           type: root.type,
@@ -256,31 +378,35 @@ const slice = createSlice({
       state.viewListLoading = false;
     });
 
-    // getFolders
-    builder.addCase(getFolders.pending, state => {
+    // getFolders2
+    builder.addCase(getFolders2.pending, state => {
       state.folderListLoading = true;
     });
-    builder.addCase(getFolders.fulfilled, (state, action) => {
+    builder.addCase(getFolders2.fulfilled, (state, action) => {
+    	const {data,vizDatatype} = action.payload;
+    	console.log(`${vizDatatype.toLowerCase()}Folders`)
       const root = generateRootNode(
-        ResourceTypes.Viz,
-        VizResourceSubTypes.Folder,
+        `VIZ_${vizDatatype}`,
+        VizResourceSubTypes[`${capitalize(vizDatatype)}Folder`],
       );
       state.folderListLoading = false;
-      state.folders = [root].concat(
-        action.payload.map(({ id, name, parentId, index, relType, relId }) => ({
+
+
+      state[`${vizDatatype.toLowerCase()}Folders`] = [root].concat(
+        data?.map(({ id, name, parentId, index, relType, relId }) => ({
           id,
           name,
           type: root.type,
           parentId: parentId === null ? root.id : parentId,
           index,
-          isFolder: relType === 'FOLDER',
+          isFolder: ['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(relType),
           relType: relType,
           relId: relId,
           permissionArray: getDefaultPermissionArray(),
         })),
       );
     });
-    builder.addCase(getFolders.rejected, state => {
+    builder.addCase(getFolders2.rejected, state => {
       state.folderListLoading = false;
     });
 
@@ -290,7 +416,7 @@ const slice = createSlice({
     });
     builder.addCase(getStoryboards.fulfilled, (state, action) => {
       state.storyboardListLoading = false;
-      state.storyboards = action.payload.map(({ id, name }) => ({
+      state.storyboards = action.payload?.map(({ id, name }) => ({
         id,
         name,
         type: ResourceTypes.Viz,
@@ -338,18 +464,18 @@ const slice = createSlice({
           .permissionObject as ResourcePermissions;
         if (dataSourceType === SubjectTypes.Role) {
           permissionObject.rolePermissions = permissionObject.rolePermissions
-            .filter(({ resourceType }) => resourceType !== viewpointType)
+            .filter((x) => x?.resourceType !== viewpointType)
             .concat(action.payload);
         } else {
           permissionObject.userPermissions = permissionObject.userPermissions
-            .filter(({ resourceType }) => resourceType !== viewpointType)
+            .filter((x) => x?.resourceType !== viewpointType)
             .concat(action.payload);
         }
       } else {
         const permissionObject = state.permissions[viewpoint]
           .permissionObject as SubjectPermissions;
         permissionObject.permissionInfos = permissionObject.permissionInfos
-          .filter(({ resourceType }) => resourceType !== dataSourceType)
+          .filter((x) => x?.resourceType !== dataSourceType)
           .concat(action.payload);
       }
     });

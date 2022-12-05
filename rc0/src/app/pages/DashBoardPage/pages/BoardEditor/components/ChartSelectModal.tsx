@@ -52,7 +52,7 @@ const ChartSelectModalModal: React.FC<IProps> = props => {
       listToTree(
         dataCharts.map(v => ({
           ...v,
-          isFolder: v.relType === 'FOLDER',
+          isFolder:['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(v.relType),
           disabled: WidgetInfoDatachartIds.includes(v.relId),
         })),
         null,

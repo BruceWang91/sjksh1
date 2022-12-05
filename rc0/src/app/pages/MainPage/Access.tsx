@@ -17,7 +17,7 @@
  */
 
 import { Authorized as AuthorizedComponent } from 'app/components';
-import { ReactElement } from 'react';
+import { ReactElement,useCallback ,useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   PermissionLevels,
@@ -60,30 +60,48 @@ export function Access({
   );
 }
 
-export function MenuAccess({
-  ptype = 'privilege',
-  module,
-  id,
-  level,
-  denied = null,
-  children,
-  menuType,
-  ...rest
-}: AccessProps) {
+export function MenuAccess({menus,selectedKeys,onLeafClick}) {
+
   const isOwner = useSelector(selectIsOrgOwner);
   const permissionMap = useSelector(selectPermissionMap);
-  if (!permissionMap[module]) {
-    return null;
-  }
+  
 
-  const isAuthorized = calcAc(isOwner, permissionMap, module, level, id, ptype);
+  const buildMenus = useCallback(( menuTree )=>menuTree
+  	.filter(({module})=>{
+  		if (!permissionMap[module]) {
+		    return false;
+		  }
+  		return calcAc(isOwner, permissionMap, module, PermissionLevels.Enable, '', 'module') 
+  	})
+  	.map(({ name, children , title, icon, module , link })=>{
+  		let childs = title;
+  		let menuType = 'Item';
 
-  const MenuItem = Menu[menuType];
-  return (
-    <AuthorizedComponent authority={isAuthorized} denied={denied}>
-      <MenuItem {...rest} >{children}</MenuItem>
-    </AuthorizedComponent>
-  );
+  		const props = {
+  			key: name ,
+  			icon,
+  			module
+  		}
+  		if(Array.isArray(children)){
+  			menuType="SubMenu"
+				props.title = title;
+				childs = buildMenus(children)
+			}else{
+				props.onClick = event=> onLeafClick( name, link );
+			}
+
+			const Item = Menu[menuType];
+
+			return <Item {...props} >{childs}</Item>;
+
+  	}),[isOwner, permissionMap,onLeafClick]);
+
+
+  const items = useMemo(()=>buildMenus(menus),[isOwner,permissionMap,buildMenus])
+
+  return <Menu mode="horizontal" selectable className="header-nav" selectedKeys={selectedKeys} >
+    {items}    		
+  </Menu>;
 }
 
 export interface AccessCascadeProps {
@@ -136,6 +154,7 @@ export function useAccess({
     }
 
     const allow = calcAc(isOwner, permissionMap, module, level, id, type);
+    //console.log(permissionMap[module])
     return allow ? obj : void 0;
   };
 }
@@ -150,6 +169,7 @@ export function useCascadeAccess({ module, path, level }: AccessCascadeProps) {
     }
 
     const allow = getCascadeAccess(isOwner, permissionMap, module, path, level);
+
     return allow ? obj : void 0;
   };
 }

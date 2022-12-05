@@ -18,14 +18,28 @@
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { request2 } from 'utils/request';
+import { getToken } from 'utils/auth';
+
 import {
   Report,
 } from './types';
-
-export const getReports = createAsyncThunk<Report[], string>(
+export const getReports2 = createAsyncThunk(
+  'report/getReports2',
+  async ( {resolve,...qs} ) => {
+    const { rows , total} = await request2({
+      url: 'jmreportrewrite/getlist',
+      method: 'GET',
+      params: qs,
+    });
+    const ret = {data:rows,total};
+    resolve && resolve(ret)
+    return ret;
+  },
+);
+export const getReports = createAsyncThunk(
   'report/getReports',
   async ( qs ) => {
-    const { rows , total} = await request2<Report[]>({
+    const { rows , total} = await request2({
       url: 'jmreportrewrite/getlist',
       method: 'GET',
       params: qs,
@@ -34,18 +48,18 @@ export const getReports = createAsyncThunk<Report[], string>(
   },
 );
 
-export const getReportData = createAsyncThunk<any[], string>(
+export const getReportData = createAsyncThunk(
   'report/getReportData',
   async ({orgId,reportId,resolve}) => {
 
-  	const reportResult = await request2<Report[]>({
+  	const reportResult = await request2({
       url: '/file/filemain/selectForReportId/'+reportId,
       method: 'GET',
       params: {},
     });
 
 
-    const reportDataResult = await request2<Report[]>({
+    const reportDataResult = await request2({
       url: '/file/filemain/getReportData/'+reportId,
       method: 'GET',
       params: {},
@@ -57,12 +71,12 @@ export const getReportData = createAsyncThunk<any[], string>(
 );
 
 
-export const initReport = createAsyncThunk<Report, string>(
+export const initReport = createAsyncThunk(
   'report/initReport',
   async ({ report, resolve }) => {
-    const { result } = await request2<Report>({
+    const { result } = await request2({
     	baseURL:'',
-      url: '/jmreport/save',
+      url: '/jmreportrewrite/save',
       method: 'POST',
       data: report,
     });
@@ -71,17 +85,77 @@ export const initReport = createAsyncThunk<Report, string>(
   },
 );
 
-export const saveReport = createAsyncThunk<Report, string>(
+export const saveReport = createAsyncThunk(
   'report/saveReport',
-  async ({ report, resolve }) => {
-    const { result } = await request2<Report>({
-    	baseURL:'/jmreport',
-      url: '/excelQueryName',
+  async ({ inSider,report,resolve }) => {
+    const { result } = await request2({
+      url: '/jmreportrewrite/save',
       method: 'POST',
-      data: report,
+      data: {designerObj:report},
     });
     resolve && resolve(result);
-    return result;
+    return {...result,inSider};
   },
 );
 
+
+export const updateReport = createAsyncThunk(
+  'report/updateReport',
+  async ({ report,resolve }) => {
+    await request2({
+      url: '/jmreportrewrite/updateParentId',
+      method: 'POST',
+      data: report,
+    });
+    resolve && resolve(report);
+    return report;
+  },
+);
+
+
+export const deleteReport = createAsyncThunk(
+  'report/deleteReport',
+  async ({ ids ,resolve }) => {
+
+    await request2({
+      url: '/jmreportrewrite/deleteFolder/'+ids[0],
+      method: 'DELETE',
+      data: {},
+    });
+    resolve && resolve(ids);
+    return ids;
+  },
+);
+
+
+export const removeReport = createAsyncThunk(
+  'report/removeReport',
+  async ({ ids ,resolve }) => {
+
+    await request2({
+    	baseURL:'',
+      url: `/jmreport/delete/?id=${ids[0]}&token=${getToken(false)}`,
+      method: 'DELETE',
+      data: {},
+    });
+    resolve && resolve(ids);
+    return ids;
+  },
+);
+export const copyReport = createAsyncThunk(
+  'report/copyReport',
+  async ({ id ,resolve }) => {
+
+    await request2({
+    	baseURL:'',
+      url: `/jmreport/reportCopy`,
+      method: 'GET',
+      params: {
+      	id,
+      	token:getToken(false)
+      },
+    });
+    resolve && resolve(id);
+    return id;
+  },
+);

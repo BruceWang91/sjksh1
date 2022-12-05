@@ -20,22 +20,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listToTree } from 'utils/utils';
 import { selectOrgId } from '../../slice/selectors';
 import { usePermissionSlice } from '../PermissionPage/slice';
-import { selectFolders } from '../PermissionPage/slice/selectors';
+import { selectDatachartFolders,selectDashboardFolders } from '../PermissionPage/slice/selectors';
 import { DataSourceTreeNode } from '../PermissionPage/slice/types';
-import { getFolders } from '../VizPage/slice/thunks';
+import { getFolders2 } from '../VizPage/slice/thunks';
 import { Folder } from '../VizPage/slice/types';
 import { ExportSelector } from './ExportSelector';
-
-export const ExportPage: FC<{}> = memo(() => {
+const selectors = {
+	'DASHCHART':selectDatachartFolders,
+	'DASHBOARD':selectDashboardFolders
+};
+export const ExportPage = memo(({vizDatatype}) => {
   usePermissionSlice();
   const orgId = useSelector(selectOrgId);
   const dispatch = useDispatch();
   useEffect(() => {
     if (orgId) {
-      dispatch(getFolders(orgId));
+      dispatch(getFolders2({orgId,vizDatatype}));
     }
-  }, [dispatch, orgId]);
-  const folders = useSelector(selectFolders);
+  }, [dispatch, orgId, vizDatatype ]);
+  const folders = useSelector(selectors[vizDatatype]);
+  
   const treeData = useMemo(
     () => listToTree(folders, null, []) as DataSourceTreeNode[],
     [folders],

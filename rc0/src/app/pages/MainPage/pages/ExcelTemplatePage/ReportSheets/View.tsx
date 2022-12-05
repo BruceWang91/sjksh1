@@ -51,14 +51,14 @@ export function View ({
   const loading = useSelector(selectSheetDataLoading);
 
 
-	const onShow = useCallback(()=>{
+	const onOpen = useCallback(()=>{
 		dispatch(getSheetData({sheetId}))
 	},[sheetId])
 
 
 	const sheet = useMemo(()=>{
 		const {startRows,fieldList} = result.sheet ; 
-	  const sheet = serverDataconvertToExcel([result.sheet])[0] ;
+	  const sheet = serverDataconvertToExcel([result.sheet],false)[0] ;
 	  sheet.cells = [...sheet.cells,...listConvertToExcelData( result?.data?.[0],fieldList)]
 		return sheet
 	},[sheetId,result])
@@ -78,7 +78,7 @@ export function View ({
 				viewPortHeight={viewPortHeight}
 			/>}
 	</Wrap>
-	return <Dialog title={title} loading={loading} footer={false} width="80%"  render={excel} onShow={onShow} >{children}</Dialog>
+	return <Dialog title={title} loading={loading} footer={false} width="80%"  render={excel} onOpen={onOpen} >{children}</Dialog>
 }
 
 

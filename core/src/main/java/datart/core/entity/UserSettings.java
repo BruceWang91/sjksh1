@@ -3,6 +3,8 @@ package datart.core.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserSettings extends BaseEntity {
@@ -16,4 +18,7 @@ public class UserSettings extends BaseEntity {
 
     private Long deptId;
 
+    private String deptName;
+
+    private List<String> roleIds;
 }

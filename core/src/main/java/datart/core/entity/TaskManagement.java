@@ -92,4 +92,8 @@ public class TaskManagement {
     private List<TaskUsers> taskUsersList;
 
     private List<TaskTemplate> taskTemplateList;
+
+    private String sourceId;
+
+    private String userId;
 }

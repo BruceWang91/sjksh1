@@ -129,7 +129,7 @@ export const ResourcesPermissionSetting = memo(
         scheduleListLoading,
       ],
     );
-
+    
     const tabList = useMemo(
       () =>
         tabSource.map(({ type }) => ({

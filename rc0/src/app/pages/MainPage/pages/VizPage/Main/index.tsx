@@ -5,7 +5,7 @@ import useI18NPrefix from 'app/hooks/useI18NPrefix';
 import BoardEditor from 'app/pages/DashBoardPage/pages/BoardEditor';
 import { selectOrgId } from 'app/pages/MainPage/slice/selectors';
 import { dispatchResize } from 'app/utils/dispatchResize';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect ,useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Route,
@@ -30,7 +30,7 @@ import { closeAllTabs, closeOtherTabs, removeTab } from '../slice/thunks';
 import { ArchivedViz, Folder, Storyboard } from '../slice/types';
 import { VizContainer } from './VizContainer';
 
-export function Main({ sliderVisible }: { sliderVisible: boolean }) {
+export function Main({ sliderVisible ,vizDatatype }) {
   const { actions } = useVizSlice();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -106,27 +106,28 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
     archivedDashboards,
     archivedStoryboards,
     vizId,
+
   ]);
 
   useEffect(() => {
     if (selectedTab && !vizId) {
-      history.push(`/organizations/${orgId}/vizs/${selectedTab.id}`);
+      history.push(`/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s/${selectedTab.id}`);
     }
-  }, [history, selectedTab, orgId, vizId]);
+  }, [history, selectedTab, orgId, vizId,vizDatatype]);
 
   const tabChange = useCallback(
     activeKey => {
-      const activeTab = tabs.find(v => v.id === activeKey);
+      const activeTab = tabs.filter(tab=>tab.type === vizDatatype).find(v => v.id === activeKey);
       if (activeTab) {
         history.push(
-          `/organizations/${orgId}/vizs/${activeKey}${activeTab.search || ''}`,
+          `/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s/${activeKey}${activeTab.search || ''}`,
         );
       }
       setTimeout(() => {
         dispatchResize();
       }, 500);
     },
-    [history, orgId, tabs],
+    [history, orgId, tabs,vizDatatype],
   );
 
   const tabEdit = useCallback(
@@ -137,15 +138,15 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
             removeTab({
               id: targetKey,
               resolve: activeKey => {
-                const activeTab = tabs.find(v => v.id === activeKey);
+                const activeTab = tabs.filter(tab=>tab.type === vizDatatype).find(v => v.id === activeKey);
                 if (activeTab) {
                   history.push(
-                    `/organizations/${orgId}/vizs/${activeKey}${
+                    `/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s/${activeKey}${
                       activeTab.search || ''
                     }`,
                   );
                 } else {
-                  history.push(`/organizations/${orgId}/vizs`);
+                  history.push(`/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s`);
                 }
               },
             }),
@@ -155,7 +156,7 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
           break;
       }
     },
-    [dispatch, history, orgId, tabs],
+    [dispatch, history, orgId, tabs,vizDatatype],
   );
 
   const handleClickMenu = (e: any, id: string) => {
@@ -164,7 +165,7 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
       dispatch(
         closeAllTabs({
           resolve() {
-            history.push(`/organizations/${orgId}/vizs`);
+            history.push(`/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s`);
           },
         }),
       );
@@ -174,15 +175,15 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
       closeOtherTabs({
         id,
         resolve: activeKey => {
-          const activeTab = tabs.find(v => v.id === activeKey);
+          const activeTab = tabs.filter(tab=>tab.type === vizDatatype).find(v => v.id === activeKey);
           if (activeTab) {
             history.push(
-              `/organizations/${orgId}/vizs/${activeKey}${
+              `/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s/${activeKey}${
                 activeTab.search || ''
               }`,
             );
           } else {
-            history.push(`/organizations/${orgId}/vizs`);
+            history.push(`/organizations/${orgId}/viz${vizDatatype.toLowerCase()}s`);
           }
         },
       }),
@@ -208,6 +209,9 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
     </span>
   );
 
+  const activeKey = useMemo(()=>{
+  	return  selectedTab?.type === vizDatatype  ? selectedTab.id : (tabs.length>0 ? tabs[0].id : null )
+  },[selectedTab,vizDatatype,tabs])
   return (
     <Wrapper className={sliderVisible ? 'close datart-viz' : 'datart-viz'}>
       <TabsWrapper>
@@ -215,11 +219,11 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
           hideAdd
           mode="dashboard"
           type="editable-card"
-          activeKey={selectedTab?.id}
+          activeKey={activeKey}
           onChange={tabChange}
           onEdit={tabEdit}
         >
-          {tabs.map(({ id, name }) => (
+          {tabs.filter(tab=>tab.type === vizDatatype).map(({ id, name }) => (
             <TabPane
               key={id}
               tab={Tab(id, name)}
@@ -232,20 +236,21 @@ export function Main({ sliderVisible }: { sliderVisible: boolean }) {
           ))}
         </Tabs>
       </TabsWrapper>
-      {tabs.map(tab => (
+      {tabs.filter(tab=>tab.type === vizDatatype).map(tab => (
         <VizContainer
           key={tab.id}
           tab={tab}
           orgId={orgId}
           vizs={vizs}
-          selectedId={selectedTab?.id}
+          vizDatatype={vizDatatype}
+          selectedId={activeKey}
         />
       ))}
       {!tabs.length && <EmptyFiller title={t('empty')} />}
 
       <Switch>
         <Route
-          path="/organizations/:orgId/vizs/:vizId?/boardEditor"
+          path={`/organizations/:orgId/vizdashboards/:vizId?/boardEditor`}
           render={() => <BoardEditor boardId={vizId} />}
         />
       </Switch>

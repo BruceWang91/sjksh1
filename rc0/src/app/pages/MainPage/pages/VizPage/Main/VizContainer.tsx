@@ -12,7 +12,7 @@ import {
 } from '../../PermissionPage/constants';
 import { ChartPreviewBoard } from '../ChartPreview';
 import { FolderViewModel, VizTab } from '../slice/types';
-
+import capitalize from 'lodash/capitalize';
 interface VizContainerProps {
   tab: VizTab;
   orgId: string;
@@ -29,23 +29,23 @@ export const VizContainer = memo(
           ? getPath(
               vizs as Array<{ id: string; parentId: string }>,
               { id: permissionId!, parentId },
-              VizResourceSubTypes.Folder,
+              VizResourceSubTypes[`${capitalize(type)}Folder`],
             )
           : [id],
       [vizs, id, permissionId, type, parentId],
     );
     const allowDownload = useCascadeAccess({
-      module: ResourceTypes.Viz,
+      module: ResourceTypes[`Viz${capitalize(type)}`],
       path,
       level: PermissionLevels.Download,
     })(true);
     const allowShare = useCascadeAccess({
-      module: ResourceTypes.Viz,
+      module: ResourceTypes[`Viz${capitalize(type)}`],
       path,
       level: PermissionLevels.Share,
     })(true);
     const allowManage = useCascadeAccess({
-      module: ResourceTypes.Viz,
+      module: ResourceTypes[`Viz${capitalize(type)}`],
       path,
       level: PermissionLevels.Manage,
     })(true);

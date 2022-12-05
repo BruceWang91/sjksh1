@@ -41,6 +41,29 @@ export const selectSheets = createSelector(
   [selectDomain],
   permissionState => permissionState.sheets,
 );
+export const selectReports = createSelector(
+  [selectDomain],
+  permissionState => permissionState.reports,
+);
+export const selectMiddleTables = createSelector(
+  [selectDomain],
+  permissionState => permissionState.middleTables,
+);
+export const selectImmassets = createSelector(
+  [selectDomain],
+  permissionState => permissionState.immassets,
+);
+
+
+export const selectMiddleTableListLoading = createSelector(
+  [selectDomain],
+  permissionState => permissionState.middleTableListLoading,
+);
+export const selectImmassetListLoading = createSelector(
+  [selectDomain],
+  permissionState => permissionState.immassetListLoading,
+);
+
 export const selectFilemainListLoading = createSelector(
   [selectDomain],
   permissionState => permissionState.filemainListLoading,
@@ -53,13 +76,23 @@ export const selectSheetListLoading = createSelector(
   [selectDomain],
   permissionState => permissionState.sheetListLoading,
 );
-
-
-
-
-export const selectFolders = createSelector(
+export const selectReportListLoading = createSelector(
   [selectDomain],
-  permissionState => permissionState.folders,
+  permissionState => permissionState.reportListLoading,
+);
+
+
+
+
+
+
+export const selectDatachartFolders = createSelector(
+  [selectDomain],
+  permissionState => permissionState.datachartFolders,
+);
+export const selectDashboardFolders = createSelector(
+  [selectDomain],
+  permissionState => permissionState.dashboardFolders,
 );
 
 export const selectStoryboards = createSelector(
@@ -96,6 +129,7 @@ export const selectFolderListLoading = createSelector(
   [selectDomain],
   permissionState => permissionState.folderListLoading,
 );
+
 
 export const selectStoryboardListLoading = createSelector(
   [selectDomain],

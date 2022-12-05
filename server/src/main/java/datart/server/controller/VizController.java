@@ -29,7 +29,6 @@ import datart.server.base.transfer.DatachartTemplateParam;
 import datart.server.base.transfer.ImportStrategy;
 import datart.server.base.transfer.ResourceTransferParam;
 import datart.server.service.DataProviderService;
-import datart.server.service.IDepartmentService;
 import datart.server.service.VizService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,8 +53,6 @@ public class VizController extends BaseController {
     private final VizService vizService;
     @Autowired
     private DataProviderService dataProviderService;
-    @Autowired
-    private IDepartmentService deptService;
 
     public VizController(VizService vizService) {
         this.vizService = vizService;
@@ -84,7 +81,13 @@ public class VizController extends BaseController {
     @ApiOperation(value = "list viz folders")
     @PostMapping(value = "/check/name")
     public ResponseData<Boolean> checkVizName(@Validated @RequestBody CheckNameParam param) {
-        return ResponseData.success(vizService.checkName(param.getOrgId(), param.getName(), param.getParentId(), ResourceType.valueOf(param.getVizType())));
+
+        String org = param.getOrgId();
+        String name = param.getName();
+        String parentId = param.getParentId();
+        ResourceType rt = ResourceType.valueOf(param.getVizType());
+        boolean bl = vizService.checkName(org, name, parentId, rt);
+        return ResponseData.success(bl);
     }
 
     @ApiOperation(value = "list viz folders")
@@ -119,13 +122,11 @@ public class VizController extends BaseController {
         return ResponseData.success(vizService.datachartsInFolder(datachartId));
     }
 
-
     @ApiOperation(value = "get datachart list")
     @GetMapping(value = "/datacharts")
     public ResponseData<DatachartDetailList> getDatachart(@RequestParam Set<String> datachartIds) {
         return ResponseData.success(vizService.getDatacharts(datachartIds));
     }
-
 
     @ApiOperation(value = "update a datachart")
     @PutMapping(value = "/datacharts/{datachartId}")
@@ -138,7 +139,6 @@ public class VizController extends BaseController {
     public ResponseData<Boolean> deleteDatachart(@PathVariable String datachartId, @RequestParam boolean archive) {
         return ResponseData.success(vizService.deleteDatachart(datachartId, archive));
     }
-
 
     @ApiOperation(value = "create a dashboard")
     @PostMapping(value = "/dashboards")
@@ -201,13 +201,11 @@ public class VizController extends BaseController {
         return ResponseData.success(vizService.getStorypage(storypageId));
     }
 
-
     @ApiOperation(value = "create storyboards")
     @PostMapping(value = "/storyboards")
     public ResponseData<Storyboard> createStoryboard(@Validated @RequestBody StoryboardCreateParam createParam) {
         return ResponseData.success(vizService.createStoryboard(createParam));
     }
-
 
     @ApiOperation(value = "create a storypage")
     @PostMapping(value = "/storypages")
@@ -250,13 +248,11 @@ public class VizController extends BaseController {
         return ResponseData.success(vizService.deleteStorypage(storypageId));
     }
 
-
     @ApiOperation(value = "create a folder")
     @PostMapping(value = "/folders")
     public ResponseData<Folder> createFolder(@Validated @RequestBody FolderCreateParam createParam) {
         return ResponseData.success(vizService.createFolder(createParam));
     }
-
 
     @ApiOperation(value = "update a folder")
     @PutMapping(value = "/folders/{folderId}")
@@ -305,7 +301,6 @@ public class VizController extends BaseController {
         return ResponseData.success(vizService.publish(ResourceType.valueOf(vizType), vizId));
     }
 
-
     @ApiOperation(value = "unpublish viz")
     @PutMapping(value = "/unpublish/{vizId}")
     public ResponseData<Boolean> unpublishViz(@PathVariable String vizId,
@@ -325,7 +320,6 @@ public class VizController extends BaseController {
         return ResponseData.success(vizService.importResource(file, strategy, orgId));
     }
 
-
     @ApiOperation(value = "export dashboard template")
     @PostMapping(value = "/export/dashboard/template")
     public ResponseData<Download> exportDashboardTemplate(@Validated @RequestBody DashboardTemplateParam param) throws IOException {
@@ -339,11 +333,9 @@ public class VizController extends BaseController {
 
     }
 
-
     @ApiOperation(value = "import viz template")
     @PostMapping(value = "/import/template")
     public ResponseData<Folder> importVizTemplate(@RequestParam("file") MultipartFile file, @RequestParam String parentId, @RequestParam String orgId, @RequestParam String name) throws Exception {
         return ResponseData.success(vizService.importVizTemplate(file, orgId, parentId, name));
     }
-
 }

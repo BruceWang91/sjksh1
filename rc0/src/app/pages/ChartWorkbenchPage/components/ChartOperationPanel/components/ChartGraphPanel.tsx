@@ -38,6 +38,7 @@ const ChartGraphPanel: FC<{
 
   useLayoutEffect(() => {
     if (allCharts) {
+    	
       const dict = allCharts?.reduce((acc, cur) => {
         const transferedChartConfig = transferChartDataConfig(
           { datas: CloneValueDeep(cur?.config?.datas || []) },

@@ -32,39 +32,14 @@ import {
 } from '../../slice/types';
 import { getDefaultPermissionArray, getInverseViewpoints } from '../../utils';
 
-
-export function newTreeNodeWithPermission(
-	record,
-  nodes,
-  index,
-  base,
-  parentPermissionArray,
-) {
-  return nodes?.map(({ children,permissionArray,id, ...rest }) => {
-    
-    if(children && record.id === id ){
-    	children = newTreeNodeWithPermission(record,children,index,base,parentPermissionArray);
-  		permissionArray = getChangedPermission(
-        parentPermissionArray[index] === PermissionLevels.Disable,
-        permissionArray,
-        index,
-        base,
-      )
-    }
-    return {
-      	...rest,
-      	id,
-      	children,
-      	permissionArray
-      }
-  });
-}
-
 export function getTreeNodeWithPermission(
-  nodes,
-  getPermissionFunc,
-  parentPermissionArray,
-) {
+  nodes: DataSourceTreeNode[],
+  getPermissionFunc: (
+    node: Omit<DataSourceTreeNode, 'children'>,
+    parentPermissionArray: PermissionLevels[],
+  ) => PermissionLevels[],
+  parentPermissionArray: PermissionLevels[],
+): DataSourceTreeNode[] {
   return nodes.map(({ children, ...rest }) => {
     const permissionArray = getPermissionFunc(rest, parentPermissionArray);
     return {
@@ -92,28 +67,26 @@ export function setTreeDataWithPrivilege(
     treeData,
     (node, parentPermissionArray) => {
       let permissionArray = parentPermissionArray;
-      console.log([...privileges])
-      for (let i = 0; i < privileges.length; i += 1) {
 
+      for (let i = 0; i < privileges.length; i += 1) {
         if (viewpoint === Viewpoints.Subject) {
           if (
             isRootId(node.id, node.type as ResourceTypes) &&
-            isRootId(privileges[i].resourceId, privileges[i].resourceType) &&
-            node.id === privileges[i].resourceId
+            isRootId(privileges[i]?.resourceId, privileges[i]?.resourceType) &&
+            node.id === privileges[i]?.resourceId
           ) {
             permissionArray = parsePermission(
-              privileges[i].permission,
-              privileges[i].resourceType,
+              privileges[i]?.permission,
+              privileges[i]?.resourceType,
             );
             fastDeleteArrayElement(privileges, i);
             break;
           }
         }
-
-        if (node.id === privileges[i][`${getInverseViewpoints(viewpoint)}Id`]) {
+        if (node.id === privileges?.[i][`${getInverseViewpoints(viewpoint)}Id`]) {
           permissionArray = parsePermission(
             privileges[i].permission,
-            getPrivilegeSettingType(viewpoint, viewpointType, dataSourceType)!,
+            getPrivilegeSettingType(viewpoint, viewpointType, node.module || dataSourceType)!,
           );
           fastDeleteArrayElement(privileges, i);
           break;
@@ -133,7 +106,7 @@ export function isRootId(id: string, type: ResourceTypes) {
 }
 
 export function calcPermission(permissionViewModel: PermissionLevels[]) {
-  return Array.isArray(permissionViewModel) ? permissionViewModel.reduce((s, p) => s | p, PermissionLevels.Disable) : PermissionLevels.Disable;
+  return permissionViewModel.reduce((s, p) => s | p, PermissionLevels.Disable);
 }
 
 export function parsePermission(
@@ -141,7 +114,7 @@ export function parsePermission(
   resourceType: ResourceTypes,
 ) {
   let permissionViewModel: PermissionLevels[] = [];
-  RESOURCE_TYPE_PERMISSION_MAPPING[resourceType].forEach(p => {
+  RESOURCE_TYPE_PERMISSION_MAPPING[resourceType]?.forEach(p => {
     if ((permission & (p as PermissionLevels)) === p) {
       permissionViewModel.push(p);
     } else {
@@ -164,10 +137,10 @@ export function getChangedPermission(
   changedValue,
 ) {
   return canceled
-    ? origin?.map(p =>
+    ? origin.map(p =>
         (p & changedValue) === changedValue ? PermissionLevels.Disable : p,
       )
-    :  origin?.map((p, i) => (index === i ? changedValue : p));
+    : origin.map((p, i) => (index === i ? changedValue : p));
 }
 
 export function getRecalculatedPrivileges(
@@ -180,7 +153,7 @@ export function getRecalculatedPrivileges(
 ) {
   let privileges: Privilege[] = [];
 
-  nodes?.forEach(({ id, type, permissionArray, children }) => {
+  nodes.forEach(({ id, type, permissionArray, children }) => {
     const permission = calcPermission(permissionArray);
     if (
       !parentPermissionArray ||
@@ -222,65 +195,6 @@ export function getRecalculatedPrivileges(
   });
   return privileges;
 }
-
-
-
-export function getRecalculatedPrivileges2(
-  nodes,
-  record,
-  viewpoint,
-  viewpointType,
-  viewpointId,
-  orgId,
-  parentPermissionArray,
-) {
-  let privileges: Privilege[] = [];
-  nodes?.forEach(({ id, type, path, name, permissionArray, children }) => {
-
-    const permission = calcPermission(permissionArray);
-
-    if (
-      !parentPermissionArray ||
-	      calcPermission(parentPermissionArray) !== permission
-	    ) {
-	      privileges.push(
-	        viewpoint === Viewpoints.Resource
-	          ? {
-	              resourceId: viewpointId,
-	              resourceType: viewpointType as ResourceTypes,
-	              subjectId: id,
-	              subjectType: type as SubjectTypes,
-	              orgId,
-	              permission,
-	            }
-	          : {
-	              resourceId: id,
-	              resourceType: type as ResourceTypes,
-	              subjectId: viewpointId,
-	              subjectType: viewpointType as SubjectTypes,
-	              orgId,
-	              permission,
-	            },
-	      );
-	    }
-
-    if (children) {
-      privileges = privileges.concat(
-        getRecalculatedPrivileges2(
-          children,
-          record,
-          viewpoint,
-          viewpointType,
-          viewpointId,
-          orgId,
-          permissionArray,
-        ),
-      );
-    }
-  });
-  return privileges;
-}
-
 
 export function getPrivilegeResult(
   origin: Privilege[],

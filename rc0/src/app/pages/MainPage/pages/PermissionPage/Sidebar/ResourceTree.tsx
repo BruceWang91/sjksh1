@@ -34,7 +34,6 @@ interface ResourceTreeProps {
 export const ResourceTree = memo(
   ({ loading, dataSource, onSelect }: ResourceTreeProps) => {
     const t = useI18NPrefix('permission');
-
     const treeData = useMemo(
       () => listToTree(dataSource, null, []) as DataSourceTreeNode[],
       [dataSource],

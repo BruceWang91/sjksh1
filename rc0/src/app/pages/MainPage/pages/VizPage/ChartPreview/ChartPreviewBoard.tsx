@@ -585,7 +585,7 @@ const ChartPreviewBoard: FC<{
 
         try {
           history.push({
-            pathname: `/organizations/${orgId}/vizs/${dashboardId}/boardEditor`,
+            pathname: `/organizations/${orgId}/vizdashboards/${dashboardId}/boardEditor`,
             state: {
               widgetInfo: JSON.stringify({
                 chartType: '',
@@ -605,9 +605,9 @@ const ChartPreviewBoard: FC<{
     const redirect = useCallback(
       tabKey => {
         if (tabKey) {
-          history.push(`/organizations/${orgId}/vizs/${tabKey}`);
+          history.push(`/organizations/${orgId}/vizdatacharts/${tabKey}`);
         } else {
-          history.push(`/organizations/${orgId}/vizs`);
+          history.push(`/organizations/${orgId}/vizdatacharts`);
         }
       },
       [history, orgId],

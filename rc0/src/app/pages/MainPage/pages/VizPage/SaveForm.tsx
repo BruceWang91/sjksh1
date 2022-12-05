@@ -106,9 +106,13 @@ export function SaveForm({ formProps, ...modalProps }: SaveFormProps) {
       afterClose={afterClose}
       ref={formRef}
     >
-      <IdField name="id" hidden={type === CommonFormTypes.Add}>
+      <HideField name="id"  hidden={type === CommonFormTypes.Add}>
         <Input />
-      </IdField>
+      </HideField>
+
+
+
+      
       <Form.Item
         name="name"
         label={t('name')}
@@ -131,7 +135,8 @@ export function SaveForm({ formProps, ...modalProps }: SaveFormProps) {
               const data = {
                 name: value,
                 orgId,
-                vizType: 'FOLDER',
+                //vizType: 'FOLDER',
+                vizType:`${vizType}`,
                 parentId: parentId || null,
               };
               return fetchCheckName('viz', data);
@@ -141,6 +146,7 @@ export function SaveForm({ formProps, ...modalProps }: SaveFormProps) {
       >
         <Input />
       </Form.Item>
+
       {vizType === 'DATACHART' && !(type === CommonFormTypes.SaveAs) && (
         <Form.Item name="description" label={t('description')}>
           <Input.TextArea />
@@ -202,6 +208,6 @@ export function SaveForm({ formProps, ...modalProps }: SaveFormProps) {
   );
 }
 
-const IdField = styled(Form.Item)`
+const HideField = styled(Form.Item)`
   display: none;
 `;

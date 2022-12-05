@@ -24,61 +24,35 @@ import {
   selectSaveReportLoading,
 } from './slice/selectors';
 import {
-  saveReport
+  saveReport,
 } from './slice/thunks';
 
+import { listToTree } from 'utils/utils';
+import treeNodeIconFn from 'utils/treeNodeIconFn'
+import {selectFolder} from 'app/pages/MainPage/Sider/slice/selectors';
+import {ResourceTypes} from 'app/pages/MainPage/pages/PermissionPage/constants';
 
-
-
-const renderForm = ( {} ) => () => {
-
-	return <FormWrap>
-		<ProFormText 
-			width="lg"
-			name="name" 
-			fieldProps={{size:'small'}}
-			label={ '报表名称' }
-			placeholder={'报表名称'}
-			rules={[{ required: true, message: `请输入报表名称` }]}
-		/>
-	</FormWrap>
-}
 
 interface PostProps{
-	data:Category;
 	children:React.ReactNode;
 	title?:string;
 	onSuccess?:()=>void;
 }
 
-export const Post: React.FC = ({ children,title, data , onSuccess }) => {
+export const Post: React.FC = ({ children,title, parentId,onSuccess }) => {
 
 	const dispatch = useDispatch();
 	const orgId = useSelector(selectOrgId);
  	const ref = useRef();
  	const loading = useSelector(selectSaveReportLoading);
 
- 	const [formData,setFormData] = useState(data);
 
 
- 	const onShow = () =>{
- 		if(!data?.id){
- 			
- 			dispatch(saveReport({
-        report: {},
-        resolve: (result) => {
-        	console.log(result)
-        	setFormData({...data!,...result})
-        },
-      }))
- 		}else{
- 			setFormData(data)
- 		}
- 	}
  	const onFinish = ( values ) => {
+ 		
     dispatch(
       saveReport({
-        report: {...formData!, ...values },
+        report: { ...values,orgId,isFolder:0,type:'datainfo',parentId:values.parentId || parentId || null },
         resolve: () => {
         	onSuccess()
         	ref.current.hide()
@@ -87,16 +61,56 @@ export const Post: React.FC = ({ children,title, data , onSuccess }) => {
       }),
     );
  	};
+ 	const folderMap = useSelector(selectFolder);
+
+ 	const folders = useMemo(()=>[{
+		title:'根目录',
+		path:[],
+		key:'',
+		isFolder:1,
+		icon:treeNodeIconFn,
+
+		value:'',
+		id:'',
+		children:listToTree(
+      folderMap[ResourceTypes.Report]?.list,
+      null,
+      [],
+      {getIcon: () => treeNodeIconFn}
+  	)
+	}],[folderMap]);
+	
+ 	
+
+ 	const formElements = useMemo(()=>(<FormWrap>
+		<ProFormText 
+			width="lg"
+			name="name" 
+			fieldProps={{size:'small'}}
+			label={ '报表名称' }
+			placeholder={'报表名称'}
+			rules={[{ required: true, message: `请输入报表名称` }]}
+		/>
+
+		<ProFormTreeSelect
+			name="parentId" 
+			fieldProps={{treeIcon:true,size:'small',style:{minWidth:200}}}
+			label={  "目录" }
+			placeholder={"根目录"}
+			rules={[{ required: false, message: `请选择目录` }]}
+			request={()=>folders}
+		/>
+	</FormWrap>),[folders])
 
   return <DialogForm
-  	
+  	width={600}
 		loading={loading}
 		loadingText="保存中..."
-		render={renderForm({})} 
-		initialValues={ formData }
+		render={formElements} 
+		initialValues={{parentId}}
 		onFinish={onFinish} 
     title={title}
-    onShow={onShow}
+    
     ref={ref}
    >
 		{children}
@@ -106,7 +120,6 @@ export const Post: React.FC = ({ children,title, data , onSuccess }) => {
 
 Post.defaultProps = {
 	onSuccess:function(){},
-	data:{},
 }
 const FormWrap = styled.div`
 	

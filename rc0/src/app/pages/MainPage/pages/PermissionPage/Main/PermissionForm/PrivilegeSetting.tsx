@@ -81,7 +81,7 @@ export const PrivilegeSetting = memo(
 
     return (
       <Space>
-        {RESOURCE_TYPE_PERMISSION_MAPPING[resourceType!].map((level, index) => (
+        {RESOURCE_TYPE_PERMISSION_MAPPING?.[resourceType!]?.map((level, index) => (
           <Checkbox
             key={PermissionLevels[level]}
             checked={level === values[index]}

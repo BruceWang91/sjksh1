@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin , Modal } from 'antd';
+import { Spin , Modal ,Tooltip } from 'antd';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -9,9 +9,10 @@ interface IDialogProps {
   render : ()=> any | React.ReactNode ;
 	onOk: ()=> void ;
 	onCancel:  ()=> void ;
-	onShow : ()=> void ;
+	onOpen : ()=> void ;
 	loading:  boolean ;
 	loadingText: string;
+	tooltip:string;
 }
 
 /**
@@ -24,12 +25,14 @@ interface IDialogProps {
 export class Dialog extends React.Component<IDialogProps,{}> {
 
 	static defaultProps = {
-		onShow:function(){},
+		onOpen:function(){},
 		onCancel:function(){},
 		onOk:function(){},
 		render:function(){},
 		loadingText:'Loading...',
-		loading:false
+		loading:false,
+		tooltip:'',
+		destroyOnClose:true
 	}; 
 	state = {
 		visible: false ,
@@ -65,23 +68,38 @@ export class Dialog extends React.Component<IDialogProps,{}> {
 			render,
 			loading,
 			loadingText,
+			tooltip ,
+			destroyOnClose,
 			...rest
     } = this.props;
 
-    const {visible} = this.state;
-    const child = React.Children.only(children);
-    
-    const newChild = React.cloneElement(child, { ...child.props,
-			onClick: event => {
-				
-				this.props.onShow();
-				this.show()
-			}
-		});
 
+    let trigger = null;
+
+    const {visible} = this.state;
+
+    if(children){
+	    const child = React.Children.only(children);
+	    const newChild = React.cloneElement(child, { ...child.props,
+				onClick: event => {
+
+					if(event.domEvent){
+						event.domEvent.preventDefault()
+					}else{
+						event?.preventDefault();
+					}
+					
+					this.props.onOpen();
+					this.show()
+				}
+			});
+	    trigger = tooltip ? <Tooltip title={tooltip} placement="bottom">{newChild}</Tooltip> : newChild;
+    }
     return <React.Fragment>
 			<Modal
+				destroyOnClose={destroyOnClose}
 				{...rest}
+
 				size="small"
 				disabled={loading}
 	      visible={visible}
@@ -93,7 +111,7 @@ export class Dialog extends React.Component<IDialogProps,{}> {
 	    	</Spin>
 	    	
 	    </Modal>
-			{newChild}
+			{trigger}
 		</React.Fragment>
   }
 }

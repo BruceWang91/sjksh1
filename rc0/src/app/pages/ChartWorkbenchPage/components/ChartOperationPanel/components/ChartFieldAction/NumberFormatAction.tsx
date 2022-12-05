@@ -151,9 +151,10 @@ const NumberFormatAction: FC<{
                 >
                   {Array.from(NumericUnitDescriptions.keys()).map(k => {
                     const values = NumericUnitDescriptions.get(k);
+                    console.log(values)
                     return (
                       <Select.Option key={k} value={k}>
-                        {values?.[1] || '  '}
+                        {values?.[2] || '  '}
                       </Select.Option>
                     );
                   })}
@@ -179,6 +180,7 @@ const NumberFormatAction: FC<{
               </FormItemEx>
             </>
           )}
+          
           {FieldFormatType.Numeric === type && (
             <>
               <FormItemEx {...formItemLayout} label={t('format.unit')}>
@@ -194,7 +196,7 @@ const NumberFormatAction: FC<{
                     const values = NumericUnitDescriptions.get(k);
                     return (
                       <Select.Option key={k} value={k}>
-                        {values?.[1] || '  '}
+                        {values?.[2] || '  '}
                       </Select.Option>
                     );
                   })}
@@ -238,6 +240,33 @@ const NumberFormatAction: FC<{
               </FormItemEx>
             </>
           )}
+
+					{(FieldFormatType.Percentage === type || FieldFormatType.Numeric === type) && (<>
+						<FormItemEx {...formItemLayout} label={t('format.trend')}>
+              <Checkbox
+                checked={formatDetail?.showTrend}
+                onChange={e =>
+                  handleFormatDetailChanged(
+                    Object.assign({}, formatDetail, {
+                      showTrend: e.target.checked,
+                    }),
+                  )
+                }
+              />
+            </FormItemEx>
+            <FormItemEx {...formItemLayout} label={t('format.replaceSign')}>
+              <Checkbox
+                checked={formatDetail?.replaceSign}
+                onChange={e =>
+                  handleFormatDetailChanged(
+                    Object.assign({}, formatDetail, {
+                      replaceSign: e.target.checked,
+                    }),
+                  )
+                }
+              />
+            </FormItemEx>
+            </>)}
         </Space>
       );
     }

@@ -7,6 +7,8 @@ import { ReactElement } from 'react';
 export type VizType = [
   'DATACHART',
   'DASHBOARD',
+  'DATACHART_FOLDER',
+  'DASHBOARD_FOLDER',
   'FOLDER',
   'STORYBOARD',
   'TEMPLATE',

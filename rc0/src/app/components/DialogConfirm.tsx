@@ -9,6 +9,7 @@ interface IDialogProps {
 	onCancel:()=>void;
 }
 
+const size = { size: 'small'}
 /**
  * @Author   Zuojin(463609@qq.com)
  * @DateTime 2021-11-24
@@ -37,7 +38,6 @@ export class DialogConfirm extends React.Component<IDialogProps,{}> {
   onOk(){
 
   	this.props.onOk && this.props.onOk();
-		this.dialog && this.dialog.destroy()
 
   }
   render() {
@@ -60,6 +60,8 @@ export class DialogConfirm extends React.Component<IDialogProps,{}> {
 					this.dialog = Modal.confirm({
 						title,
 						content,
+						okButtonProps:size,
+						cancelButtonProps:size,
 						onOk:this.onOk,
 						onCancel
 					})
@@ -67,8 +69,11 @@ export class DialogConfirm extends React.Component<IDialogProps,{}> {
 					this.dialog.update({
 						title,
 						content,
-						onOk,
-						onCancel
+						onOk:this.onOk,
+						okButtonProps:size,
+						cancelButtonProps:size,
+						onCancel,
+						visible:true
 					})
 				}
 				

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import { message } from 'antd';
+import { Modal } from 'antd';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { BASE_API_URL } from 'globalConstants';
 import i18next from 'i18next';
@@ -78,7 +78,24 @@ export function request2<T>(
   const axiosPromise =
     typeof url === 'string' ? instance(url, config) : instance(url);
   return axiosPromise
-    .then(extra?.onFulfilled || defaultFulfilled, unAuthorizationErrorHandler)
+    .then( response =>{
+
+    	const filled = extra?.onFulfilled || defaultFulfilled;
+    	const code = response?.data?.code || response?.data?.errCode ;
+  		if(response?.data?.success){
+  			return filled(response)
+  		}else{
+  			if(+code === 200){
+  				return filled(response)
+  			}
+  			if(+code === 401){
+  				return unAuthorizationErrorHandler2();
+  			}else{
+  				Modal.error({content:response?.data?.message})
+  				return 
+  			}
+  		}
+    }, unAuthorizationErrorHandler)
     .catch(extra?.onRejected || defaultRejected);
 }
 
@@ -99,15 +116,20 @@ export const getServerDomain = () => {
 
 function unAuthorizationErrorHandler(error) {
   if (error?.response?.status === 401) {
-    message.error({ key: '401', content: i18next.t('global.401') });
+    Modal.error({ key: '401', content: i18next.t('global.401') });
     removeToken();
+    window.location.href = '/login'
     return true;
   }
   throw error;
 }
-
+function unAuthorizationErrorHandler2() {
+  Modal.error({ key: '401', content: i18next.t('global.401') });
+  removeToken();
+  window.location.href = '/login'
+  return true
+}
 function standardErrorMessageTransformer(error) {
-	
   if (error?.response?.data?.message) {
     console.log('Unhandled Exception | ', error?.response?.data?.message);
     return error?.response?.data?.message;

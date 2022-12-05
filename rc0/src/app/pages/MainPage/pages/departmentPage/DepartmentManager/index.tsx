@@ -9,7 +9,7 @@ import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import {Page} from 'app/components/Page';
 import { Table , Space ,Modal,Button,message} from 'antd';
-import Icon, { ImportOutlined,PlusOutlined } from '@ant-design/icons';
+import Icon, { ImportOutlined,PlusOutlined ,ApartmentOutlined ,UserSwitchOutlined } from '@ant-design/icons';
 import {RowDateTime} from 'app/components/RowDateTime';
 
 
@@ -90,7 +90,8 @@ const columns: ColumnsType<DepartmentViewModel> = [
 	{
 		title:'组织',
 		dataIndex:'deptName',
-		width:300
+		width:300,
+
 	},
 
 	{
@@ -117,7 +118,7 @@ const columns: ColumnsType<DepartmentViewModel> = [
 		render: (_, record) => {
      return (<Space size="middle">
        	<Post title={`修改<${record.deptName}>`} data={record} onSuccess={fetch}><a>编辑</a></Post>
-       	<Post key="add" title="创建部门" data={{parentId:record.deptId}} onSuccess={fetch}><a>创建部门</a></Post>
+       	<Post key="add" title="创建企业/分组/部门" data={{parentId:record.deptId}} onSuccess={fetch}><a>创建企业/分组/部门</a></Post>
        	<DialogConfirm key="delete" onOk={event=>delRecord(record.deptId)} ><a>删除</a></DialogConfirm>
       </Space>
     )},
@@ -133,7 +134,7 @@ const columns: ColumnsType<DepartmentViewModel> = [
 				toolbar={{
 					onRefresh:fetch,
 					title:'组织管理',
-					buttons:[<Post key="add"  data={{parentId:0}} title="创建子部门" onSuccess={fetch}><Button key="add" size="small" type="primary" icon={<PlusOutlined />}>创建组织</Button></Post>]
+					buttons:[<Post key="add"  data={{parentId:0}} title="创建企业/分组" onSuccess={fetch}><Button key="add" size="small" type="primary" icon={<PlusOutlined />}>创建企业/分组</Button></Post>]
 				}}
 				pagination={null}
 			>
@@ -141,9 +142,11 @@ const columns: ColumnsType<DepartmentViewModel> = [
       	size="small"
       	rowKey={record=>record.deptId}
         columns={columns}
+        //icon={(_)=>_.isFolder ?  <ApartmentOutlined /> : <UserSwitchOutlined />}
         //rowSelection={{ ...rowSelection, checkStrictly }}
         dataSource={list}
         pagination={false}
+        
       />
     </Page>
 };

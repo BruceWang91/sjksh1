@@ -69,7 +69,7 @@ const StyledDirectoryTree = styled(AntTree)`
       width: ${SPACE};
       height: ${SPACE};
       content: '';
-      background-color: ${p => p.theme.borderColorEmphasis};
+      background-color: #777;
       border-radius: 50%;
       transform: translate(-50%, -50%);
     }
@@ -94,7 +94,7 @@ const StyledDirectoryTree = styled(AntTree)`
           flex-shrink: 0;
           align-items: center;
           justify-content: center;
-          color: ${p => p.theme.textColorDisabled};
+          color: #777;
         }
 
         .ant-tree-title {

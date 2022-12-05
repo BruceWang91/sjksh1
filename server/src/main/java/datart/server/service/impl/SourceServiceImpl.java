@@ -19,6 +19,7 @@
 package datart.server.service.impl;
 
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import datart.core.base.consts.Const;
@@ -49,6 +50,7 @@ import datart.server.base.params.*;
 import datart.server.base.transfer.ImportStrategy;
 import datart.server.base.transfer.TransferConfig;
 import datart.server.base.transfer.model.SourceResourceModel;
+import datart.server.config.datasource.DynamicDataSource;
 import datart.server.job.SchemaSyncJob;
 import datart.server.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -109,6 +111,40 @@ public class SourceServiceImpl extends BaseService implements SourceService {
     public List<Source> listSources(String orgId, boolean active) throws PermissionDeniedException {
 
         List<Source> sources = sourceMapper.listByOrg(orgId, active);
+
+        Map<String, Source> filtered = new HashMap<>();
+
+        List<Source> permitted = sources.stream().filter(source -> {
+            try {
+                requirePermission(source, Const.READ);
+                return true;
+            } catch (Exception e) {
+                filtered.put(source.getId(), source);
+                return false;
+            }
+        }).collect(Collectors.toList());
+
+        while (!filtered.isEmpty()) {
+            boolean updated = false;
+            for (Source source : permitted) {
+                Source parent = filtered.remove(source.getParentId());
+                if (parent != null) {
+                    permitted.add(parent);
+                    updated = true;
+                    break;
+                }
+            }
+            if (!updated) {
+                break;
+            }
+        }
+        return permitted;
+    }
+
+    @Override
+    public List<Source> listSources(String orgId, String type, boolean active) throws PermissionDeniedException {
+
+        List<Source> sources = sourceMapper.listSources(orgId, type, active);
 
         Map<String, Source> filtered = new HashMap<>();
 
@@ -355,6 +391,30 @@ public class SourceServiceImpl extends BaseService implements SourceService {
     }
 
     @Override
+    public List<HashMap<String, String>> getTableColumnName(String sourceId, String tableName) {
+
+        Source source = sourceMapper.selectByPrimaryKey(sourceId);
+        DataProviderSource providerSource = getDataProviderService().parseDataProviderConfig(source);
+        Map<String, Object> properties = providerSource.getProperties();
+        if (!CollectionUtils.isEmpty(properties)) {
+            for (String key : properties.keySet()) {
+                Object val = properties.get(key);
+                if (val instanceof String) {
+                    properties.put(key, decryptValue(val.toString()));
+                }
+            }
+        }
+        DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setUrl(properties.get("url").toString() + "?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&useAffectedRows=true");
+        druidDataSource.setUsername(properties.get("user").toString());
+        druidDataSource.setPassword(properties.get("password").toString());
+        DynamicDataSource.setDataSource(druidDataSource);
+        List<HashMap<String, String>> list = sourceMapper.getTableColumnName(tableName);
+        DynamicDataSource.clear();
+        return list;
+    }
+
+    @Override
     @Transactional
     public boolean update(BaseUpdateParam updateParam) {
         SourceUpdateParam sourceUpdateParam = (SourceUpdateParam) updateParam;
@@ -558,4 +618,17 @@ public class SourceServiceImpl extends BaseService implements SourceService {
         return Application.getBean(DataProviderService.class);
     }
 
+    public String decryptValue(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return value;
+        }
+        if (!value.startsWith(Const.ENCRYPT_FLAG)) {
+            return value;
+        }
+        try {
+            return AESUtil.decrypt(value.replaceFirst(Const.ENCRYPT_FLAG, ""));
+        } catch (Exception e) {
+            return value;
+        }
+    }
 }

@@ -1,24 +1,19 @@
 package datart.server.service.impl;
 
-import datart.core.entity.FileSheets;
-import datart.core.entity.TaskManagement;
-import datart.core.entity.TaskTemplate;
-import datart.core.entity.TaskUsers;
+import datart.core.entity.*;
 import datart.core.entity.param.TaskInformationParam;
 import datart.core.entity.result.TaskInformationResult;
+import datart.core.mappers.FileMainMapper;
 import datart.core.mappers.TaskManagementMapper;
 import datart.core.mappers.TaskTemplateMapper;
 import datart.core.mappers.TaskUsersMapper;
-import datart.server.annotation.DataSource;
-import datart.server.common.SpringUtils;
-import datart.server.config.datasource.DataSourceNames;
+import datart.server.config.datasource.DynamicDataSource;
 import datart.server.service.BaseService;
+import datart.server.service.IToolsService;
 import datart.server.service.TaskManagementService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
@@ -41,11 +36,15 @@ public class TaskManagementServiceImpl extends BaseService implements TaskManage
     private TaskTemplateMapper taskTemplateMapper;
     @Autowired
     private FileSheetsServiceImpl fileSheetsService;
+    @Autowired
+    private FileMainMapper fileMainMapper;
+    @Autowired
+    private IToolsService toolsService;
 
     @Override
     public List<TaskManagement> getList(TaskManagement taskManagement) {
 
-        taskManagement.setCreateBy(getCurrentUser().getId());
+
         List<TaskManagement> list = managementMapper.selectTaskManagementList(taskManagement);
         if (!CollectionUtils.isEmpty(list)) {
 
@@ -82,19 +81,23 @@ public class TaskManagementServiceImpl extends BaseService implements TaskManage
                             Long fileId = taskTemplate.getFileId();
                             String userId = user.getUserId();
                             if (fileId != null && StringUtils.isNotBlank(userId)) {
+                                FileMain fileMain = fileMainMapper.selectFileMainByFileId(fileId);
                                 List<FileSheets> sheets = fileSheetsService.selectFileSheetsList(new FileSheets() {
                                     {
                                         setFileId(fileId);
                                     }
                                 });
                                 if (!CollectionUtils.isEmpty(sheets)) {
-                                    count += SpringUtils.getAopProxy(this).countImportDatas(sheets, userId, management.getStartTime(), management.getEndTime());
+                                    count += countImportDatas(fileMain.getSourceId(), sheets, userId, management.getStartTime(), management.getEndTime());
                                 }
                             }
                         }
                         if (count > 0) {
 
                             numOfPeopleCompleted++;
+                            user.setCompletionStatus(true);
+                        } else {
+                            user.setCompletionStatus(false);
                         }
                     }
                 }
@@ -175,8 +178,6 @@ public class TaskManagementServiceImpl extends BaseService implements TaskManage
     @Override
     public List<TaskInformationResult> getTeskResult(TaskInformationParam param) {
 
-
-        param.setUserId(getCurrentUser().getId());
         List<TaskInformationResult> taskInformationResults = taskTemplateMapper.getTaskResult(param);
         for (TaskInformationResult taskInformationResult : taskInformationResults) {
 
@@ -222,7 +223,7 @@ public class TaskManagementServiceImpl extends BaseService implements TaskManage
                                     }
                                 });
                                 if (!CollectionUtils.isEmpty(sheets)) {
-                                    count += SpringUtils.getAopProxy(this).countImportDatas(sheets, uId, management.getStartTime(), management.getEndTime());
+                                    count += countImportDatas(taskInformationResult.getSourceId(), sheets, uId, management.getStartTime(), management.getEndTime());
                                 }
                             }
                         }
@@ -243,7 +244,7 @@ public class TaskManagementServiceImpl extends BaseService implements TaskManage
                     }
                 });
                 if (!CollectionUtils.isEmpty(sheets)) {
-                    count += SpringUtils.getAopProxy(this).countImportDatas(sheets, userId, taskInformationResult.getStartTime(), taskInformationResult.getEndTime());
+                    count += countImportDatas(taskInformationResult.getSourceId(), sheets, userId, taskInformationResult.getStartTime(), taskInformationResult.getEndTime());
                 }
             }
             taskInformationResult.setImportDataCount(count);
@@ -253,10 +254,9 @@ public class TaskManagementServiceImpl extends BaseService implements TaskManage
         return taskInformationResults;
     }
 
-    @DataSource(name = DataSourceNames.SLAVE)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public int countImportDatas(List<FileSheets> sheets, String userId, Date startTime, Date endTime) {
+    public int countImportDatas(String sourceId, List<FileSheets> sheets, String userId, Date startTime, Date endTime) {
 
+        toolsService.changeConnection(sourceId);
         int count = 0;
         for (FileSheets fileSheet : sheets) {
 
@@ -268,6 +268,7 @@ public class TaskManagementServiceImpl extends BaseService implements TaskManage
             map.put("endTime", endTime);
             count += taskTemplateMapper.countImportDatas(map);
         }
+        DynamicDataSource.clear();
         return count;
     }
 }

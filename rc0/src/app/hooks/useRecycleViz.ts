@@ -33,13 +33,14 @@ export const useRecycleViz = (orgId: string, vizId: string, type: VizType) => {
   const tg = useI18NPrefix('global');
   const redirect = useCallback(
     tabKey => {
+    	const vizs = `viz${type.toLowerCase()}s`;  
       if (tabKey) {
-        history.push(`/organizations/${orgId}/vizs/${tabKey}`);
+        history.push(`/organizations/${orgId}/${vizs}/${tabKey}`);
       } else {
-        history.push(`/organizations/${orgId}/vizs`);
+        history.push(`/organizations/${orgId}/${vizs}`);
       }
     },
-    [history, orgId],
+    [history, orgId,type],
   );
   const recycleViz = useCallback(() => {
     dispatch(

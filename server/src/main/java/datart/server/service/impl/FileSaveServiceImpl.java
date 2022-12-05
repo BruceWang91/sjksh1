@@ -3,9 +3,7 @@ package datart.server.service.impl;
 import datart.core.base.consts.Const;
 import datart.core.base.exception.Exceptions;
 import datart.core.common.FileUtils;
-import datart.core.entity.FileSave;
-import datart.core.entity.FileSaveStream;
-import datart.core.entity.Role;
+import datart.core.entity.*;
 import datart.core.mappers.FileSaveStreamMapper;
 import datart.core.mappers.ext.*;
 import datart.security.base.ResourceType;
@@ -19,6 +17,7 @@ import datart.server.service.IFileSaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -48,7 +47,8 @@ public class FileSaveServiceImpl extends BaseService implements IFileSaveService
     private FileClassMapperExt fileClassMapperExt;
     @Autowired
     private FileSaveStreamMapper fileSaveStreamMapper;
-
+    @Autowired
+    private ToolsServiceImpl toolsService;
     @Value("${spring.upload}")
     private String localurl;
 
@@ -117,27 +117,35 @@ public class FileSaveServiceImpl extends BaseService implements IFileSaveService
             fileSave.setClassIds(ids);
         }
         List<FileSave> files = fileSaveMapper.getList(fileSave);
-        for (FileSave save : files) {
+        if (!CollectionUtils.isEmpty(files)) {
+            for (FileSave save : files) {
 
-            if (save.getIsFolder() != 1) {
-                String file = save.getFileName().substring(0, save.getFileName().indexOf("."));
-                String suffix = save.getFileName().substring(file.length() + 1, save.getFileName().length());
-                if (suffix.equals("pdf") || StringUtils.isNotEmpty(save.getPdfurl())) {
-
-                    String pdfurl = save.getPdfurl();
-                    save.setPdfurl(StringUtils.isEmpty(pdfurl) ? save.getUrl() : pdfurl);
-                    save.setCanShowFlag(true);
-                } else {
-
-                    save.setCanShowFlag(false);
+                if (null != save.getDeptId()) {
+                    Department department = toolsService.getCompany(save.getDeptId());
+                    if (department != null) {
+                        save.setDeptName(department.getDeptName());
+                    }
                 }
-                String url = save.getUrl().replace("/upload/", localurl);
-                if (!new File(url).exists()) {
-                    rebuildFile(save.getId());
+                if (save.getIsFolder() != 1) {
+                    String file = save.getFileName().substring(0, save.getFileName().indexOf("."));
+                    String suffix = save.getFileName().substring(file.length() + 1, save.getFileName().length());
+                    if (suffix.equals("pdf") || StringUtils.isNotEmpty(save.getPdfurl())) {
+
+                        String pdfurl = save.getPdfurl();
+                        save.setPdfurl(StringUtils.isEmpty(pdfurl) ? save.getUrl() : pdfurl);
+                        save.setCanShowFlag(true);
+                    } else {
+
+                        save.setCanShowFlag(false);
+                    }
+                    String url = save.getUrl().replace("/upload/", localurl);
+                    if (!new File(url).exists()) {
+
+                        rebuildFile(save.getId());
+                    }
                 }
             }
         }
-
         Map<Long, FileSave> filtered = new HashMap<>();
 
         List<FileSave> permitted = files.stream().filter(file -> {

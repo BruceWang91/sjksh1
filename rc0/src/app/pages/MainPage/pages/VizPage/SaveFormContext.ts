@@ -31,7 +31,6 @@ interface SaveFormContextValue extends SaveFormState {
 }
 
 const saveFormContextValue: SaveFormContextValue = {
-  vizType: 'FOLDER',
   type: CommonFormTypes.Add,
   visible: false,
   isSaveAs: false,
@@ -40,8 +39,8 @@ const saveFormContextValue: SaveFormContextValue = {
   showSaveForm: () => {},
 };
 export const SaveFormContext = createContext(saveFormContextValue);
-export const useSaveFormContext = (): SaveFormContextValue => {
-  const [vizType, setVizType] = useState<VizType>('FOLDER');
+export const useSaveFormContext = ( viztype ): SaveFormContextValue => {
+  const [vizType, setVizType] = useState<VizType>(viztype);
   const [type, setType] = useState(CommonFormTypes.Add);
   const [visible, setVisible] = useState(false);
   const [initialValues, setInitialValues] = useState<

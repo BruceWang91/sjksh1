@@ -38,9 +38,6 @@ public class FileController extends BaseController {
 
     private final FileService fileService;
 
-    @Autowired
-    private IFileSaveService fileSaveService;
-
     public FileController(FileService fileService) {
         this.fileService = fileService;
     }
@@ -91,7 +88,7 @@ public class FileController extends BaseController {
         return ResponseData.success(fileService.uploadFile(FileOwner.DATA_SOURCE, sourceId, file, null));
     }
 
-    @ApiOperation(value = "import file data")
+    @ApiOperation(value = "导入文件数据")
     @PostMapping(value = "/importfiledata")
     public ResponseData<String> importfiledata(@RequestParam String sourceId,
                                                @RequestParam("file") MultipartFile file) throws IOException {

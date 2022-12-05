@@ -19,6 +19,7 @@ import {
   getArchivedDatacharts,
   getArchivedStoryboards,
   getFolders,
+  getFolders3,
   getStoryboards,
   initChartPreviewData,
   publishViz,
@@ -31,6 +32,7 @@ import { ArchivedViz, VizState, VizTab } from './types';
 import { transferChartConfig } from './utils';
 export const initialState: VizState = {
   vizs: [],
+  datacharts:[],
   hasVizFetched: false,
   storyboards: [],
   vizListLoading: false,
@@ -160,6 +162,14 @@ const slice = createSlice({
     },
   },
   extraReducers: builder => {
+
+  	// getFolders3
+
+    builder.addCase(getFolders3.fulfilled, (state, action) => {
+      state.datacharts = action.payload;
+    });
+ 
+
     // getFolders
     builder.addCase(getFolders.pending, state => {
       state.vizListLoading = true;
@@ -167,7 +177,7 @@ const slice = createSlice({
     builder.addCase(getFolders.fulfilled, (state, action) => {
       state.vizListLoading = false;
       state.hasVizFetched = true;
-      state.vizs = action.payload.map(f => ({ ...f, deleteLoading: false }));
+      state.vizs = action.payload?.map(f => ({ ...f, deleteLoading: false }));
     });
     builder.addCase(getFolders.rejected, state => {
       state.vizListLoading = false;

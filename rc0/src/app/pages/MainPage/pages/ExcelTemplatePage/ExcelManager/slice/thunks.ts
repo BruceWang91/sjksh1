@@ -27,10 +27,38 @@ import {
   
 } from './types';
 
-export const getFilemains = createAsyncThunk<Filemain[], string>(
+
+export const getSources = createAsyncThunk(
+  'filemain/getSources',
+  async ( {resolve,orgId} ) => {
+    const { data } = await request2({
+      url: '/sources/listSources',
+      method: 'GET',
+      params: {orgId},
+    });
+    resolve && resolve(data)
+    return data;
+  },
+);
+
+export const getFilemains2 = createAsyncThunk(
+  'filemain/getFilemains2',
+  async ( {resolve,...qs} ) => {
+    const { rows ,total} = await request2({
+      url: '/file/filemain/list',
+      method: 'GET',
+      params: qs,
+    });
+    const ret = {data:rows,total};
+    resolve && resolve(ret)
+    return ret;
+  },
+);
+
+export const getFilemains = createAsyncThunk(
   'filemain/getFilemains',
   async ( qs ) => {
-    const { rows ,total} = await request2<Filemain[]>({
+    const { rows ,total} = await request2({
       url: '/file/filemain/list',
       method: 'GET',
       params: qs,
@@ -40,11 +68,11 @@ export const getFilemains = createAsyncThunk<Filemain[], string>(
   },
 );
 
-export const getFilemain = createAsyncThunk<Filemain[], getFilemainParams>(
+export const getFilemain = createAsyncThunk(
   'filemain/getFilemain',
   async ( {fileId , resolve}) => {
 
-    const { data } = await request2<Filemain[]>({
+    const { data } = await request2({
       url: '/file/filemain/selectForFileId/'+fileId,
       method: 'GET',
       params: {},
@@ -55,10 +83,10 @@ export const getFilemain = createAsyncThunk<Filemain[], getFilemainParams>(
 );
 
 
-export const importFilemain = createAsyncThunk<Filemain, importFilemainParams>(
+export const importFilemain = createAsyncThunk(
   'filemain/importFilemain',
   async ({ filemain, resolve }) => {
-    const { data } = await request2<Filemain>({
+    const { data } = await request2({
       url: '/file/filemain/batchUpdateForFileId',
       method: 'POST',
       data: filemain,
@@ -69,12 +97,12 @@ export const importFilemain = createAsyncThunk<Filemain, importFilemainParams>(
 );
 
 
-export const importFilemainData = createAsyncThunk<Filemain, importFilemainDataParams>(
+export const importFilemainData = createAsyncThunk(
   'filemain/importFilemainData',
   async ({ file, fileId, resolve }) => {
   	const fd = new FormData();
   	fd.append('file',file)
-    const { data } = await request2<Filemain>({
+    const { data } = await request2({
       url: '/files/importfiledata?sourceId='+fileId,
       method: 'POST',
       data: fd,
@@ -85,28 +113,40 @@ export const importFilemainData = createAsyncThunk<Filemain, importFilemainDataP
 );
 
 
-export const editFilemain = createAsyncThunk<Filemain, EditFilemainParams>(
-  'filemain/editFilemain',
-  async ({ filemain, resolve }) => {
-    await request2<boolean>({
-      url: '/file/filemain/edit',
+export const addFilemain = createAsyncThunk(
+  'filemain/addFilemain',
+  async ({ inSider,filemain, resolve }) => {
+    const {data} = await request2({
+      url: '/file/filemain/addFileMainFolder',
       method: 'POST',
       data: filemain,
     });
-    resolve();
+    resolve(data);
+    return {...data,inSider};
+  },
+);
+export const editFilemain = createAsyncThunk(
+  'filemain/editFilemain',
+  async ({ filemain, resolve }) => {
+    await request2({
+      url: '/file/filemain/updateFileMainParentId',
+      method: 'POST',
+      data: filemain,
+    });
+    resolve(filemain);
     return filemain;
   },
 );
 
-export const deleteFilemain = createAsyncThunk<null, DeleteFilemainParams>(
+export const deleteFilemain = createAsyncThunk(
   'filemain/deleteFilemain',
   async ({ ids, resolve }) => {
-    await request2<Filemain>({
+    await request2({
       url: '/file/filemain/remove?ids='+ids.join(','),
       method: 'POST',
       params: {},
     });
-    resolve();
-    return null;
+    resolve(ids);
+    return ids;
   },
 );

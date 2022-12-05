@@ -26,7 +26,8 @@ import {
   importFilemain,
   getFilemain,
   getCategories,
-  importFilemainData
+  importFilemainData,
+  getSources,
 } from './thunks';
 import { FilemainState } from './types';
 
@@ -34,6 +35,7 @@ export const initialState: FilemainState = {
   filemains: [],
   totalRecords:1,
   filemain: null,
+  sources:[],
   filemainListLoading: false,
   saveFilemainLoading: false,
   deleteFilemainsLoading: false,
@@ -47,6 +49,14 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+
+
+    builder.addCase(getSources.fulfilled, (state, action) => {
+      state.sources = action.payload ;
+    });
+  
+
+
 
   	// importFilemainData
     builder.addCase(importFilemainData.pending, state => {

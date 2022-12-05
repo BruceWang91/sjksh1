@@ -51,7 +51,7 @@ export function Browser ({
   const loading = useSelector(selectFilemainLoading);
 
 
-	const onShow = useCallback(()=>{
+	const onOpen = useCallback(()=>{
 		dispatch(getFilemain({fileId}))
 	},[fileId])
 
@@ -81,7 +81,7 @@ export function Browser ({
       ))}
     </Tabs>)}
 	</Wrap>
-	return <Dialog title={title} loading={loading} footer={false} width="80%"  render={excel} onShow={onShow} >{children}</Dialog>
+	return <Dialog title={title} loading={loading} footer={false} width="80%"  render={excel} onOpen={onOpen} >{children}</Dialog>
 }
 
 

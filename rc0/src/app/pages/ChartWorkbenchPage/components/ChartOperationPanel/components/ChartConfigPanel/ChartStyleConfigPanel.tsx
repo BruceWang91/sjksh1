@@ -39,7 +39,7 @@ const ChartStyleConfigPanel: FC<{
     const t = useI18NPrefix(i18nPrefix);
 
     return (
-      <Collapse className="datart-config-panel" ghost>
+      <Collapse  className="datart-config-panel" ghost>
         {configs
           ?.filter(c => !Boolean(c.hidden))
           ?.map((c, index) => {

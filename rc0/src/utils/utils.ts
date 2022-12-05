@@ -1,4 +1,4 @@
-import { message, TreeDataNode, TreeNodeProps } from 'antd';
+import { Modal, TreeDataNode, TreeNodeProps } from 'antd';
 import { ColumnRole } from 'app/pages/MainPage/pages/ViewPage/slice/types';
 import { AxiosError, AxiosResponse } from 'axios';
 import classnames from 'classnames';
@@ -13,7 +13,26 @@ import { APIResponse } from 'types';
 import { SaveFormModel } from '../app/pages/MainPage/pages/VizPage/SaveFormContext';
 import { removeToken } from './auth';
 
+
+
+
 export { default as uuidv4 } from 'uuid/dist/umd/uuidv4.min';
+
+
+
+
+
+export function copyText(text){
+    const ta = document.createElement('textarea');
+    ta.setAttribute('readonly', 'readonly'); 
+    ta.value = text;
+    document.body.appendChild(ta); 
+    ta.select();
+    var res = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return res;
+}
+
 
 export function errorHandle(error) {
   if (error?.response) {
@@ -21,18 +40,18 @@ export function errorHandle(error) {
     const { response } = error as AxiosError;
     switch (response?.status) {
       case 401:
-        message.error({ key: '401', content: i18next.t('global.401') });
+        Modal.error({ key: '401', content: i18next.t('global.401') });
         removeToken();
         break;
       default:
-        message.error(response?.data.message || error.message);
+        Modal.error(response?.data.message || error.message);
         break;
     }
   } else if (error?.message) {
     // Error
-    message.error(error.message);
+    Modal.error(error.message);
   } else {
-    message.error(error);
+    Modal.error(error);
   }
   return error;
 }
@@ -53,9 +72,9 @@ export function getErrorMessage(error) {
 
 export function reduxActionErrorHandler(errorAction) {
   if (errorAction?.payload) {
-    message.error(errorAction?.payload);
+    Modal.error(errorAction?.payload);
   } else if (errorAction?.error) {
-    message.error(errorAction?.error.message);
+    Modal.error(errorAction?.error.message);
   }
 }
 
@@ -84,6 +103,7 @@ export function listToTree<
   T extends {
     id: string;
     name: string;
+    label: string;
     parentId: string | null;
     isFolder: boolean;
     index: number | null;
@@ -97,6 +117,7 @@ export function listToTree<
     getDisabled?: (o: T, path: string[]) => boolean;
     getSelectable?: (o: T) => boolean;
     filter?: (path: string[], o: T) => boolean;
+    map?:( o: T) => T;
   },
 ): undefined | any[] {
   if (!list) {
@@ -107,20 +128,22 @@ export function listToTree<
   const childrenList: T[] = [];
 
   list.forEach(o => {
-    const path = parentPath.concat(o.id);
+    const path = parentPath.concat(''+o.id);
     if (options?.filter && !options.filter(path, o)) {
       return false;
     }
-    if (o.parentId === parentId) {
+    if ( String(o.parentId) === String(parentId)) {
       treeNodes.push({
         ...o,
-        key: o.id,
+        key: ''+o.id,
         title: o.name,
-        value: o.id,
+        value: ''+o.id,
+        label: o.name,
         path,
         ...(options?.getIcon && { icon: options.getIcon(o) }),
         ...(options?.getDisabled && { disabled: options.getDisabled(o, path) }),
         ...(options?.getSelectable && { selectable: options.getSelectable(o) }),
+        ...(options?.map && options.map(o) ),
       });
     } else {
       childrenList.push(o);
@@ -291,6 +314,36 @@ export function getExpandedKeys<T extends TreeDataNode>(nodes: T[]) {
 }
 
 let utilCanvas: null | HTMLCanvasElement = null;
+
+
+export const byteLength = function( val ) {
+   let len = 0;
+  for (let i = 0; i < val.length; i++) {
+    let length = val.charCodeAt(i);
+    if( length >= 0 && length <= 128 ) {
+      len += 1;
+    } else {
+      len += 2;
+    }
+  }
+  return len;
+}
+
+export const getTextWidth2 =  (text:string, fontSize: number = 12 ) => {
+	
+	let size = 60;
+
+	for (let i = 0; i < text.length; i++) {
+    let c = text[i];
+    if(/[\u4E00-\u9FA5\uF900-\uFA2D]/.test(c)){
+    	size += fontSize * 1
+    }else{
+    	size += fontSize * 0.8
+    }
+    
+  }
+  return size;
+}
 
 export const getTextWidth = (
   text: string,

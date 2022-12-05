@@ -47,7 +47,6 @@ const BasicFont: FC<ItemLayoutProps<ChartStyleConfig>> = memo(
       const newData = updateByKey(data, 'value', newFont);
       onChange?.(ancestors, newData);
     };
-
     return (
       <BW label={!options?.hideLabel ? t(data.label, true) : ''}>
         <Group>

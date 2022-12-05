@@ -69,4 +69,11 @@ public class ResponseData<T> {
                 .build();
     }
 
+    public static <E> ResponseData<E> failure(String message,int errCode) {
+        return (ResponseData<E>) ResponseData.builder()
+                .errCode(errCode)
+                .success(false)
+                .message(message)
+                .build();
+    }
 }

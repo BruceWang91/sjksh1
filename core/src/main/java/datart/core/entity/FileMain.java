@@ -44,7 +44,7 @@ public class FileMain {
     private String status;
 
     /**
-     * 删除标志（0代表存在 2代表删除）
+     * 删除标志（0代表存在 1代表删除）
      */
     private String delFlag;
 
@@ -86,10 +86,20 @@ public class FileMain {
     private Date updateTime;
 
     /**
+     * 数据源ID
+     */
+    private String sourceId;
+
+    /**
      * 备注
      */
     private String remark;
 
+    private String createName;
+
+    private String userName;
+
+    private String deptName;
 
     private List<Long> classIds;
 
@@ -231,6 +241,38 @@ public class FileMain {
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public String getCreateName() {
+        return createName;
+    }
+
+    public void setCreateName(String createName) {
+        this.createName = createName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     @Override

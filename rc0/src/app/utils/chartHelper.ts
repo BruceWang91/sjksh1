@@ -177,6 +177,82 @@ export function toFormattedValue(
   return formattedValue;
 }
 
+
+
+export function formatValueToObj(
+  value?: number | string,
+  format?: FormatFieldAction,
+) {
+  if (value === null || value === undefined) {
+    return {value:'-'};
+  }
+
+  if (!format || format.type === FieldFormatType.Default) {
+    return {value};
+  }
+
+  if (!format.type) {
+    return {value};
+  }
+
+  const { type: formatType } = format;
+
+  if (
+    typeof value === 'string' &&
+    formatType !== FieldFormatType.Date &&
+    (!value || isNaN(+value))
+  ) {
+    return {value};
+  }
+
+  const config = format[formatType];
+  if (!config) {
+    return {value};
+  }
+
+  let formattedValue;
+  switch (formatType) {
+    case FieldFormatType.Numeric:
+      const numericConfig =
+        config as FormatFieldAction[FieldFormatType.Numeric];
+      formattedValue = pipe(
+        unitFormater,
+        decimalPlacesFormater,
+        numericFormater2,
+      )(value, numericConfig);
+      break;
+    case FieldFormatType.Currency:
+      const currencyConfig =
+        config as FormatFieldAction[FieldFormatType.Currency];
+      formattedValue = pipe(currencyFormater2)(value, currencyConfig);
+      break;
+    case FieldFormatType.Percentage:
+      const percentageConfig =
+        config as FormatFieldAction[FieldFormatType.Percentage];
+      formattedValue = pipe(percentageFormater2)(value, percentageConfig);
+      break;
+    case FieldFormatType.Scientific:
+      const scientificNotationConfig =
+        config as FormatFieldAction[FieldFormatType.Scientific];
+      formattedValue = pipe(scientificNotationFormater2)(
+        value,
+        scientificNotationConfig,
+      );
+      break;
+    case FieldFormatType.Date:
+      const dateConfig = config as FormatFieldAction[FieldFormatType.Date];
+      formattedValue = pipe(dateFormater2)(value, dateConfig);
+      break;
+    default:
+      formattedValue = {value};
+      break;
+  }
+
+  return formattedValue;
+}
+
+
+
 function decimalPlacesFormater(
   value,
   config?:
@@ -230,6 +306,26 @@ function numericFormater(
   return valueWithPrefixs;
 }
 
+
+
+function numericFormater2(
+  value,
+  config?: FormatFieldAction[FieldFormatType.Numeric],
+) {
+  if (isNaN(+value)) {
+    return value;
+  }
+  return {
+  	prefix:config?.prefix || '',
+  	suffix:config?.suffix || '',
+  	showTrend:config?.showTrend,
+  	replaceSign:config?.replaceSign,
+  	value:thousandSeperatorFormater(value, config),
+  	unit:NumericUnitDescriptions.get(config?.unitKey || NumberUnitKey.None)?.[1],
+  };
+}
+
+
 function thousandSeperatorFormater(
   value,
   config?: FormatFieldAction[FieldFormatType.Numeric],
@@ -265,6 +361,31 @@ function currencyFormater(
   }`;
 }
 
+
+function currencyFormater2(
+  value,
+  config?: FormatFieldAction[FieldFormatType.Currency],
+) {
+  if (isNaN(+value)) {
+    return value;
+  }
+
+  const realUnit = NumericUnitDescriptions.get(config?.unitKey!)?.[0] || 1;
+
+
+
+  return {
+  	value:new Intl.NumberFormat('zh-CN', {
+	    style: 'currency',
+	    currency: config?.currency || 'CNY',
+	    minimumFractionDigits: config?.decimalPlaces,
+	    maximumFractionDigits: config?.decimalPlaces,
+	    useGrouping: config?.useThousandSeparator,
+	  }).format(value / realUnit),
+	  unit:NumericUnitDescriptions.get(config?.unitKey || NumberUnitKey.None)?.[1]
+  }
+}
+
 function percentageFormater(
   value,
   config?: FormatFieldAction[FieldFormatType.Percentage],
@@ -282,6 +403,30 @@ function percentageFormater(
     fractionDigits = +config?.decimalPlaces!;
   }
   return `${(+value * 100).toFixed(fractionDigits)}%`;
+}
+
+function percentageFormater2(
+  value,
+  config?: FormatFieldAction[FieldFormatType.Percentage],
+) {
+  if (isNaN(+value)) {
+    return value;
+  }
+
+  let fractionDigits = 0;
+  if (
+    !isEmpty(config?.decimalPlaces) &&
+    +config?.decimalPlaces! >= 0 &&
+    +config?.decimalPlaces! <= 20
+  ) {
+    fractionDigits = +config?.decimalPlaces!;
+  }
+  return {
+  	showTrend:config?.showTrend,
+  	replaceSign:config?.replaceSign,
+  	value:(+value * 100).toFixed(fractionDigits),
+  	unit:'%'
+  };
 }
 
 function scientificNotationFormater(
@@ -302,12 +447,44 @@ function scientificNotationFormater(
   return (+value).toExponential(fractionDigits);
 }
 
+
+function scientificNotationFormater2(
+  value,
+  config?: FormatFieldAction[FieldFormatType.Scientific],
+) {
+  if (isNaN(+value)) {
+    return value;
+  }
+  let fractionDigits = 0;
+  if (
+    !isEmpty(config?.decimalPlaces) &&
+    +config?.decimalPlaces! >= 0 &&
+    +config?.decimalPlaces! <= 20
+  ) {
+    fractionDigits = +config?.decimalPlaces!;
+  }
+  return {
+  	value:(+value).toExponential(fractionDigits)
+  };
+}
+
+
 function dateFormater(value, config?: FormatFieldAction[FieldFormatType.Date]) {
   if (isNaN(+value) || isEmpty(config?.format)) {
     return value;
   }
 
   return moment(value).format(config?.format);
+}
+function dateFormater2(value, config?: FormatFieldAction[FieldFormatType.Date]) {
+  if (isNaN(+value) || isEmpty(config?.format)) {
+    return value;
+  }
+
+  return {
+
+  	value:moment(value).format(config?.format)
+  };
 }
 
 /**
@@ -964,12 +1141,14 @@ export function getAxisLabel(
   interval: string | null = null,
   rotate: number | null = null,
   overflow: string | null = null,
+  margin: number  = 8
 ): AxisLabel {
   return {
     show,
     interval,
     rotate,
     overflow,
+    margin,
     ...font,
   };
 }
@@ -1242,6 +1421,35 @@ export function getSeriesTooltips4Polar2(
   return tooltips.join('<br />');
 }
 
+
+export function getSeriesTooltips4PolarLog(
+  chartDataSet: IChartDataSet<string>,
+  tooltipParam: {
+    data: {
+      name: string;
+      rowData: { [key: string]: any };
+    };
+  },
+  groupConfigs: ChartDataSectionField[],
+  colorConfigs: ChartDataSectionField[],
+  aggConfigs: ChartDataSectionField[],
+  infoConfigs?: ChartDataSectionField[],
+  sizeConfigs?: ChartDataSectionField[],
+): string {
+  const row = tooltipParam?.data?.rowData || {};
+  const tooltips: string[] = ([] as any[])
+    .concat(groupConfigs || [])
+    .concat(colorConfigs || [])
+    .concat(aggConfigs || [])
+    .concat(sizeConfigs || [])
+    .concat(infoConfigs || [])
+    .map(config =>
+      valueFormatterLog(config, row?.[chartDataSet.getFieldOriginKey(config)]),
+    );
+  return tooltips.join('<br />');
+}
+
+
 export function getSeriesTooltips4Rectangular(
   params,
   groupConfigs,
@@ -1295,7 +1503,16 @@ export function valueFormatter(
     config?.format,
   )}`;
 }
-
+export function valueFormatterLog(
+  config?: ChartDataSectionField,
+  value?: number,
+): string {
+	const fm = formatValueToObj(
+    value,
+    config?.format,
+  );
+  return `${getColumnRenderName(config)}: ${fm.prefix||''}${fm.value}${fm.suffix||''}${fm.unit||''}`;
+}
 export function getScatterSymbolSizeFn(
   valueIndex: number,
   max: number,

@@ -61,6 +61,11 @@ public class FileSheetField {
     private String delFlag;
 
     /**
+     * 导入标识 （0不做筛选 1该列数据为空时不导入该行数据）
+     */
+    private String importFlag;
+
+    /**
      * 创建者
      */
     private String createBy;
@@ -157,6 +162,14 @@ public class FileSheetField {
 
     public String getDelFlag() {
         return delFlag;
+    }
+
+    public String getImportFlag() {
+        return importFlag;
+    }
+
+    public void setImportFlag(String importFlag) {
+        this.importFlag = importFlag;
     }
 
     public String getCreateBy() {

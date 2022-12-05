@@ -118,7 +118,7 @@ export const ChartEditor: FC<ChartEditorProps> = ({
   onSaveInWidget,
   onSaveInDataChart,
 }) => {
-  const saveFormContextValue = useSaveFormContext();
+  const saveFormContextValue = useSaveFormContext('DATACHART_FOLDER');
   const { actions } = useWorkbenchSlice();
   const dispatch = useDispatch();
   const dataset = useSelector(datasetsSelector);
@@ -310,7 +310,7 @@ export const ChartEditor: FC<ChartEditorProps> = ({
     let targetChartConfig = CloneValueDeep(currentChart?.config);
 
     // clear操作不希望重置paging信息
-    getValue(targetChartConfig?.settings || [], ['paging'], 'rows').forEach(
+    getValue(targetChartConfig?.settings || [], ['paging'], 'rows')?.forEach(
       v => {
         v.value = getValue(chartConfig?.settings || [], ['paging', v.key]);
       },
@@ -525,7 +525,7 @@ export const ChartEditor: FC<ChartEditorProps> = ({
             },
             callback: folder => {
               folder &&
-                history.push(`/organizations/${orgId}/vizs/${folder.relId}`);
+                history.push(`/organizations/${orgId}/vizdatacharts/${folder.relId}`);
             },
           });
         } catch (error) {
@@ -583,7 +583,7 @@ export const ChartEditor: FC<ChartEditorProps> = ({
       const dataChart = buildDataChart();
       try {
         history.push({
-          pathname: `/organizations/${orgId}/vizs/${dashboardId}/boardEditor`,
+          pathname: `/organizations/${orgId}/vizdashboards/${dashboardId}/boardEditor`,
           state: {
             widgetInfo: JSON.stringify({
               chartType,

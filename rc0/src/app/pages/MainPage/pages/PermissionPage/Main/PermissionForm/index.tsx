@@ -142,6 +142,8 @@ export const PermissionForm = memo(
           index: number,
           base: PermissionLevels,
         ) => {
+
+
           if (viewpoint === Viewpoints.Subject) {
             // 找到变化的的单条资源，设置它及其子资源权限
             const changedTreeData = getTreeNodeWithPermission(
@@ -207,7 +209,10 @@ export const PermissionForm = memo(
               };
               params.permissionToCreate.push(changedPrivilege);
               reserved = [...privileges!];
+              console.log(reserved,'reserved')
             } else {
+
+            	
               privileges!.forEach(p => {
                 if (p.subjectId === record.id) {
                   changedPrivilege = {
@@ -319,7 +324,7 @@ export const PermissionForm = memo(
                   onChange={independentPermissionChange(dataSourceType)}
                 />
               )}
-            <Form.Item label={t('resourceDetail')}>
+            {/*<Form.Item label={t('resourceDetail')}>*/}
               <PermissionTable
                 viewpoint={viewpoint}
                 viewpointType={viewpointType}
@@ -329,7 +334,7 @@ export const PermissionForm = memo(
                 privileges={privileges}
                 onPrivilegeChange={privilegeChange}
               />
-            </Form.Item>
+           {/* </Form.Item>*/}
           </FormContent>
         </LoadingMask>
       </Wrapper>
@@ -347,5 +352,5 @@ const Wrapper = styled.div`
 `;
 
 const FormContent = styled(Form)`
-  width: 960px;
+  width: 100%;
 `;

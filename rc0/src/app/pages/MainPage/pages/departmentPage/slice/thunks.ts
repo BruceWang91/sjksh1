@@ -26,20 +26,6 @@ import {
 } from './types';
 
 
-const treeTs = (t) => {
-	return t.map(d=>{
-		if(d?.children?.length > 0){
-			d.children = treeTs(d.children);
-		}else{
-			delete d.children
-		}
-		const leaf = d?.children?.length ?? 0;
-		return {...d,label:d.deptName,value:d.deptId,displayValue:d.deptName,hideValue:d.deptId,leaf,isLeaf:leaf === 0}
-	})
-}
-
-
-
 export const getDepartmentsAndMembers = createAsyncThunk<Department[], string>(
   'department/getDepartmentsAndMembers',
   async ({orgId,parentId,resolve}) => {
@@ -48,7 +34,6 @@ export const getDepartmentsAndMembers = createAsyncThunk<Department[], string>(
       method: 'GET',
       params: { parentId},
     });
-    console.log(data)
     resolve && resolve()
     return data;
   },
@@ -62,7 +47,7 @@ export const getDepartments = createAsyncThunk<Department[], string>(
       method: 'GET',
       params: { parentId},
     });
-    resolve && resolve(treeTs(data) )
+    resolve && resolve(data)
     return data;
   },
 );

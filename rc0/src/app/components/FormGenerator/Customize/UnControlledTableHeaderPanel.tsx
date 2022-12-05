@@ -23,8 +23,12 @@ import {
   DeleteOutlined,
   EditOutlined,
   RedoOutlined,
+
+  AlignCenterOutlined,
+  AlignLeftOutlined,
+	AlignRightOutlined
 } from '@ant-design/icons';
-import { Button, Col, Input, Row, Space, Table } from 'antd';
+import { Button, Col, Input, Row, Space, Radio , Table } from 'antd';
 import { ChartDataSectionType } from 'app/constants';
 import { ChartDataConfig, ChartStyleConfig } from 'app/types/ChartConfig';
 import {
@@ -41,14 +45,22 @@ import { itemLayoutComparer } from '../utils';
 
 const { Search } = Input;
 
+
+const alignmentOptions = [
+  { label:<AlignLeftOutlined /> , value: 'left' },
+  { label:<AlignCenterOutlined /> ,value: 'center' },
+  { label:<AlignRightOutlined /> ,value: 'right'},
+];
+
+
 const getFlattenHeaders = (dataConfigs: ChartDataConfig[] = []) => {
   const newDataConfigs = CloneValueDeep(dataConfigs);
   return newDataConfigs
     .filter(
       c =>
-        ChartDataSectionType.Aggregate === c.type ||
+        (ChartDataSectionType.Aggregate === c.type ||
         ChartDataSectionType.Group === c.type ||
-        ChartDataSectionType.Mixed === c.type,
+        ChartDataSectionType.Mixed === c.type) && c.key !== 'total'
     )
     .flatMap(config => config.rows || []);
 };
@@ -222,7 +234,6 @@ const UnControlledTableHeaderPanel: FC<ItemLayoutProps<ChartStyleConfig>> =
       const handleTableRowChange = rowUid => style => prop => (_, value) => {
         const brotherRows = findRowBrothers(rowUid, tableDataSource);
         const row = brotherRows.find(r => r.uid === rowUid);
-
         if (!row) {
           return;
         }
@@ -268,7 +279,7 @@ const UnControlledTableHeaderPanel: FC<ItemLayoutProps<ChartStyleConfig>> =
 
       const tableColumnsSettings = [
         {
-          title: t('table.header.columnName'),
+          title: '列名',
           dataIndex: 'colName',
           key: 'colName',
           render: (_, record) => {
@@ -291,6 +302,43 @@ const UnControlledTableHeaderPanel: FC<ItemLayoutProps<ChartStyleConfig>> =
             );
           },
         },
+        {
+
+        	title:'在表头中对齐方式',
+        	dataIndex: 'alignInHeader',
+        	key: 'alignInHeader',
+        	align:'center',
+        	render:(_, record)=>{
+        		return <Radio.Group
+        			size="small"
+			        options={alignmentOptions}
+			        value = {record.alignInHeader || 'left'}
+			        onChange={ event=>{
+			        	handleTableRowChange(record.uid)(undefined)('alignInHeader')([], event.target.value)
+			        }}
+			        optionType="button"
+			        buttonStyle="solid"
+			      />
+        	}
+        },
+        {
+        	align:'center',
+        	title:'在表体中对齐方式',
+        	dataIndex: 'alignInBody',
+        	key: 'alignInBody',
+        	render:(_, record)=>{
+        		return !record.isGroup && <Radio.Group
+        			size="small"
+			        options={alignmentOptions}
+			        value = {record.alignInBody || 'left'}
+			        onChange={ event=>{
+			        	handleTableRowChange(record.uid)(undefined)('alignInBody')([], event.target.value)
+			        }}
+			        optionType="button"
+			        buttonStyle="solid"
+			      />
+        	}
+        }
       ];
 
       const rowSelection = {

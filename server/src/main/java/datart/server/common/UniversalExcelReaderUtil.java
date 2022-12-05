@@ -115,6 +115,8 @@ public class UniversalExcelReaderUtil {
                         if (firstRow == null) {
                             log.warn("解析Excel失败，在第一行没有读取到任何数据！行号:{}", firstRowNum);
                         }
+                        // 取自前端解析来的有效列
+                        int cellcount = fileSheets.getCellCount();
                         int rowStart = firstRowNum + startRow; // 数据开始的行
                         int rowEnd = sheet.getPhysicalNumberOfRows(); // 数据结束的行
                         // 循环数据开始的行和数据结束的行，其中的数据为需要的数据
@@ -125,8 +127,9 @@ public class UniversalExcelReaderUtil {
                                 continue;
                             }
                             //自定义读取的数据列
-                            //todo
-                            Map<String, Object> map = readColumnData(row, sheet.getRow(rowNum)); // 每一行的数据
+                            //sheet.getRow(rowStart - 1 < 0 ? 0 : rowStart - 1) 原用表头最后一行的有效数据列，由于工具类解析不准的问题现在取前端返回的有效列数
+//                            Map<String, Object> map = readColumnData(row, sheet.getRow(rowStart - 1 < 0 ? 0 : rowStart - 1)); // 每一行的数据列以开始行的列数为准
+                            Map<String, Object> map = readColumnData(row, cellcount);
                             if ((boolean) map.get("flag")) {
                                 sheetData.add(map);
                             }
@@ -179,6 +182,21 @@ public class UniversalExcelReaderUtil {
         return resMap;
     }
 
+    private static Map<String, Object> readColumnData(Row dataRow, int lastCells) {
+        Map<String, Object> resMap = new LinkedHashMap<String, Object>();
+        Cell cell = null;
+        boolean flag = false;
+        for (int i = 0; i < lastCells; i++) {
+            cell = dataRow.getCell(i);
+            String value = convertCellValueToString(cell);
+            if (StringUtils.isNotBlank(value)) {
+                flag = true;
+            }
+            resMap.put(i + "", value);
+        }
+        resMap.put("flag", flag);
+        return resMap;
+    }
 
     /**
      * 将单元格内容转换为字符串

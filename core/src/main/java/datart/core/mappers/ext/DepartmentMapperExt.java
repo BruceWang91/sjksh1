@@ -19,7 +19,7 @@ public interface DepartmentMapperExt extends DepartmentMapper {
     @Select({
             "<script>",
             "select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, " +
-                    "d.status, d.del_flag, d.create_by, d.create_time, d.update_by, d.update_time \n" +
+                    "d.status, d.del_flag, d.create_by, d.create_time, d.update_by, d.update_time, d.type \n" +
                     "from department d",
             "where d.del_flag = '0'\n" +
                     "<if test=\"deptId != null and deptId != 0\">\n" +
@@ -33,6 +33,9 @@ public interface DepartmentMapperExt extends DepartmentMapper {
                     "</if>\n" +
                     "<if test=\"status != null and status != ''\">\n" +
                     "AND status = #{status}\n" +
+                    "</if>\n" +
+                    "<if test=\"type != null and type != ''\">\n" +
+                    "AND type = #{type}\n" +
                     "</if>\n" +
                     "order by d.parent_id, d.order_num, d.dept_id asc",
             "</script>"
@@ -61,4 +64,9 @@ public interface DepartmentMapperExt extends DepartmentMapper {
                     "             ) t3 WHERE ischild != 0"
     })
     List<Long> getAllChiledId(Long deptId);
+
+    @Select({
+            "select * from department where"
+    })
+    Department parentDept(Long deptId);
 }

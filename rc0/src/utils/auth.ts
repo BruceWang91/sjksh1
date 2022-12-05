@@ -10,8 +10,9 @@ export function setTokenExpiration(expires: number) {
   tokenExpiration = expires;
 }
 
-export function getToken() {
-  return Cookies.get(StorageKeys.AuthorizationToken);
+export function getToken( bearer:boolean = true ) {
+	const token = Cookies.get(StorageKeys.AuthorizationToken)
+  return bearer ? token :  String(token).replace(/^Bearer\s{1}/,'');
 }
 
 export function setToken(token: string) {

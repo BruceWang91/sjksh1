@@ -1,4 +1,5 @@
 import Handsontable from "handsontable";
+import {Modal} from 'antd';
 const XLSX = require('xlsx')
 
 const SELECTED_CLASS = "selected";
@@ -226,7 +227,7 @@ export const excelConvert = (source) => {
 
 
 
-const cellsToFields = ( cells ,fileId) => {
+const cellsToFields = ( cells ,fileId , validEndRow , flags ) => {
 
 	const columns = [];
 	const otherColumns = [];
@@ -235,26 +236,78 @@ const cellsToFields = ( cells ,fileId) => {
 		for(let col = 0 , len = cells[row]?.length??0; col <len ; col ++){
 
 			const cell = cells[row][col];
-			if(typeof columns[col] === 'undefined' && typeof cell !== 'undefined'){
-				columns[col] = {
-					"cellName": cell.trim(),
-          "cellNum": col,
-          "fileId": fileId,
-          "rowNum": row,
-          "status": 1,
+
+
+			if(typeof validEndRow === 'number'){
+
+				if(row > validEndRow){
+					if(typeof cell !== 'undefined'){
+						otherColumns.push({
+							"cellName": cell.trim(),
+		          "cellNum": col,
+		          "fileId": fileId,
+		          "rowNum": row,
+		          "status": 0,
+		          "importFlag":0,
+						})
+					}
+				}else{
+
+					if(typeof columns[col] === 'undefined' && typeof cell !== 'undefined'){
+						columns[col] = {
+							"cellName": cell.trim(),
+		          "cellNum": col,
+		          "fileId": fileId,
+		          "rowNum": row,
+		          "status": 1,
+		          "importFlag":flags?.[col] || 0
+						}
+					}else{
+						if(typeof cell !== 'undefined'){
+							otherColumns.push({
+								"cellName": cell.trim(),
+			          "cellNum": col,
+			          "fileId": fileId,
+			          "rowNum": row,
+			          "status": 0,
+			          "importFlag":0,
+							})
+						}
+
+					}
+					
+
 				}
+
 			}else{
-				if(typeof cell !== 'undefined'){
-					otherColumns.push({
+
+				if(typeof columns[col] === 'undefined' && typeof cell !== 'undefined'){
+
+					columns[col] = {
 						"cellName": cell.trim(),
 	          "cellNum": col,
 	          "fileId": fileId,
 	          "rowNum": row,
-	          "status": 0,
-					})
+	          "status": 1,
+	          "importFlag":flags?.[col] || 0
+	          
+					}
+				}else{
+					if(typeof cell !== 'undefined'){
+						otherColumns.push({
+							"cellName": cell.trim(),
+		          "cellNum": col,
+		          "fileId": fileId,
+		          "rowNum": row,
+		          "status": 0,
+		          "importFlag":0,
+						})
+					}
+					
 				}
-				
+				//
 			}
+			
 		}
 	}
 
@@ -348,21 +401,21 @@ export const listConvertToExcelData = ( list , fieldList) => {
 }
 export const excelConvertToServerData = ( sheets , fileId ) => {
 	return (sheets??[]).map( (sheet,index) =>{
-		const {startCell,fieldList} = cellsToFields(sheet.cells,fileId)
+		const {startCell,fieldList} = cellsToFields(sheet.cells,fileId,sheet.validEndRow, sheet.flags)
 		return {
 			fileId,
 			//sheetId:sheet.sheetId ?? uuid(),
 			sheetName:sheet.sheetName,
 			fieldList: fieldList,
 			cellCount: sheet.totalCols - startCell, //有效列数
-			startRow: sheet.totalRows ,
+			startRow: typeof sheet.validEndRow === 'number' ? (sheet.validEndRow + 1) : sheet.totalRows ,
 			startCell: startCell,
 			orderNum: index,
 			remark:JSON.stringify(sheet.mergeCells)
 		}
 	})
 }
-export const serverDataconvertToExcel = ( sheets  ) => {
+export const serverDataconvertToExcel = ( sheets , all = true ) => {
 
 	return (sheets??[]).map( (sheet,index) =>{
 		
@@ -380,10 +433,13 @@ export const serverDataconvertToExcel = ( sheets  ) => {
 			//field.cellNum
 			//field.rowNum;
 
-			if(!cells[field.rowNum]){
-				cells[field.rowNum] = []
+			if( sheet.startRow > field.rowNum || all ){
+				if(!cells[field.rowNum]){
+					cells[field.rowNum] = []
+				}
+				cells[field.rowNum][field.cellNum] = field.cellName
 			}
-			cells[field.rowNum][field.cellNum] = field.cellName
+			
 		})
 
 
@@ -479,15 +535,16 @@ export const readExcel = ( file ) => {
 
 							sheet.totalCols = cellCount;
 							sheet.totalRows = sheet.cells.length;
-							sheet.mergeCells = worksheet['!merges'].map(merge=>{
+							sheet.mergeCells = worksheet['!merges']?.map(merge=>{
 								return {row:merge.s.r,col:merge.s.c,   rowspan:merge.e.r - merge.s.r + 1,colspan:merge.e.c - merge.s.c + 1}
-							})
+							}) || []
 							
 							sheets.push(sheet)
 						});
 						resolve(sheets)
 					} catch (e) {
-					reject(e)
+						Modal.error({content:`您上传的\`${file.name}\`，文件类型不正确！`})
+						reject(e)
 					}
         }
     })

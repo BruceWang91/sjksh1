@@ -53,16 +53,16 @@ import { initFreeBoardConfig } from './freeBoard';
 
 export const getDashBoardByResBoard = (data: ServerDashboard): Dashboard => {
   return {
-    id: data.id,
-    queryVariables: data.queryVariables,
-    name: data.name,
-    orgId: data.orgId,
-    parentId: data.parentId,
-    status: data.status,
-    thumbnail: data.thumbnail,
-    index: data.index,
-    config: preprocessBoardConfig(migrateBoardConfig(data.config), data.id),
-    permissions: data.permissions,
+    id: data?.id,
+    queryVariables: data?.queryVariables,
+    name: data?.name,
+    orgId: data?.orgId,
+    parentId: data?.parentId,
+    status: data?.status,
+    thumbnail: data?.thumbnail,
+    index: data?.index,
+    config: preprocessBoardConfig(migrateBoardConfig(data?.config), data?.id),
+    permissions: data?.permissions,
   };
 };
 export const preprocessBoardConfig = (config: BoardConfig, boardId: string) => {
@@ -171,7 +171,7 @@ export const getDataChartsByServer = (
   serverDataCharts: ServerDatachart[],
   view: View[],
 ) => {
-  const dataCharts: DataChart[] = serverDataCharts.map(item => {
+  const dataCharts: DataChart[] = serverDataCharts?.map(item => {
     item.config = migrateChartConfig(item.config);
 
     const config = JSON.parse(item.config || '{}');

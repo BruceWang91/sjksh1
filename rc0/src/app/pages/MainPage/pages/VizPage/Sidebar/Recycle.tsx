@@ -28,6 +28,7 @@ import { SaveFormContext } from '../SaveFormContext';
 import { selectVizs } from '../slice/selectors';
 import { deleteViz, removeTab, unarchiveViz } from '../slice/thunks';
 import { ArchivedViz } from '../slice/types';
+import capitalize from 'lodash/capitalize';
 
 interface RecycleProps {
   type: 'viz' | 'storyboard';
@@ -47,7 +48,7 @@ export const Recycle = memo(
     const isOwner = useSelector(selectIsOrgOwner);
     const permissionMap = useSelector(selectPermissionMap);
     const tg = useI18NPrefix('global');
-
+    
     useEffect(() => {
       onInit();
     }, [onInit]);
@@ -55,12 +56,12 @@ export const Recycle = memo(
     const redirect = useCallback(
       vizId => {
         if (vizId) {
-          history.push(`/organizations/${orgId}/vizs/${vizId}`);
+          history.push(`/organizations/${orgId}/viz${type.toLowerCase()}s/${vizId}`);
         } else {
-          history.push(`/organizations/${orgId}/vizs`);
+          history.push(`/organizations/${orgId}/viz${type.toLowerCase()}s`);
         }
       },
-      [history, orgId],
+      [history, orgId,type],
     );
 
     const del = useCallback(
@@ -122,9 +123,9 @@ export const Recycle = memo(
 
     const toDetail = useCallback(
       id => () => {
-        history.push(`/organizations/${orgId}/vizs/${id}`);
+        history.push(`/organizations/${orgId}/viz${type.toLowerCase()}s/${id}`);
       },
-      [history, orgId],
+      [history, orgId,type],
     );
 
     return (
@@ -134,13 +135,14 @@ export const Recycle = memo(
           loading={listLoading && { indicator: <LoadingOutlined /> }}
           renderItem={({ id, name, vizType, loading }) => {
             let allowManage = false;
-            if (type === 'viz') {
+            if (type === 'DATACHART' || type === 'DASHBOARD') {
               const viz = vizs.find(v => v.id === id);
               const path = viz
                 ? getPath(
                     vizs as Array<{ id: string; parentId: string }>,
                     { id, parentId: viz.parentId },
-                    VizResourceSubTypes.Folder,
+                    VizResourceSubTypes[`${capitalize(vizType)}Folder`],
+
                   )
                 : [id];
               allowManage = getCascadeAccess(
@@ -154,7 +156,7 @@ export const Recycle = memo(
               allowManage = !!calcAc(
                 isOwner,
                 permissionMap,
-                ResourceTypes.Viz,
+                ResourceTypes[`Viz${capitalize(vizType)}`],
                 PermissionLevels.Manage,
                 id,
               );

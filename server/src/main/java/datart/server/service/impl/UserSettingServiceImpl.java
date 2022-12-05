@@ -18,12 +18,20 @@
 package datart.server.service.impl;
 
 import datart.core.common.UUIDGenerator;
+import datart.core.entity.Department;
+import datart.core.entity.RelRoleUser;
+import datart.core.entity.User;
 import datart.core.entity.UserSettings;
+import datart.core.mappers.ext.DepartmentMapperExt;
+import datart.core.mappers.ext.RelRoleUserMapperExt;
+import datart.core.mappers.ext.UserMapperExt;
 import datart.core.mappers.ext.UserSettingsMapperExt;
 import datart.server.base.params.BaseCreateParam;
+import datart.server.common.StringUtils;
 import datart.server.service.BaseService;
 import datart.server.service.UserSettingService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +42,12 @@ import java.util.List;
 public class UserSettingServiceImpl extends BaseService implements UserSettingService {
 
     private final UserSettingsMapperExt userSettingsMapper;
+    @Autowired
+    private DepartmentMapperExt departmentMapper;
+    @Autowired
+    private UserMapperExt userMapper;
+    @Autowired
+    private RelRoleUserMapperExt relRoleUserMapper;
 
     public UserSettingServiceImpl(UserSettingsMapperExt userSettingsMapper) {
         this.userSettingsMapper = userSettingsMapper;
@@ -41,7 +55,32 @@ public class UserSettingServiceImpl extends BaseService implements UserSettingSe
 
     @Override
     public List<UserSettings> listUserSettings() {
-        return userSettingsMapper.selectByUser(getCurrentUser().getId());
+        List<UserSettings> list = userSettingsMapper.selectByUser(getCurrentUser().getId());
+        for (UserSettings userSettings : list) {
+
+            User user = userMapper.selectByPrimaryKey(userSettings.getUserId());
+            Long deptId = user.getDeptId();
+            if (null != deptId) {
+                Department department = getParentDept(deptId);
+                if (null != department) {
+                    userSettings.setDeptId(department.getDeptId());
+                    userSettings.setDeptName(department.getDeptName());
+                }
+            }
+            List<String> roleIds = relRoleUserMapper.getRoleIdsByUserId(userSettings.getUserId());
+            userSettings.setRoleIds(roleIds);
+        }
+        return list;
+    }
+
+    private Department getParentDept(Long deptId) {
+
+        Department department = departmentMapper.selectDeptById(deptId);
+        if (null != department && department.getType() != 2) {
+
+            getParentDept(department.getParentId());
+        }
+        return department;
     }
 
     @Override

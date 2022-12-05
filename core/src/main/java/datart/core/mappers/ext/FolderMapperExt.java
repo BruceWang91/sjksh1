@@ -20,7 +20,15 @@ public interface FolderMapperExt extends FolderMapper {
     List<Folder> selectByOrg(String orgId);
 
     @Select({
-            "SELECT * FROM folder t WHERE t.org_id = #{orgId} and t.rel_type != #{relType}"
+            "<script>",
+            "SELECT * FROM folder t WHERE t.org_id = #{orgId} \n",
+            "<if test=\"relType == 'DATACHART'\">\n",
+                "and t.rel_type in ('DATACHART_FOLDER','DATACHART')\n" +
+            "</if>\n",
+            "<if test=\"relType == 'DASHBOARD'\">\n",
+                "and t.rel_type in ('DASHBOARD_FOLDER','DASHBOARD')\n" +
+            "</if>\n",
+            "</script>"
     })
     List<Folder> selectByOrgAndRelType(String orgId, String relType);
 

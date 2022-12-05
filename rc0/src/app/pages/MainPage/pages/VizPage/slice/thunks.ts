@@ -54,10 +54,30 @@ import {
   VizState,
 } from './types';
 
+
 export const getFolders = createAsyncThunk<Folder[], string>(
   'viz/getFolders',
-  async orgId => {
-    const response = await request2<Folder[]>(`/viz/folders?orgId=${orgId}`);
+  async ({orgId,vizDatatype}) => {
+
+    const response = await request2<Folder[]>(`/viz/folders1?orgId=${orgId}&datatype=${vizDatatype}`);
+    return response?.data;
+  },
+);
+
+export const getFolders2 = createAsyncThunk<Folder[], string>(
+  'viz/getFolders2',
+  async ({orgId,vizDatatype}) => {
+
+    const response = await request2<Folder[]>(`/viz/folders1?orgId=${orgId}&datatype=${vizDatatype}`);
+    return {data:response?.data??[],vizDatatype};
+  },
+);
+
+export const getFolders3 = createAsyncThunk<Folder[], string>(
+  'viz/getFolders3',
+  async ({orgId}) => {
+
+    const response = await request2<Folder[]>(`/viz/folders1?orgId=${orgId}&datatype=DATACHART`);
     return response?.data;
   },
 );
@@ -163,6 +183,13 @@ export const addViz = createAsyncThunk<Folder, AddVizParams>(
       });
       dispatch(getFolders(viz.orgId as string));
       return data;
+    } else if(type === 'DASHBOARD_FOLDER' || type === 'DATACHART_FOLDER') {
+      const { data } = await request2<Folder>({
+        url: `/viz/folders`,
+        method: 'POST',
+        data: {...viz,relType:type},
+      });
+      return data;
     } else {
       const { data } = await request2<Folder>({
         url: `/viz/${type.toLowerCase()}s`,
@@ -209,8 +236,13 @@ export const unarchiveViz = createAsyncThunk<void, UnarchiveVizParams>(
 export const deleteViz = createAsyncThunk<boolean, DeleteVizParams>(
   'viz/deleteViz',
   async ({ params: { id, archive }, type, resolve }) => {
+  	let context = `${type.toLowerCase()}s`;
+
+  	if(type === 'DASHBOARD_FOLDER' || type === 'DATACHART_FOLDER'){
+  		context = 'folders'
+  	}
     const { data } = await request2<boolean>({
-      url: `/viz/${type.toLowerCase()}s/${id}`,
+      url: `/viz/${context}/${id}`,
       method: 'DELETE',
       params: { archive },
     });

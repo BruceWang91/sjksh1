@@ -23,24 +23,35 @@ import { getMembers, getRoles } from '../../MemberPage/slice/thunks';
 import { getSchedules } from '../../SchedulePage/slice/thunks';
 import { getSources } from '../../SourcePage/slice/thunks';
 import { getViews } from '../../ViewPage/slice/thunks';
-import { getFolders, getStoryboards } from '../../VizPage/slice/thunks';
+import { getFolders2, getStoryboards } from '../../VizPage/slice/thunks';
 import { getFilemains } from '../../ExcelTemplatePage/ExcelManager/slice/thunks';
 import { getSheets } from '../../ExcelTemplatePage/ReportSheets/slice/thunks';
 import { getFiles } from '../../FilePage/slice/thunks';
+import { getReports } from '../../ReportPage/slice/thunks';
+import { getMiddleTables2 } from '../../MiddleTablePage/slice/thunks';
+import { getImmassets2 } from '../../ImmassetPage/slice/thunks';
+
 
 
 import { ResourceTypes, SubjectTypes, Viewpoints } from '../constants';
 import {
+	selectMiddleTables,
+	selectMiddleTableListLoading,
+	selectImmassets,
+	selectImmassetListLoading,
+
 	selectFilemains,
 	selectFilemainListLoading,
 	selectFiles,
 	selectFileListLoading,
 	selectSheets,
 	selectSheetListLoading,
-
+	selectReports,
+	selectReportListLoading,
 
   selectFolderListLoading,
-  selectFolders,
+  selectDatachartFolders,
+  selectDashboardFolders,
   selectMemberListLoading,
   selectMembers,
   selectRoleListLoading,
@@ -93,7 +104,8 @@ export const getDataSource = createAsyncThunk<
 >(
   'permission/getDataSource',
   async ({ viewpoint, dataSourceType }, { getState, dispatch }) => {
-    const folders = selectFolders(getState());
+    const datachartFolders = selectDatachartFolders(getState());
+    const dashboardFolders = selectDashboardFolders(getState());
     const storyboards = selectStoryboards(getState());
     const views = selectViews(getState());
     const sources = selectSources(getState());
@@ -102,13 +114,20 @@ export const getDataSource = createAsyncThunk<
     const members = selectMembers(getState());
     const filemains = selectFilemains(getState());
     const files = selectFiles(getState());
-    const sheets = selectSheets(getState());
+    const reports = selectReports(getState());
+    const middleTables = selectMiddleTables(getState());
+    const immassets = selectImmassets(getState());
+
+
+    const middleTableLoading = selectMiddleTableListLoading(getState());
+    const immassetLoading = selectImmassetListLoading(getState());
 
     const filemainListLoading = selectFilemainListLoading(getState());
     const fileListLoading = selectFileListLoading(getState());
-    const sheetListLoading = selectSheetListLoading(getState());
+    const reportListLoading = selectReportListLoading(getState());
 
     const folderListLoading = selectFolderListLoading(getState());
+
     const storyboardListLoading = selectStoryboardListLoading(getState());
     const viewListLoading = selectViewListLoading(getState());
     const sourceListLoading = selectSourceListLoading(getState());
@@ -130,12 +149,21 @@ export const getDataSource = createAsyncThunk<
           dispatch(getMembers(orgId));
         }
         break;
-      case ResourceTypes.Viz:
-        if (!folders && !folderListLoading) {
-          dispatch(getFolders(orgId));
+      case ResourceTypes.VizDatachart:
+      	
+        if (!datachartFolders && !folderListLoading) {
+          dispatch(getFolders2({orgId,vizDatatype:'DATACHART'}));
         }
         if (!storyboards && !storyboardListLoading) {
-          dispatch(getStoryboards(orgId));
+          //dispatch(getStoryboards(orgId));
+        }
+        break;
+      case ResourceTypes.VizDashboard:
+        if (!dashboardFolders && !folderListLoading) {
+          dispatch(getFolders2({orgId,vizDatatype:'DASHBOARD'}));
+        }
+        if (!storyboards && !storyboardListLoading) {
+          //dispatch(getStoryboards(orgId));
         }
         break;
       case ResourceTypes.View:
@@ -153,14 +181,24 @@ export const getDataSource = createAsyncThunk<
           dispatch(getFilemains({pageSize:9999,pageNum:1}));
         }
         break;
-      case ResourceTypes.ExcelView:
-        if (!sheets && !sheetListLoading) {
-          dispatch(getSheets({pageSize:9999,pageNum:1}));
+      case ResourceTypes.Report:
+        if (!reports && !reportListLoading) {
+          dispatch(getReports({pageSize:9999,pageNum:1}));
         }
         break;
       case ResourceTypes.File:
         if (!files && !fileListLoading) {
           dispatch(getFiles({pageSize:9999,pageNum:1}));
+        }
+        break;
+      case ResourceTypes.ImmAsset:
+        if (!immassets && !immassetLoading) {
+          dispatch(getImmassets2({}));
+        }
+        break;
+      case ResourceTypes.ImmData:
+        if (!middleTables && !middleTableLoading) {
+          dispatch(getMiddleTables2({}));
         }
         break;
       case ResourceTypes.Schedule:

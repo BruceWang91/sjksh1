@@ -11,6 +11,8 @@ export interface ExcelIProps {
 	cellsOption:any[];
 	viewPortHeight?:number;
 	viewPortWidth?:number;
+	dropdownMenu:any;
+	contextMenu:any
 }
 
 
@@ -21,18 +23,21 @@ export function Excel({
 	mergeCells,
 	cellsOption,
 	viewPortHeight,
-	viewPortWidth
+	viewPortWidth,
+	dropdownMenu,
+	contextMenu,
+	...rest
 }:IProps) {
 
 	const config = useMemo(()=>{
 
 		let ret = {
-		
-      dropdownMenu: false,
+			...rest,
+      dropdownMenu: dropdownMenu,
       hiddenColumns: {
         indicators: true,
       },
-      contextMenu: false,
+      contextMenu: contextMenu,
       multiColumnSorting: false,
       manualColumnResize:true,
 
@@ -40,7 +45,7 @@ export function Excel({
       filters: false,
       rowHeaders: true,
       autoColumnSize:true,
-     
+     	
       colHeaders:[],
       columns: [],
       licenseKey: "non-commercial-and-evaluation",

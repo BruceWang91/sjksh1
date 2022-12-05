@@ -39,11 +39,11 @@ const useDrillThrough = () => {
   };
 
   const openNewTab = (orgId, relId, params?: string) => {
-    history.push(`/organizations/${orgId}/vizs/${relId}?${params}`);
+    history.push(`/organizations/${orgId}/vizdatacharts/${relId}?${params}`);
   };
 
   const openBrowserTab = (orgId, relId, params?: string) => {
-    const url = `/organizations/${orgId}/vizs/${relId}?${params}`;
+    const url = `/organizations/${orgId}/vizdatacharts/${relId}?${params}`;
     window.open(url, url);
   };
 
@@ -56,7 +56,7 @@ const useDrillThrough = () => {
           height={600}
           width="100%"
           frameBorder="none"
-          src={`/organizations/${orgId}/vizs/${relId}?${params}`}
+          src={`/organizations/${orgId}/vizdatacharts/${relId}?${params}`}
         />
       ),
     };

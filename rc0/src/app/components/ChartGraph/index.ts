@@ -28,6 +28,9 @@ export { default as BasicPieChart } from './BasicPieChart';
 export { default as BasicRichText } from './BasicRichText';
 export { default as BasicScatterChart } from './BasicScatterChart';
 export { default as BasicTableChart } from './BasicTableChart';
+
+
+
 export { default as ClusterBarChart } from './ClusterBarChart';
 export { default as ClusterColumnChart } from './ClusterColumnChart';
 export { default as DoughnutChart } from './DoughnutChart';
@@ -46,3 +49,15 @@ export { default as StackBarChart } from './StackBarChart';
 export { default as StackColumnChart } from './StackColumnChart';
 export { default as WaterfallChart } from './WaterfallChart';
 export { default as WordCloudChart } from './WordCloudChart';
+
+
+
+
+
+
+export { default as BasicTemplateChart } from './BasicTemplateChart';
+export { default as BasicTemplate2Chart } from './BasicTemplate2Chart';
+export { default as BasicTemplate3Chart } from './BasicTemplate3Chart';
+export { default as LevelCardsChart } from './LevelCardsChart';
+
+export { default as BasicTemplate4Chart } from './BasicTemplate4Chart';

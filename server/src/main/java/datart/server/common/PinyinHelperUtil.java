@@ -33,7 +33,7 @@ public class PinyinHelperUtil {
     public static String regReplace(String str, Boolean isname) {
 
         // '*','/',':','?','[','\\',']'
-        String s = str.replaceAll("[\\\\\\*/:?\\[\\][\\s*]&[+-]%=：（）、()。._，,]", "");
+        String s = str.replaceAll("[\\\\\\*/:?\\[\\][\\s*]&[+-]%=：【】（）、()。._，,\"\" ]", "");
         if (!isname) {
             Pattern pattern = Pattern.compile("[0-9]*");
             Matcher isNum = pattern.matcher(s.charAt(0) + "");

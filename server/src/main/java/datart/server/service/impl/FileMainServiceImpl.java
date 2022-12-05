@@ -4,10 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSONArray;
 import datart.core.base.consts.Const;
 import datart.core.base.exception.Exceptions;
-import datart.core.entity.FileMain;
-import datart.core.entity.FileSheetField;
-import datart.core.entity.FileSheets;
-import datart.core.entity.Role;
+import datart.core.entity.*;
 import datart.core.entity.param.FileMainParam;
 import datart.core.entity.param.FileSheetsParam;
 import datart.core.entity.result.FileMainResult;
@@ -20,12 +17,10 @@ import datart.security.base.ResourceType;
 import datart.security.exception.PermissionDeniedException;
 import datart.security.manager.shiro.ShiroSecurityManager;
 import datart.security.util.PermissionHelper;
-import datart.server.annotation.DataSource;
 import datart.server.common.Convert;
 import datart.server.common.DateUtils;
 import datart.server.common.PinyinHelperUtil;
-import datart.server.common.SpringUtils;
-import datart.server.config.datasource.DataSourceNames;
+import datart.server.config.datasource.DynamicDataSource;
 import datart.server.enums.WhetherEnum;
 import datart.server.service.BaseService;
 import datart.server.service.IFileMainService;
@@ -34,8 +29,6 @@ import datart.server.service.IFileSheetsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
@@ -62,6 +55,8 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
     private DepartmentMapperExt departmentMapperExt;
     @Autowired
     private FileClassMapperExt fileClassMapperExt;
+    @Autowired
+    private ToolsServiceImpl toolsService;
 
     /**
      * 查询文件管理
@@ -163,12 +158,14 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
             List<FileSheets> fileSheets = fileSheetsService.selectFileSheetsList(new FileSheets() {{
                 setFileId(fileId);
             }});
+            FileMain fileMain = fileMainMapper.selectFileMainByFileId(fileId);
             if (!CollectionUtils.isEmpty(fileSheets)) {
 
                 for (FileSheets fileSheet : fileSheets) {
 
                     String tableName = fileSheet.getEntityName();
-                    SpringUtils.getAopProxy(this).dropTable(tableName);
+//                    SpringUtils.getAopProxy(this).dropTable(fileMain.getSourceId(), tableName);
+                    dropTable(fileMain.getSourceId(), tableName);
                 }
             }
             count += fileSheetFieldService.deleteFieldsByFileId(fileId);
@@ -196,13 +193,13 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
      * @return
      */
     @Override
-    @Transactional
     public int batchUpdateForFileId(FileMainParam fileMainParam) {
 
         // 创建和修改文件相关工作簿及字段内容
         Long fileId = fileMainParam.getFileId();
 //        String userId = SecurityUtils.getUserId().toString();
         Date nowdate = DateUtils.getNowDate();
+        String sourceId = "";
         if (null == fileId) {
 
             FileMain fileMain = new FileMain();
@@ -210,6 +207,7 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
             fileMain.setCreateBy(getCurrentUser().getId());
             fileMain.setCreateTime(nowdate);
             fileMainMapper.insertFileMain(fileMain);
+            sourceId = fileMain.getSourceId();
             fileId = fileMain.getFileId();
         } else {
 
@@ -217,6 +215,7 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
             fileMain.setUpdateTime(nowdate);
             fileMain.setUpdateBy(getCurrentUser().getId());
             fileMainMapper.updateFileMain(fileMain);
+            sourceId = fileMain.getSourceId();
             Long fid = fileId;
             List<FileSheets> fileSheetsList = fileSheetsService.selectFileSheetsList(new FileSheets() {{
                 setFileId(fid);
@@ -269,7 +268,8 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
                         count += fileSheetFieldService.insertFileSheetField(fileSheetField);
                     }
                 }
-                SpringUtils.getAopProxy(this).createTale(biname, fieldList);
+//                SpringUtils.getAopProxy(this).createTale(sourceId, biname, fieldList);
+                createTale(sourceId, biname, fieldList);
             }
         }
         return count;
@@ -367,6 +367,16 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
             fileMain.setClassIds(ids);
         }
         List<FileMain> list = fileMainMapper.getList(fileMain);
+        if (!CollectionUtils.isEmpty(list)) {
+            for (FileMain main : list) {
+                if (null != main.getDeptId()) {
+                    Department department = toolsService.getCompany(main.getDeptId());
+                    if (null != department) {
+                        main.setDeptName(department.getDeptName());
+                    }
+                }
+            }
+        }
         Map<Long, FileMain> filtered = new HashMap<>();
 
         List<FileMain> permitted = list.stream().filter(file -> {
@@ -435,22 +445,23 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
      * @param biname
      * @param list
      */
-    @DataSource(name = DataSourceNames.SLAVE)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void createTale(String biname, List<FileSheetField> list) {
+    @Override
+    public void createTale(String sourceId, String biname, List<FileSheetField> list) {
 
         StringBuffer sqlstr = new StringBuffer();
         for (FileSheetField fileSheetField : list) {
 
             if (WhetherEnum.YES.getValue().toString().equals(fileSheetField.getStatus())) {
 
-                sqlstr.append(fileSheetField.getEntityField() + " varchar(300),");
+                sqlstr.append(fileSheetField.getEntityField() + " VARCHAR(300) DEFAULT NULL COMMENT '" + fileSheetField.getCellName() + "',");
             }
         }
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("sqlstr", sqlstr.toString());
         map.put("biname", biname);
+        toolsService.changeConnection(sourceId);
         fileMainMapper.createTable(map);
+        DynamicDataSource.clear();
     }
 
     /**
@@ -465,6 +476,7 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datestr = format.format(now);
         Long fileId = (Long) hashMap.get("fileId");
+        FileMain fileMain = fileMainMapper.selectFileMainByFileId(fileId);
         List<FileSheets> sheets = fileSheetsService.selectFileSheetsList(new FileSheets() {{
             setFileId(fileId);
             setDelFlag(WhetherEnum.NO.getValue().toString());
@@ -481,48 +493,51 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
 
                     if (s.equals(sheet.getEntityName())) {
 
-                        List<FileSheetField> fields = fileSheetFieldService.selectFileSheetFieldList(new FileSheetField() {{
-                            setSheetId(sheet.getSheetId());
-                            setStatus(WhetherEnum.YES.getValue().toString());
-                        }});
-
-                        for (int i = 0; i < fields.size(); i++) {
-
-                            String entityField = fields.get(i).getEntityField();
-                            if (i == 0) {
-
-                                keystr.append(entityField);
-                            } else {
-
-                                keystr.append("," + entityField);
-                            }
-                        }
-                        keystr.append(",create_by");
-                        keystr.append(",create_time");
                         List<HashMap<String, Object>> objectList = (List<HashMap<String, Object>>) hashMap.get(s);
-                        for (int j = 0; j < objectList.size(); j++) {
+                        if (!CollectionUtils.isEmpty(objectList)) {
+                            List<FileSheetField> fields = fileSheetFieldService.selectFileSheetFieldList(new FileSheetField() {{
+                                setSheetId(sheet.getSheetId());
+                                setStatus(WhetherEnum.YES.getValue().toString());
+                            }});
 
-                            if (j == 0) {
-
-                                valuestr.append("(");
-                            } else {
-
-                                valuestr.append(",(");
-                            }
                             for (int i = 0; i < fields.size(); i++) {
 
-                                String field = StringUtils.isEmpty(objectList.get(j).get(fields.get(i).getEntityField()).toString()) ? " " : objectList.get(j).get(fields.get(i).getEntityField()).toString();
+                                String entityField = fields.get(i).getEntityField();
                                 if (i == 0) {
 
-                                    valuestr.append("'" + field + "'");
+                                    keystr.append(entityField);
                                 } else {
 
-                                    valuestr.append(",'" + field + "'");
+                                    keystr.append("," + entityField);
                                 }
                             }
-                            valuestr.append(",'" + getCurrentUser().getId() + "'");
-                            valuestr.append(",'" + datestr + "'");
-                            valuestr.append(")");
+                            keystr.append(",create_by");
+                            keystr.append(",create_time");
+
+                            for (int j = 0; j < objectList.size(); j++) {
+
+                                if (j == 0) {
+
+                                    valuestr.append("(");
+                                } else {
+
+                                    valuestr.append(",(");
+                                }
+                                for (int i = 0; i < fields.size(); i++) {
+
+                                    String field = StringUtils.isEmpty(objectList.get(j).get(fields.get(i).getEntityField()).toString()) ? " " : objectList.get(j).get(fields.get(i).getEntityField()).toString();
+                                    if (i == 0) {
+
+                                        valuestr.append("'" + field + "'");
+                                    } else {
+
+                                        valuestr.append(",'" + field + "'");
+                                    }
+                                }
+                                valuestr.append(",'" + getCurrentUser().getId() + "'");
+                                valuestr.append(",'" + datestr + "'");
+                                valuestr.append(")");
+                            }
                         }
                     }
                 }
@@ -530,7 +545,10 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
                 map.put("biname", biname);
                 map.put("keystr", keystr.toString());
                 map.put("valuestr", valuestr.toString());
-                SpringUtils.getAopProxy(this).insertTable(map);
+//                SpringUtils.getAopProxy(this).insertTable(fileMain.getSourceId(), map);
+                if (keystr.toString() != null && keystr.toString().length() > 0 && valuestr.toString() != null && valuestr.toString().length() > 0) {
+                    insertTable(fileMain.getSourceId(), map);
+                }
             }
         }
     }
@@ -540,11 +558,11 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
      *
      * @param map
      */
-    @DataSource(name = DataSourceNames.SLAVE)
-    @Transactional
-    public void insertTable(HashMap<String, Object> map) {
+    public void insertTable(String sourceId, HashMap<String, Object> map) {
 
+        toolsService.changeConnection(sourceId);
         fileMainMapper.insertTable(map);
+        DynamicDataSource.clear();
     }
 
     /**
@@ -557,15 +575,15 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
     public JSONArray getSheetData(Long sheetId) {
 
         if (null == sheetId) {
-//            throw new ServiceException("工作簿ID不能为空！");
-            return null;
+            throw new RuntimeException("工作簿ID不能为空！");
         }
         FileSheets sheet = fileSheetsService.selectFileSheetsBySheetId(sheetId);
+        FileMain fileMain = fileMainMapper.selectFileMainByFileId(sheet.getFileId());
         String domainName = sheet.getEntityName();
         if (!StringUtils.isEmpty(domainName)) {
 
             List<HashMap<String, Object>> objectList = new ArrayList<>();
-            objectList = SpringUtils.getAopProxy(this).selectByBiname(new HashMap<String, Object>() {{
+            objectList = selectByBiname(fileMain.getSourceId(), new HashMap<String, Object>() {{
                 put("biname", domainName);
             }});
             JSONArray array = new JSONArray();
@@ -584,10 +602,12 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
      * @return
      */
     @Override
-    @DataSource(name = DataSourceNames.SLAVE)
-    public List<HashMap<String, Object>> selectByBiname(HashMap<String, Object> map) {
+    public List<HashMap<String, Object>> selectByBiname(String sourceId, HashMap<String, Object> map) {
 
-        return fileMainMapper.selectByBiname(map);
+        toolsService.changeConnection(sourceId);
+        List<HashMap<String, Object>> list = fileMainMapper.selectByBiname(map);
+        DynamicDataSource.clear();
+        return list;
     }
 
     /**
@@ -595,9 +615,10 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
      *
      * @param tableName
      */
-    @DataSource(name = DataSourceNames.SLAVE)
-    public void dropTable(String tableName) {
+    public void dropTable(String sourceId, String tableName) {
 
+        toolsService.changeConnection(sourceId);
         fileMainMapper.dropTable(tableName);
+        DynamicDataSource.clear();
     }
 }

@@ -44,7 +44,9 @@ export const Sidebar = memo(
     const t = useI18NPrefix('permission');
 
     useEffect(() => {
+    	
       if (viewpointType) {
+
         dispatch(getDataSource({ viewpoint, dataSourceType: viewpointType }));
       }
     }, [dispatch, viewpoint, viewpointType, orgId]);

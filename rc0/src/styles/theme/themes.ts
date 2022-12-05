@@ -21,6 +21,8 @@ import {
   G70,
   G80,
   G90,
+  GG10,
+  GG20,
   GREEN,
   HIGHLIGHT,
   INFO,
@@ -44,7 +46,6 @@ const common = {
   highlight: HIGHLIGHT,
   warning: WARNING,
   normal: NORMAL,
-
   blue: BLUE,
   green: GREEN,
   orange: ORANGE,
@@ -55,11 +56,14 @@ const common = {
 };
 
 const lightTheme = {
+	emphasisPrimary: rgba(PRIMARY, 0.4),
   bodyBackground: G10,
   componentBackground: WHITE,
   emphasisBackground: G20,
   highlightBackground: G30,
   tipBackground: rgba(BLACK, 0.05),
+  siderBackground:GG10,
+  emphasisSiderBackground:GG20,
   textColor: G90,
   textColorSnd: G80,
   textColorLight: G60,
@@ -77,11 +81,14 @@ const lightTheme = {
 };
 
 const darkTheme: Theme = {
+	emphasisPrimary: rgba(PRIMARY, 0.4),
   bodyBackground: BLACK,
   componentBackground: DG10,
   emphasisBackground: DG20,
   highlightBackground: DG30,
   tipBackground: rgba(WHITE, 0.05),
+  siderBackground:GG10,
+  emphasisSiderBackground:GG20,
   textColor: DG90,
   textColorSnd: DG80,
   textColorLight: DG60,

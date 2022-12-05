@@ -5,19 +5,23 @@ import { useBoardSlice } from 'app/pages/DashBoardPage/pages/Board/slice';
 import { useEditBoardSlice } from 'app/pages/DashBoardPage/pages/BoardEditor/slice';
 import { useStoryBoardSlice } from 'app/pages/StoryBoardPage/slice';
 import { dispatchResize } from 'app/utils/dispatchResize';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState ,useEffect} from 'react';
 import styled from 'styled-components/macro';
 import { Main } from './Main';
 import { SaveForm } from './SaveForm';
 import { SaveFormContext, useSaveFormContext } from './SaveFormContext';
 import { Sidebar } from './Sidebar';
 import { useVizSlice } from './slice';
-export function VizPage() {
+import { useDispatch , useSelector } from 'react-redux';
+import {useHistory,} from 'react-router';
+import { selectOrgId } from '../../slice/selectors';
+
+export function VizPage({vizDatatype}) {
   useVizSlice();
   useBoardSlice();
   useEditBoardSlice();
   useStoryBoardSlice();
-  const saveFormContextValue = useSaveFormContext();
+  const saveFormContextValue = useSaveFormContext(vizDatatype+'_FOLDER');
   const [sliderVisible, setSliderVisible] = useState<boolean>(false);
 
   const { sizes, setSizes } = useSplitSizes({
@@ -26,7 +30,8 @@ export function VizPage() {
   });
   const tg = useI18NPrefix('global');
   const [isDragging, setIsDragging] = useState(false);
-
+  const history = useHistory();
+  const orgId = useSelector(selectOrgId);
   const siderDragEnd = useCallback(
     sizes => {
       setSizes(sizes);
@@ -50,17 +55,20 @@ export function VizPage() {
     [setSliderVisible],
   );
 
+  useEffect(()=>{
+  	history.replace(`/organizations/${orgId}/viz${vizDatatype?.toLowerCase()}s/`)
+  },[vizDatatype,orgId])
   return (
     <SaveFormContext.Provider value={saveFormContextValue}>
       <Container
         sizes={sizes}
-        minSize={[256, 0]}
+        minSize={[288, 0]}
         maxSize={[768, Infinity]}
         gutterSize={0}
         onDragStart={siderDragStart}
         onDragEnd={siderDragEnd}
         className="datart-split"
-        sliderVisible={sliderVisible}
+        slidervisible={(sliderVisible as Boolean).toString()}
       >
         <Sidebar
           width={sizes[0]}
@@ -68,8 +76,9 @@ export function VizPage() {
           i18nPrefix={'viz.sidebar'}
           sliderVisible={sliderVisible}
           handleSliderVisible={handleSliderVisible}
+          vizDatatype={vizDatatype}
         />
-        <Main sliderVisible={sliderVisible} />
+        <Main sliderVisible={sliderVisible} vizDatatype={vizDatatype} />
         <SaveForm
           width={400}
           formProps={{
@@ -84,12 +93,12 @@ export function VizPage() {
   );
 }
 
-const Container = styled(Split)<{ sliderVisible: boolean }>`
+const Container = styled(Split)`
   display: flex;
   flex: 1;
   min-width: 0;
   min-height: 0;
   .gutter-horizontal {
-    display: ${p => (p.sliderVisible ? 'none' : 'block')};
+    display: ${p => (p.slidervisible === 'true' ? 'none' : 'block')};
   }
 `;

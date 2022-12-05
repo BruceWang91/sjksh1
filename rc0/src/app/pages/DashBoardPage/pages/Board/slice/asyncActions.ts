@@ -58,7 +58,7 @@ export const handleServerBoardAction =
   async (dispatch, getState) => {
     const { data, renderMode, filterSearchMap, executeToken } = params;
     const dashboard = getDashBoardByResBoard(data);
-    const { datacharts, views: serverViews, widgets: serverWidgets } = data;
+    const { datacharts, views: serverViews, widgets: serverWidgets } = data || {};
 
     const dataCharts: DataChart[] = getDataChartsByServer(
       datacharts,

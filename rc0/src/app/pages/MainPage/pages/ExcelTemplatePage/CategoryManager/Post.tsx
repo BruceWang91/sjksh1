@@ -125,6 +125,10 @@ export const Post: React.FC = ({ children,title, data , onSuccess }) => {
     }
  	};
 
+ 	const onOpen = useCallback(()=>{
+
+ 		dispatch(getCategories({parentId:0,orgId}))
+ 	},[dispatch,orgId])
   return <DialogForm
   	
 		loading={loading}
@@ -133,6 +137,7 @@ export const Post: React.FC = ({ children,title, data , onSuccess }) => {
 		initialValues={ data }
 		onFinish={onFinish} 
     title={title}
+    onOpen={onOpen}
     ref={ref}
    >
 		{children}

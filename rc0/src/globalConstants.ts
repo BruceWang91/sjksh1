@@ -124,7 +124,7 @@ export const CHART_LINE_STYLES = [
   { name: 'viz.palette.style.lineStyles.dotted', value: 'dotted' },
 ];
 
-export const CHART_LINE_WIDTH = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+export const CHART_LINE_WIDTH = [0, 1, 2, 3,  10 , 20, 30, 50, 100, 150];
 
 export const CHART_DRAG_ELEMENT_TYPE = {
   DATA_CONFIG_COLUMN: 'data_config_column',
@@ -207,17 +207,29 @@ export enum NumberUnitKey {
   Billion = 'billion',
   // Chinese Unit
   Wan = 'wan',
+  Wan1 = 'wan1',
   Yi = 'yi',
+  Yi1 = 'yi1',
+	Yi4 = 'yi4',
+	BFB1 = 'bfb1',
+	BFB2 = 'bfb2',
+  BFD = 'bfd'
 }
 
 export const NumericUnitDescriptions = new Map<NumberUnitKey, [number, string]>(
   [
-    [NumberUnitKey.None, [1, '']],
-    [NumberUnitKey.Thousand, [10 ** 3, 'K']],
-    [NumberUnitKey.Million, [10 ** 6, 'M']],
-    [NumberUnitKey.Billion, [10 ** 9, 'B']],
-    [NumberUnitKey.Wan, [10 ** 4, '万']],
-    [NumberUnitKey.Yi, [10 ** 8, '亿']],
+    [NumberUnitKey.None, [1,  ' ', '? ÷ 1']],
+    [NumberUnitKey.Thousand, [10 ** 3, 'K', 'K ? ÷ 1,000']],
+    [NumberUnitKey.Million, [10 ** 6,  'M','M ? ÷ 1,000,000']],
+    [NumberUnitKey.Billion, [10 ** 9,  'B','B ? ÷ 1,000,000,000']],
+    [NumberUnitKey.Wan1, [1,  '万', '万 ? ÷ 1']],
+    [NumberUnitKey.Wan, [10 ** 4,  '万','万 ? ÷ 10,000']],
+    [NumberUnitKey.Yi1, [1,  '亿','亿 ? ÷ 1']],
+    [NumberUnitKey.Yi4, [10 ** 4, '亿', '亿 ? ÷ 10,000']],
+    [NumberUnitKey.Yi, [10 ** 8, '亿', '亿 ? ÷ 100,000,000']],
+    [NumberUnitKey.BFB1, [1, '%', '% ? x 1']],
+    [NumberUnitKey.BFB2, [0.01, '%', '% ? x 100']],
+    [NumberUnitKey.BFD, [1, '个百分点','个百分点 ? ÷ 1']],
   ],
 );
 
@@ -232,3 +244,10 @@ export enum SeasFileSuffixes {
   Template = '.drt',
   Resource = '.drr',
 }
+
+
+
+
+export const EXCEL_ACCEPT = ".et,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+export const FILE_MODULE_ACCEPT = ".et,.zip,.rar,.doc,.docx,.wps,.xls,.xlsx,.pdf"

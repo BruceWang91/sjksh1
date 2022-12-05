@@ -35,7 +35,7 @@ export const ReportEditor = ({module,type,path,token,title,id,orgId}) => {
 		</Toolbar>
 		<div className="iframe-container">
 		<Spin spinning={loading} tip={``} indicator={antIcon} >
-			<iframe ref={ref} onLoad={event=>setLoading(false)} src={`/jmreport/${module}/${id}?menuType=${type}&token=${String(token).replace(/^Bearer\s{1}/,'')}`} frameBorder="0"  />
+			<iframe ref={ref} onLoad={event=>setLoading(false)} src={`/jmreport/${module}/${id}?menuType=${type}&token=${token}`} frameBorder="0"  />
 		</Spin>
 		</div>
 	</Wrap>

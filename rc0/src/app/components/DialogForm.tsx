@@ -1,15 +1,16 @@
 import React from 'react';
 import {ModalForm} from '@ant-design/pro-components';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
+import { Spin ,Tooltip} from 'antd';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 interface DialogFormProps {
 	render:()=>any;
-	onShow : ()=> void ;
+	onOpen : ()=> void ;
 	loading:boolean;
 	loadingText:string;
+	tooltip:string;
 }
 /**
  * @Author   Zuojin(463609@qq.com)
@@ -21,10 +22,11 @@ interface DialogFormProps {
 export class DialogForm extends React.Component <DialogFormProps,{}> {
 	static defaultProps = {
 		render : function(){},
-		onShow:function(){},
+		onOpen:function(){},
 		loading: false,
 		loadingText: 'Loading...',
-		
+		tooltip:'',
+		destroyOnClose:true
 	}
 	state = {
 		visible: false ,
@@ -52,22 +54,39 @@ export class DialogForm extends React.Component <DialogFormProps,{}> {
 			render,
 			loading,
 			loadingText,
+			tooltip,
+			destroyOnClose,
 			...rest
     } = this.props;
 
+    let trigger = null;
+
     const {visible} = this.state;
-    const child = React.Children.only(children);
+
+
+    if(children){
+    	const child = React.Children.only(children);
     
-    const newChild = React.cloneElement(child, { ...child.props,
-			onClick: event => {
-				this.props.onShow();
-				this.show()
-			}
-		});
-		
+	    const newChild = React.cloneElement(child, { ...child.props,
+				onClick: event => {
+					if(event.domEvent){
+						event.domEvent.preventDefault()
+					}else{
+						event?.preventDefault();
+					}
+					
+					this.props.onOpen();
+					this.show()
+				}
+			});
+			
+			trigger = tooltip ? <Tooltip title={tooltip} placement="bottom">{newChild}</Tooltip> : newChild;
+    }
+    
     return <React.Fragment>
 			<ModalForm
 				{...rest}
+				modalProps={{destroyOnClose,...rest,maskClosable:false}}
 				size="small"
 				formRef={this.formRef}
 				disabled={loading}
@@ -78,7 +97,7 @@ export class DialogForm extends React.Component <DialogFormProps,{}> {
 	    		{typeof render === 'function' ? render({visible}) : render }
 	    	</Spin>
 	    </ModalForm>
-			{newChild}
+			{trigger}
 		</React.Fragment>
   }
 }

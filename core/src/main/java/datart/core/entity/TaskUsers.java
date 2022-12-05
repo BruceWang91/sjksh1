@@ -54,4 +54,9 @@ public class TaskUsers {
      * 人员名称
      */
     private String userName;
+
+    /**
+     * 是否完成
+     */
+    private boolean completionStatus;
 }

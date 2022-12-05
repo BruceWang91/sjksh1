@@ -34,6 +34,26 @@ public class PermissionHelper {
                 .build();
     }
 
+    public static Permission vizDatachartPermission(String orgId,String roleId, String vizId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.VIZ_DATACHART.name())
+                .resourceId(vizId)
+                .permission(permission)
+                .build();
+    }
+
+    public static Permission vizDashboardPermission(String orgId,String roleId, String vizId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.VIZ_DASHBOARD.name())
+                .resourceId(vizId)
+                .permission(permission)
+                .build();
+    }
+
     public static Permission sourcePermission(String orgId,String roleId, String sourceId, int permission) {
         return Permission.builder()
                 .orgId(orgId)
@@ -120,6 +140,26 @@ public class PermissionHelper {
                 .roleId(roleId)
                 .resourceType(ResourceType.SCHEDULE.name())
                 .resourceId(scheduleId)
+                .permission(permission)
+                .build();
+    }
+
+    public static Permission staticManagementPermission(String orgId, String roleId, String fileId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.IMM_ASSET.name())
+                .resourceId(fileId)
+                .permission(permission)
+                .build();
+    }
+
+    public static Permission tableImportPermission(String orgId, String roleId, String fileId, int permission) {
+        return Permission.builder()
+                .orgId(orgId)
+                .roleId(roleId)
+                .resourceType(ResourceType.IMM_DATA.name())
+                .resourceId(fileId)
                 .permission(permission)
                 .build();
     }

@@ -317,7 +317,7 @@ export const StructView = memo(
         );
       }
     }, [sourceId, allDatabaseSchemas, actions, dispatch, structure]);
-
+    
     return (
       <StructContainer>
         {typeof structure === 'string' ? (

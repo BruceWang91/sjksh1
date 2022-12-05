@@ -410,7 +410,7 @@ const PopoverBody = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 400px;
-
+  overflow-y:auto;
   .list-icon {
     color: ${p => p.theme.textColorDisabled};
   }

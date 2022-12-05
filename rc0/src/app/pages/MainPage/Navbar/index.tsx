@@ -193,63 +193,6 @@ export function Navbar() {
   },[matchModules,history]);
 
 
-
-  const getMenus = useCallback(( data ) => {
-		return data.map(({ name, children , type, group, action, title, icon, isActive, module }) => {
-			
-
-			let childs = title;
-
-			let props = {
-				ptype:"module",
-	      level:PermissionLevels.Enable,
-	      key:name,
-	      menuType:'Item',
-	      icon,
-	      module
-	      
-			}
-
-			if(Array.isArray(children)){
-				props.menuType = 'SubMenu';
-				props.title = title;
-				childs = getMenus(children)
-			}else{
-				
-			}
-
-
-			if(Array.isArray(group)){
-				props.menuType = 'ItemGroup';
-				props.title = title;
-				props.type = 'group';
-				props.icon = ''
-				childs = getMenus(group)
-			}
-
-			if( !Array.isArray(group) && !Array.isArray(children)){
-				props.onClick = event=>history.push(`/organizations/${orgId}/${name}`) 
-			}
-
-			if(type){
-				props.key = `${name}_${type}`;
-
-				if(props.onClick){
-					props.onClick = event=>history.push(`/organizations/${orgId}/${name}?moduleType=${type}`)
-				}
-			}
-
-
-			return <MenuAccess
-	      {...props}
-	    >
-	    	{childs}
-	    </MenuAccess>
-		})
-	},[history,orgId])
-  //console.log(mainNavSelectKeys)
-  //
-  
   return (
     <>
       <MainNav>
@@ -260,9 +203,19 @@ export function Navbar() {
         </Brand>
      
         <Nav>
-        	<Menu mode="horizontal" selectable className="header-nav" selectedKeys={mainNavSelectKeys} >
-        		{getMenus(MENUS)}
-          </Menu>
+        	<MenuAccess onLeafClick={ (name,link)=>{
+        		if(!link){
+        			history.push(`/organizations/${orgId}/${name}`)
+        		}else{
+        			let a = document.createElement('a');
+							a.href = link;
+							a.target = '_blank';
+							document.body.appendChild(a);
+							a.click();
+							document.body.removeChild(a);
+        		}
+        		
+        	} } menus={MENUS}  selectedKeys={mainNavSelectKeys} />
         </Nav>
         <Toolbar>
           {/*<DownloadListPopup
@@ -353,9 +306,8 @@ const MainNav = styled.div`
   flex-direction: row;
   flex-shrink: 0;
   width: 100%;
-  height:${SPACE_TIMES(12)};
-  background: #00534b;
-  border-bottom: 1px solid ${p => p.theme.borderColorSplit};
+  height:48px;
+  background: #026968;
 
 
   
@@ -365,12 +317,12 @@ const Brand = styled.div`
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   height: ${SPACE_TIMES(12)};
-
+  width:288px;
   cursor: pointer;
 
-
+  background: #3b948c;
   color: #fff;
    img {
    	margin:0 6px;
@@ -388,14 +340,14 @@ const Nav = styled.nav`
 
 
   flex: 1;
-  padding: 0 ${SPACE_LG};
+  padding: 0;
   .ant-menu{
   	color:#fff
   }
   
   .header-nav{
 		border-bottom:0;
-  	line-height:47px;
+  	line-height:48px;
   	background-color:transparent;
 
   	>.ant-menu-item:after, >.ant-menu-submenu:after{

@@ -23,6 +23,12 @@ import {
   BasicGaugeChart,
   BasicRichText,
   BasicScatterChart,
+  BasicTemplateChart,
+  BasicTemplate2Chart,
+  BasicTemplate3Chart,
+  LevelCardsChart,
+  BasicTemplate4Chart,
+
   ClusterBarChart,
   ClusterColumnChart,
   DoughnutChart,
@@ -132,6 +138,11 @@ class ChartManager {
       new ScatterOutlineMapChart(),
       new BasicGaugeChart(),
       new BasicRichText(),
+      new BasicTemplateChart(),
+      new BasicTemplate2Chart(),
+      new BasicTemplate3Chart(),
+      new LevelCardsChart(),
+      new BasicTemplate4Chart()
     ];
   }
 }

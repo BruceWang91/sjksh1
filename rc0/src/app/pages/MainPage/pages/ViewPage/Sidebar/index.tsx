@@ -199,7 +199,7 @@ export const Sidebar = memo(
 
     return (
       <Wrapper
-        sliderVisible={sliderVisible}
+        slidervisible={(sliderVisible as Boolean).toString()}
         className={sliderVisible ? 'close' : ''}
         isDragging={isDragging}
         width={width}
@@ -223,13 +223,10 @@ export const Sidebar = memo(
     );
   },
 );
-const Wrapper = styled.div<{
-  sliderVisible: boolean;
-  isDragging: boolean;
-  width: number;
-}>`
+const Wrapper = styled.div`
   height: 100%;
   transition: ${p => (!p.isDragging ? 'width 0.3s ease' : 'none')};
+  background-color: ${p => p.theme.siderBackground};
   &.close {
     position: absolute;
     width: ${SPACE_TIMES(7.5)} !important;
@@ -243,7 +240,7 @@ const Wrapper = styled.div<{
       transform: translate(-50%, -50%);
     }
     > div {
-      display: ${p => (p.sliderVisible ? 'none' : 'flex')};
+      display: ${p => (p.slidervisible === 'true' ? 'none' : 'flex')};
     }
     &:hover {
       width: ${p => p.width + '%'} !important;
@@ -267,9 +264,13 @@ const ListNavWrapper = styled(ListNav)`
   flex-shrink: 0;
   height: 100%;
   padding: ${SPACE_XS} 0;
-  background-color: ${p => p.theme.componentBackground};
+  background-color: transparent;
 
   border-color:${p => p.theme.borderColorSplit};
   border-style: solid;
   border-width:1px 1px 1px 0;
+
+  .ant-tree{
+  	background-color:transparent;
+  }
 `;

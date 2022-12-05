@@ -48,14 +48,18 @@ import { VariablePage } from './pages/VariablePage';
 import { ExcelManager } from './pages/ExcelTemplatePage/ExcelManager';
 import { CategoryManager } from './pages/ExcelTemplatePage/CategoryManager';
 
+import { MiddleTable } from './pages/MiddleTablePage';
+import { Immassets } from './pages/ImmassetPage';
+
 import { DepartmentManager } from './pages/departmentPage/DepartmentManager';
 import { ReportSheets } from './pages/ExcelTemplatePage/ReportSheets';
-import { Reports } from './pages/ReportPage/Reports';
+import { Reports } from './pages/ReportPage';
 import { ReportEditor } from './pages/ReportPage/ReportEditor';
 
 
 import { Files } from './pages/FilePage';
 
+import { Task } from './pages/TaskPage';
 
 
 import { ViewPage } from './pages/ViewPage';
@@ -87,6 +91,15 @@ export function MainPage() {
   const dispatch = useDispatch();
   const organizationMatch = useRouteMatch<MainPageRouteParams>(
     '/organizations/:orgId',
+  );
+  const reportEditorMatch = useRouteMatch<{type:string}>(
+    '/organizations/:orgId/:type/editor',
+  );
+  const taskTypeMatch = useRouteMatch<{type:string}>(
+    '/organizations/:orgId/tasks/:type/',
+  );
+  const vizModuleMatch = useRouteMatch<{type:string}>(
+    '/organizations/:orgId/:moduleName',
   );
   const orgId = useSelector(selectOrgId);
   const history = useHistory();
@@ -123,15 +136,15 @@ export function MainPage() {
           orgId,
         }),
       );
-      history.push(`/organizations/${orgId}/vizs/${backendChartId}`);
+      
+      //history.push(`/organizations/${orgId}/${vizModuleMatch.params.moduleName}/${backendChartId}`);
+      history.push(`/organizations/${orgId}/vizdatacharts/${backendChartId}`);
     },
-    [dispatch, history],
+    [dispatch, history,vizModuleMatch],
   );
 
 
-  const typeMatch = useRouteMatch<{type:string}>(
-    '/organizations/:orgId/:type/editor',
-  );
+  
   
   return (
     <AppContainer>
@@ -145,9 +158,18 @@ export function MainPage() {
           <Route path="/confirminvite" component={ConfirmInvitePage} />
           <Route path="/organizations/:orgId" exact>
             <Redirect
-              to={`/organizations/${organizationMatch?.params.orgId}/vizs`}
+              to={`/organizations/${organizationMatch?.params.orgId}/tasks/involveds`}
             />
           </Route>
+
+          <Route path="/organizations/:orgId/immscreen" exact>
+            <Redirect
+              to={`/upload/web/index.html`}
+            />
+          </Route>
+
+
+
           <Route
             path="/organizations/:orgId/vizs/chartEditor"
             render={res => {
@@ -174,20 +196,21 @@ export function MainPage() {
             }}
           />
 
+
           <Route
             path="/organizations/:orgId/:type/editor"
             render={res => {
 
-            	const type = typeMatch.params?.type ? String(typeMatch.params.type).replace(/Report$/,'') : 'data';
+            	const type = reportEditorMatch.params?.type ? String(reportEditorMatch.params.type).replace(/Report$/,'') : 'data';
        				
               const hisSearch = new URLSearchParams(res.location.search);
               const editorProps = {
                 id: hisSearch.get('id') || '',
                 type:type+'info',
                 orgId:orgId,
-                path:typeMatch.params.type,
+                path:reportEditorMatch.params.type,
                 title:hisSearch.get('name'),
-                token: getToken(),
+                token: getToken(false),
                 module:hisSearch.get('module'),
               };
 
@@ -201,19 +224,43 @@ export function MainPage() {
 
           
 
-          <Route
+          {/*<Route
             path="/organizations/:orgId/vizs/storyPlayer/:storyId"
             render={() => <StoryPlayer />}
           />
           <Route
             path="/organizations/:orgId/vizs/storyEditor/:storyId"
             render={() => <StoryEditor />}
-          />
-          <Route
+          />*/}
+          {/*<Route
             path="/organizations/:orgId/vizs/:vizId?"
             render={() => (
               <AccessRoute module={ResourceTypes.Viz}>
                 <VizPage />
+              </AccessRoute>
+            )}
+          />
+          */}
+          <Route path="/organizations/:orgId/vizdatacharts/:vizId?" render={()=>(<AccessRoute module={ResourceTypes.VizDatachart}>
+              <VizPage vizDatatype="DATACHART" />
+            </AccessRoute>)} />
+            
+ 					<Route path="/organizations/:orgId/vizdashboards/:vizId?" render={()=>(<AccessRoute module={ResourceTypes.VizDashboard}>
+              <VizPage vizDatatype="DASHBOARD" />
+            </AccessRoute>)} />
+          
+          
+ 		
+          <Route path="/organizations/:orgId/tasks" exact>
+            <Redirect
+              to={`/organizations/${organizationMatch?.params.orgId}/tasks/involveds`}
+            />
+          </Route>
+          <Route
+            path="/organizations/:orgId/tasks/:type"
+            render={() => (
+              <AccessRoute module={ResourceTypes.Task}>
+                <Task taskType={taskTypeMatch?.params?.type ?? 'involveds'}  />
               </AccessRoute>
             )}
           />
@@ -289,6 +336,13 @@ export function MainPage() {
           />
 
           <Route
+            path="/organizations/:orgId/datasays"
+            render={() => (
+              <div style={{height:400,textAlign:'center',fontSize:'50px',lineHeight:'400px',width:'100%'}}>正在建设中...</div>
+            )}
+          />
+
+          <Route
             path="/organizations/:orgId/files"
             render={() => (
               <AccessRoute module={ResourceTypes.File}>
@@ -306,7 +360,7 @@ export function MainPage() {
           />
           <Route
             path="/organizations/:orgId/categories"render={() => (
-              <AccessRoute module={ResourceTypes .ExcelTemplate}>
+              <AccessRoute module={ResourceTypes.ExcelTemplate}>
                 <CategoryManager />
               </AccessRoute>
             )}
@@ -320,6 +374,26 @@ export function MainPage() {
               </AccessRoute>
             )}
           />
+
+
+          <Route
+            path="/organizations/:orgId/immassets"
+            render={() => (
+              <AccessRoute module={ResourceTypes.ImmAsset}>
+                <Immassets />
+              </AccessRoute>
+            )}
+          />
+          <Route
+            path="/organizations/:orgId/immdatas"
+            render={() => (
+              <AccessRoute module={ResourceTypes.ImmData}>
+                <MiddleTable />
+              </AccessRoute>
+            )}
+          />
+
+
 
 
           <Route
@@ -341,11 +415,12 @@ export function MainPage() {
           />
           <Route
             path="/organizations/:orgId/resourceMigration"
-            render={() => (
-              <AccessRoute module={ResourceTypes.ResourceMigration}>
-                <ResourceMigrationPage />
+            render={() => {
+            	const hisSearch = new URLSearchParams(res.location.search);
+              return (<AccessRoute module={ResourceTypes.ResourceMigration}>
+                <ResourceMigrationPage vizDatatype={hisSearch.get('vizDatatype') } />
               </AccessRoute>
-            )}
+            )}}
           />
           <Route path="*" component={NotFoundPage} />
         </Switch>
@@ -361,6 +436,10 @@ const AppContainer = styled.main`
   bottom: 0;
   left: 0;
   display: flex;
-  padding-top:${SPACE_TIMES(13)};
+  padding-top:48px;
   background-color: ${p => p.theme.bodyBackground};
+
+  .container-wrap{
+  	padding-top:10px;
+  }
 `;

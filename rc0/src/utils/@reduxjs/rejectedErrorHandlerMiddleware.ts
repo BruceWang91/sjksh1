@@ -28,9 +28,9 @@ rejectedErrorHandlerMiddleware.startListening({
     await listenerApi.delay(100);
 
     if (action?.payload?.message) {
-      message.error(action?.payload?.message);
+     // message.error(action?.payload?.message);
     } else if (action?.error) {
-      message.error((action as any)?.error?.message);
+      //message.error((action as any)?.error?.message);
     }
     console.error(`Redux Rejection Error | `, action);
   },

@@ -21,18 +21,17 @@ import { Excel } from '../Excel';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useFilemainSlice } from './slice';
+
 import { selectOrgId } from '../../../slice/selectors';
 import {
-  selectDeleteFilemainsLoading,
+
   selectSaveFilemainLoading,
-  selectFilemainListLoading,
-  selectFilemains,
+  selectSources,
 } from './slice/selectors';
 import {
-  deleteFilemain,
-  editFilemain,
-  getFilemains,
-  importFilemain
+  importFilemain,
+  getFilemains2,
+  getSources,
 } from './slice/thunks';
 import {
   Filemain,
@@ -40,14 +39,15 @@ import {
 } from './slice/types';
 
 
+import {selectCategories} from '../CategoryManager/slice/selectors';
+import { useCategorySlice } from '../CategoryManager/slice';
 
-import {
-  getCategories,
-} from '../CategoryManager/slice/thunks';
-
-
-
-
+ import {getCategories} from '../CategoryManager/slice/thunks';
+import { listToTree } from 'utils/utils';
+import treeNodeIconFn from 'utils/treeNodeIconFn'
+import {selectFolder} from 'app/pages/MainPage/Sider/slice/selectors';
+import {ResourceTypes} from 'app/pages/MainPage/pages/PermissionPage/constants';
+import {EXCEL_ACCEPT} from 'globalConstants'
 const { Step } = Steps;
 const { TabPane } = Tabs;
 
@@ -59,10 +59,10 @@ interface PostProps{
 	onSuccess?:()=>void;
 }
 
-export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
+export const Post: React.FC = ({ children  , title, data , parentId, onSuccess }) => {
 	useFilemainSlice();
+	useCategorySlice();
 	const ref = useRef();
- 
 	const loading = useSelector(selectSaveFilemainLoading);
 
 
@@ -76,34 +76,143 @@ export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
 	const [fileName,setFileName ] = useState(null);
 	const formRef = useRef();
 
+
+	const folderMap = useSelector(selectFolder);
+ 	const categories = useSelector(selectCategories);
+ 	const sources = useSelector(selectSources);
+
+ 	const folders = useMemo(()=>[{
+		title:'根目录',
+		path:[],
+		key:'',
+		isFolder:1,
+		icon:treeNodeIconFn,
+
+		value:'',
+		id:'',
+		children:listToTree(
+      folderMap[ResourceTypes.ExcelTemplate]?.list,
+      null,
+      [],
+      {getIcon: () => treeNodeIconFn}
+  	)
+	}],[folderMap])
+
 	const onSelectFile = (file) => {
+
 		readExcel(file).then(result=>{
+
 			setSheets(result)
 		})
 		setFileName(file.name)
 	}
 
 
+	const onOpen = useCallback(()=>{
+
+ 		dispatch(getCategories({parentId:0,orgId}))
+ 		dispatch(getSources({orgId}))
+ 	},[dispatch,orgId])
+
+
+
 	const contents = [
 		<ContenetWrap>
 			<div>
 				{sheets.length > 0 && (<Tabs type="card" >
-	        {sheets.map((sheet,key) => (
-	          <TabPane tab={sheet.sheetName} key={key}>
-	            <Excel 
-	            	columns={sheet.columns} 
-								colHeaders={sheet.colHeaders} 
-								mergeCells={sheet.mergeCells} 
-								cellsOption={sheet.cellsOption} 
-								cells={sheet.cells}
-								viewPortWidth={'auto'}
-								viewPortHeight={'auto'}
-								 />
-	          </TabPane>
-	        ))}
+	        {sheets.map((sheet,key) => {
+	        	const excelProps = {
+	        		columns:sheet.columns,
+	        		colHeaders:sheet.colHeaders.map((c,i)=>sheet?.flags?.[i] === 1 ? `${c} ✲`:c),
+	        		cellsOption:sheet.cellsOption,
+	        		mergeCells:sheet.mergeCells,
+	        		cells:sheet.cells,
+	        		viewPortWidth:'auto',
+	        		viewPortHeight:'auto',
+
+
+	        		customBorders: typeof sheet.validEndRow === 'number'  ? [
+                {
+                    range: {
+                        from: {
+                            row: sheet.validEndRow,
+                            col: 0
+                        },
+                        to: {
+                            row: sheet.validEndRow,
+                            col: sheet.columns.length
+                        }
+                    },
+                    top: {
+                        width: 2,
+                        color: 'orange'
+                    },
+                    left: {
+                        width: 2,
+                        color: 'orange'
+                    },
+                    bottom: {
+                        width: 2,
+                        color: 'orange'
+                    },
+                    right: {
+                        width: 2,
+                        color: 'orange'
+                    }
+              }] : null,
+
+	        		afterOnCellMouseDown: function(event,cellCoords){
+	        			
+	        			if(cellCoords.col === -1){
+
+	        				sheet.validEndRow =  cellCoords.row;
+	        				setSheets([...sheets])
+	        			
+	        			}
+
+	        			
+	        		},
+	        		dropdownMenu:{
+				      	callback: function (key, options) {
+				         
+
+				           if(!sheet.flags){
+				           		sheet.flags = {}
+				           }
+
+				           let flag = sheet.flags[options?.[0]?.start?.col] || 0;
+				           
+				           sheet.flags[options?.[0]?.start?.col] = Math.abs(flag - 1)
+
+				           setSheets([...sheets])
+				        },
+				      	items:{
+				      		flag: {
+				      			name:function(){
+				      				const range = this.getSelected();
+				      				const col = range?.[0]?.[1];
+				      				const isFlag = sheet?.flags?.[col] === 1;
+				      				return isFlag ? '设定此列为必填 √' : '设定此列为必填'
+				      			}
+				      		}
+				      		
+				      	},
+				      }
+	        	}
+
+	        	if(sheet.cells.length === 0){
+	        		excelProps.cells = [['']]
+	        	}
+	        	return (
+		          <TabPane tab={sheet.sheetName} key={key}>
+		            
+		           <Excel {...excelProps} />
+		          </TabPane>
+		        )
+	        })}
 	      </Tabs>)}
 			</div>
-			<div className="upload"><File onChange={onSelectFile}  accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /></div>
+			<div className="upload"><File onChange={onSelectFile}  accept={EXCEL_ACCEPT} /></div>
 			<Descp>
 	    	<h5>注意事项</h5>
 	    	<p>1、请选择规范的表样excel文件；</p>
@@ -119,12 +228,12 @@ export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
       orderNum: string;
       remark:string;
 	    }>
-	    	initialValues={{...data,fileName:data.fileName || fileName,orderNum:data.orderNum || 0 }}
+	    	initialValues={{...data,fileName:data.fileName || fileName,orderNum:data.orderNum || 0 , parentId:data?.parentId || parentId || null }}
 	    	formRef={formRef}
 	      onFinish={async (values) => {
 	       	dispatch(
 	          importFilemain({
-	            filemain: { ...values,fileId:data.fileId, orgId, sheets:excelConvertToServerData(sheets,data.fileId)},
+	            filemain: { ...values,fileId:data.fileId, orgId,parentId:values.parentId || parentId, sheets:excelConvertToServerData(sheets,data.fileId)},
 	            resolve: () => {
 	              message.success('提交成功');
 	              ref.current.hide();
@@ -153,20 +262,21 @@ export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
 	          rules={[{ required: true, message: `请输入文件名` }]}
 	          fieldProps={{size:"small"}}
 	        />
-
-	       <ProFormTreeSelect
+	        <ProFormTreeSelect
+						name="parentId" 
+						fieldProps={{treeIcon:true,size:'small',style:{minWidth:200}}}
+						label={  "目录" }
+						placeholder={"根目录"}
+						rules={[{ required: false, message: `请选择目录` }]}
+						request={()=>folders}
+					/>
+					<ProFormTreeSelect
 						name="classId" 
 						fieldProps={{size:'small',style:{minWidth:200}}}
-						label={  "分类" }
-						placeholder={"请选择分类"}
-						rules={[{ required: true, message: `请选择分类` }]}
-						request={()=>new Promise((resolve,reject)=>{
-							dispatch(
-								getCategories({orgId,parentId:0,resolve:data=>{
-								resolve(data)
-								}})
-							)
-						})}
+						label={  "标签" }
+						placeholder={"请选择标签"}
+						rules={[{ required: true, message: `请选择标签` }]}
+						request={()=>categories}
 					/>
 	        <ProFormText 
 		        fieldProps={{size:"small"}} 
@@ -176,7 +286,15 @@ export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
 		        rules={[{ required: true, message: `请输入顺序` }]}
 	        />
 	      
-	      </ProForm.Group>	
+	      </ProForm.Group>
+	      <ProFormSelect
+						name="sourceId" 
+						fieldProps={{size:'small',style:{minWidth:400}}}
+						label={  "数据源" }
+						placeholder={"请选择数据源"}
+						rules={[{ required: true, message: `请选择数据源` }]}
+						request={()=>sources.map(d=>({label:d.name,value:d.id}))}
+				/>
 	      <ProFormTextArea  fieldProps={{size:"small"}} width="md" name="remark" label="备注 " placeholder="请输入备注" />      
 	    </ProForm>
 	    </div>
@@ -193,9 +311,9 @@ export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
 
   return <Dialog
   	width="80%"
-  
 		loading={loading}
 		loadingText="保存中..."
+		onOpen={onOpen}
 		render={
 			<FormWrap>
 				<Steps current={step} size="small">
@@ -228,6 +346,7 @@ export const Post: React.FC = ({ children  , title, data , onSuccess }) => {
     footer={false}
     ref={ref}
     destroyOnClose
+    
    >
 		{children}
 	</Dialog>
@@ -240,9 +359,7 @@ Post.defaultProps = {
 }
 const FormWrap = styled.div`
 	
-.ant-form-item-label{
-	padding:4px 4px 0 0 !important
-}
+
 .ant-form-item-explain-error{
 	font-size:12px;
 	color:${p => p.theme.error};

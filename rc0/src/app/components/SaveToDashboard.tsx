@@ -131,8 +131,8 @@ const SaveToDashboard: FC<SaveToDashboardTypes> = memo(
       return listToTree(
         vizData?.map(v => ({
           ...v,
-          isFolder: v.relType === 'FOLDER',
-          selectable: v.relType !== 'FOLDER',
+          isFolder: ['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(v.relType),
+          selectable: !['DATACHART_FOLDER','DASHBOARD_FOLDER'].includes(v.relType),
         })),
         null,
         [],
