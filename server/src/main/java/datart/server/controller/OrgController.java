@@ -28,10 +28,10 @@ import datart.core.entity.ext.UserBaseInfo;
 import datart.security.exception.PermissionDeniedException;
 import datart.server.base.dto.InviteMemberResponse;
 import datart.server.base.dto.OrganizationBaseInfo;
+import datart.server.base.dto.ResponseData;
 import datart.server.base.params.CheckNameParam;
 import datart.server.base.params.OrgCreateParam;
 import datart.server.base.params.OrgUpdateParam;
-import datart.server.base.dto.ResponseData;
 import datart.server.service.OrgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +51,6 @@ public class OrgController extends BaseController {
     public OrgController(OrgService orgService) {
         this.orgService = orgService;
     }
-
 
     @ApiOperation(value = "get organization detail")
     @GetMapping("/{orgId}")
@@ -75,14 +74,12 @@ public class OrgController extends BaseController {
         return ResponseData.success(orgService.createOrganization(createParam));
     }
 
-
     @ApiOperation(value = "update a organization")
     @PutMapping(value = "/{orgId}")
     public ResponseData<Boolean> updateOrganization(@PathVariable String orgId,
                                                     @Validated @RequestBody OrgUpdateParam orgUpdateParam) {
         return ResponseData.success(orgService.updateOrganization(orgUpdateParam));
     }
-
 
     @ApiOperation(value = "get organization members")
     @GetMapping(value = "/{orgId}/members")
@@ -91,14 +88,12 @@ public class OrgController extends BaseController {
         return ResponseData.success(orgService.listOrgMembers(orgId));
     }
 
-
     @ApiOperation(value = "get organization roles")
     @GetMapping(value = "/{orgId}/roles")
     public ResponseData<List<RoleBaseInfo>> listOrgRoles(@PathVariable String orgId) {
         checkBlank(orgId, "orgId");
         return ResponseData.success(orgService.listOrgRoles(orgId));
     }
-
 
     @ApiOperation(value = "add  members to organization")
     @PostMapping(value = "/{orgId}/invite")
@@ -114,7 +109,6 @@ public class OrgController extends BaseController {
         checkBlank(token, "token");
         return ResponseData.success(orgService.confirmInvite(token));
     }
-
 
     @ApiOperation(value = "Delete a organization member")
     @DeleteMapping(value = "/{orgId}/members/{memberId}")
@@ -134,7 +128,6 @@ public class OrgController extends BaseController {
         return ResponseData.success(orgService.listUserRoles(orgId, memberId));
     }
 
-
     @ApiOperation(value = "delete a organization")
     @DeleteMapping("/{orgId}")
     public ResponseData<Boolean> deleteOrganization(@PathVariable String orgId) {
@@ -149,6 +142,4 @@ public class OrgController extends BaseController {
         organization.setName(param.getName());
         return ResponseData.success(orgService.checkUnique(organization));
     }
-
-
 }
