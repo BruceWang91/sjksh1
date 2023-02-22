@@ -49,6 +49,12 @@ public class StaticManagement {
      * url
      */
     private String url;
+
+    /**
+     * pdf文件url
+     */
+    private String pdfUrl;
+
     /**
      * 上级ID
      */

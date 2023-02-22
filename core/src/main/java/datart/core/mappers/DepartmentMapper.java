@@ -21,7 +21,7 @@ public interface DepartmentMapper {
      */
     @Select({
             "select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num,",
-            "d.status, d.del_flag, d.create_by, d.create_time, d.update_by, d.update_time, d.type",
+            "d.status, d.del_flag, d.create_by, d.create_time, d.update_by, d.update_time, d.type, d.org_code",
             "from department d",
             "where dept_id = #{deptId,jdbcType=VARCHAR}"
     })
@@ -39,7 +39,8 @@ public interface DepartmentMapper {
             @Result(column = "create_time", property = "createTime", jdbcType = JdbcType.TIMESTAMP),
             @Result(column = "update_by", property = "updateBy", jdbcType = JdbcType.VARCHAR),
             @Result(column = "update_time", property = "updateTime", jdbcType = JdbcType.TIMESTAMP),
-            @Result(column = "type", property = "type", jdbcType = JdbcType.INTEGER)
+            @Result(column = "type", property = "type", jdbcType = JdbcType.INTEGER),
+            @Result(column = "org_code", property = "orgCode", jdbcType = JdbcType.VARCHAR)
     })
     Department selectDeptById(Long deptId);
 
@@ -116,6 +117,7 @@ public interface DepartmentMapper {
                     "<if test=\"orderNum != null\">order_num = #{orderNum},</if>\n" +
                     "<if test=\"status != null and status != ''\">status = #{status},</if>\n" +
                     "<if test=\"type != null and type != ''\">type = #{type},</if>\n" +
+                    "<if test=\"orgCode != null and orgCode != ''\">org_code = #{orgCode},</if>\n" +
                     "<if test=\"updateBy != null and updateBy != ''\">update_by = #{updateBy},</if>\n" +
                     "update_time = sysdate()\n" +
                     "</set>\n" +

@@ -32,6 +32,10 @@ public class UserSqlProvider {
             sql.VALUES("dept_id","#{deptId,jdbcType=BIGINT}");
         }
 
+        if (record.getAdminCompetence() != null){
+            sql.VALUES("admin_competence","#{adminCompetence,jdbeType=VARCHAR}");
+        }
+
         if (record.getName() != null) {
             sql.VALUES("`name`", "#{name,jdbcType=VARCHAR}");
         }
@@ -85,6 +89,10 @@ public class UserSqlProvider {
 
         if (record.getDeptId() != null){
             sql.SET("dept_id = #{deptId,jdbcType=BIGINT}");
+        }
+
+        if (record.getAdminCompetence() != null){
+            sql.SET("admin_competence = #{adminCompetence,jdbcType=BIGINT}");
         }
         
         if (record.getName() != null) {

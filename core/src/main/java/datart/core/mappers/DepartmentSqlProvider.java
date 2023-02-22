@@ -47,6 +47,10 @@ public class DepartmentSqlProvider {
         if (record.getType() != null){
             sql.VALUES("type","#{type,jdbcType=INTEGER}");
         }
+
+        if (record.getOrgCode() != null){
+            sql.VALUES("org_code","#{orgCode,jdbcType=VARCHAR}");
+        }
         return sql.toString();
     }
 }

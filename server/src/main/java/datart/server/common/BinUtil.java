@@ -30,7 +30,7 @@ public class BinUtil {
             }
             by = bytestream.toByteArray();
         } catch (Exception ex) {
-            throw new RuntimeException("transform file into bin Array 出错", ex);
+            throw new RuntimeException("transform file into bin Array 出错1", ex);
         }
         return by;
     }
@@ -47,7 +47,7 @@ public class BinUtil {
             byte[] bytes = FileCopyUtils.copyToByteArray(fis);
             return bytes;
         } catch (Exception ex) {
-            throw new RuntimeException("transform file into bin Array 出错", ex);
+            throw new RuntimeException("transform file into bin Array 出错2", ex);
         }
     }
 
@@ -63,7 +63,7 @@ public class BinUtil {
             byte[] bytes = FileCopyUtils.copyToByteArray(fis);
             return new String(bytes, "ISO-8859-1");
         } catch (Exception ex) {
-            throw new RuntimeException("transform file into bin string 出错", ex);
+            throw new RuntimeException("transform file into bin string 出错3", ex);
         }
     }
 

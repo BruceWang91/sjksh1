@@ -27,6 +27,9 @@ public class StaticManagementSqlProvider {
         if (record.getUrl() != null) {
             sql.VALUES("url", "#{url}");
         }
+        if (record.getPdfUrl() != null) {
+            sql.VALUES("pdf_url", "#{pdfUrl}");
+        }
         if (record.getParentId() != null) {
             sql.VALUES("parent_id", "#{parentId}");
         }

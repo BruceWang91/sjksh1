@@ -64,6 +64,8 @@ public class Department {
      */
     private Integer type;
 
+    private String orgCode;
+
     /**
      * 父部门名称
      */

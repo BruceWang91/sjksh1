@@ -37,7 +37,16 @@ public enum ResourceType {
     IMM_ASSET,
     IMM_DATA,
     IMM_SCREEN,
-    TASK;
+    TASK,
+    SCREEN01,
+    SCREEN02,
+    SCREEN03,
+    SCREEN04,
+    SCREEN05,
+    SCREEN06,
+    SCREEN07,
+    SCREEN08,
+    SCREEN01_MODULE01;
 
     private String shareRoute;
 

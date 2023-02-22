@@ -86,7 +86,17 @@ public interface FileMainMapperExt extends FileMainMapper {
     void insertTable(HashMap<String, Object> map);
 
     @Select({
-            "select * from ${biname} order by id"
+            "<script>",
+            "select * from ${biname} where 1=1 \n" +
+                    "<if test=\"userIds != null and userIds.size() > 0 \">\n" +
+                    " and create_by IN \n" +
+                    "            <foreach item=\"userIds\" collection=\"userIds\" open=\"(\" separator=\",\" close=\")\">\n" +
+                    "                #{userIds}\n" +
+                    "            </foreach>\n" +
+                    "</if>\n"+
+            "order by id",
+            "</script>"
+
     })
     List<HashMap<String, Object>> selectByBiname(HashMap<String, Object> biname);
 

@@ -9,10 +9,7 @@ import datart.core.entity.param.FileMainParam;
 import datart.core.entity.param.FileSheetsParam;
 import datart.core.entity.result.FileMainResult;
 import datart.core.entity.result.FileSheetsResult;
-import datart.core.mappers.ext.DepartmentMapperExt;
-import datart.core.mappers.ext.FileClassMapperExt;
-import datart.core.mappers.ext.FileMainMapperExt;
-import datart.core.mappers.ext.RoleMapperExt;
+import datart.core.mappers.ext.*;
 import datart.security.base.ResourceType;
 import datart.security.exception.PermissionDeniedException;
 import datart.security.manager.shiro.ShiroSecurityManager;
@@ -20,6 +17,7 @@ import datart.security.util.PermissionHelper;
 import datart.server.common.Convert;
 import datart.server.common.DateUtils;
 import datart.server.common.PinyinHelperUtil;
+import datart.server.common.SpringUtils;
 import datart.server.config.datasource.DynamicDataSource;
 import datart.server.enums.WhetherEnum;
 import datart.server.service.BaseService;
@@ -29,6 +27,8 @@ import datart.server.service.IFileSheetsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
@@ -57,6 +57,10 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
     private FileClassMapperExt fileClassMapperExt;
     @Autowired
     private ToolsServiceImpl toolsService;
+    @Autowired
+    private OrganizationMapperExt organizationMapper;
+    @Autowired
+    private UserMapperExt userMapper;
 
     /**
      * 查询文件管理
@@ -193,6 +197,7 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
      * @return
      */
     @Override
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public int batchUpdateForFileId(FileMainParam fileMainParam) {
 
         // 创建和修改文件相关工作簿及字段内容
@@ -269,7 +274,21 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
                     }
                 }
 //                SpringUtils.getAopProxy(this).createTale(sourceId, biname, fieldList);
-                createTale(sourceId, biname, fieldList);
+//                createTale(sourceId, biname, fieldList);
+                StringBuffer sqlstr = new StringBuffer();
+                for (FileSheetField fileSheetField : fieldList) {
+
+                    if (WhetherEnum.YES.getValue().toString().equals(fileSheetField.getStatus())) {
+
+                        sqlstr.append(fileSheetField.getEntityField() + " VARCHAR(300) DEFAULT NULL COMMENT '" + fileSheetField.getCellName() + "',");
+                    }
+                }
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                map.put("sqlstr", sqlstr.toString());
+                map.put("biname", biname);
+                toolsService.changeConnection(sourceId);
+                fileMainMapper.createTable(map);
+                DynamicDataSource.clear();
             }
         }
         return count;
@@ -525,13 +544,13 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
                                 }
                                 for (int i = 0; i < fields.size(); i++) {
 
-                                    String field = StringUtils.isEmpty(objectList.get(j).get(fields.get(i).getEntityField()).toString()) ? " " : objectList.get(j).get(fields.get(i).getEntityField()).toString();
+                                    String field = StringUtils.isEmpty(objectList.get(j).get(fields.get(i).getEntityField()).toString()) ? "NULL" : "'"+objectList.get(j).get(fields.get(i).getEntityField()).toString()+"'";
                                     if (i == 0) {
 
-                                        valuestr.append("'" + field + "'");
+                                        valuestr.append(field);
                                     } else {
 
-                                        valuestr.append(",'" + field + "'");
+                                        valuestr.append("," + field );
                                     }
                                 }
                                 valuestr.append(",'" + getCurrentUser().getId() + "'");
@@ -579,13 +598,26 @@ public class FileMainServiceImpl extends BaseService implements IFileMainService
         }
         FileSheets sheet = fileSheetsService.selectFileSheetsBySheetId(sheetId);
         FileMain fileMain = fileMainMapper.selectFileMainByFileId(sheet.getFileId());
+        Organization organization = organizationMapper.getOrganization();
         String domainName = sheet.getEntityName();
         if (!StringUtils.isEmpty(domainName)) {
 
             List<HashMap<String, Object>> objectList = new ArrayList<>();
-            objectList = selectByBiname(fileMain.getSourceId(), new HashMap<String, Object>() {{
-                put("biname", domainName);
-            }});
+            HashMap<String,Object> map = new HashMap<>();
+            map.put("biname", domainName);
+            if (!securityManager.isOrgOwner(organization.getId())) {
+                String orgCode = departmentMapperExt.selectDeptById(getCurrentUser().getDeptId()).getOrgCode();
+                List<String> userIds = userMapper.selectByOrgCode(orgCode);
+                String adminCompetence = getCurrentUser().getAdminCompetence();
+                if (adminCompetence != null){
+
+                    List<String> users = userMapper.selectUserIdByDeptIds(Convert.toLongArray(adminCompetence));
+                    userIds.addAll(users);
+                }
+                userIds = userIds.stream().distinct().collect(Collectors.toList());
+                map.put("userIds",userIds);
+            }
+            objectList = selectByBiname(fileMain.getSourceId(), map);
             JSONArray array = new JSONArray();
             if (!CollectionUtils.isEmpty(objectList)) {
                 array = JSONArray.of(objectList);

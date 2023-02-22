@@ -311,7 +311,7 @@ public class FileServiceImpl extends BaseService implements FileService {
     }
 
     @Override
-    public HashMap<String, Object> uploadstaticfile(FileOwner fileOwner, Long parentId, MultipartFile file) throws IOException {
+    public HashMap<String, Object> uploadstaticfile(FileOwner fileOwner, Long parentId, Integer needChange, MultipartFile file) throws IOException {
 
 
         String filePath = FileUtils.concatPath(fileOwner.getPath(), parentId.toString(), System.currentTimeMillis() + "-" + file.getOriginalFilename());
@@ -320,14 +320,22 @@ public class FileServiceImpl extends BaseService implements FileService {
 
         FileUtils.mkdirParentIfNotExist(fullPath);
 
-        file.transferTo(new File(fullPath));
+        String pdfurl = "";
+        if (needChange == 1){
+            // 上传并返回新文件名称
+            HashMap<String, String> fileName = FileUtils.uploadtopdf(home, fullPath, file);
+            pdfurl = fileName.get("pdfname").replace(localurl, "/upload/");
+        } else {
 
+            file.transferTo(new File(fullPath));
+        }
         byte[] fileStream = BinUtil.fileToBinArray(new File(fullPath));
         String newurl = fullPath.replace(localurl, "/upload/");
         HashMap map = new HashMap();
         map.put("url", newurl);
         map.put("fileName", fullPath);
         map.put("fileStream", fileStream);
+        map.put("pdfurl",pdfurl);
         return map;
     }
 }

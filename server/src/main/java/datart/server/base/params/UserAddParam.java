@@ -22,6 +22,8 @@ public class UserAddParam {
 
     private Long deptId;
 
+    private String adminCompetence;
+
     private Set<String> roleIds = new HashSet<>();
 
 }

@@ -1,0 +1,1 @@
+ALTER TABLE `user` MODIFY admin_competence VARCHAR(5000) DEFAULT NULL COMMENT '行政权限';

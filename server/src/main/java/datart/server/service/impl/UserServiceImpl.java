@@ -29,10 +29,12 @@ import datart.core.base.exception.ParamException;
 import datart.core.base.exception.ServerException;
 import datart.core.common.Application;
 import datart.core.common.UUIDGenerator;
+import datart.core.entity.Department;
 import datart.core.entity.Organization;
 import datart.core.entity.Role;
 import datart.core.entity.User;
 import datart.core.entity.ext.UserBaseInfo;
+import datart.core.mappers.ext.DepartmentMapperExt;
 import datart.core.mappers.ext.OrganizationMapperExt;
 import datart.core.mappers.ext.RelRoleUserMapperExt;
 import datart.core.mappers.ext.UserMapperExt;
@@ -45,12 +47,15 @@ import datart.security.util.SecurityUtils;
 import datart.server.base.dto.OrganizationBaseInfo;
 import datart.server.base.dto.UserProfile;
 import datart.server.base.params.*;
+import datart.server.common.Convert;
 import datart.server.service.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -62,6 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -82,6 +88,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     private final RoleService roleService;
 
     private final MailService mailService;
+
+    @Autowired
+    private DepartmentMapperExt departmentMapper;
 
     @Value("${datart.user.active.send-mail:false}")
     private boolean sendEmail;
@@ -160,6 +169,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         user.setCreateTime(new Date());
         user.setActive(!sendMail);
         user.setDeptId(userRegisterParam.getDeptId());
+        user.setAdminCompetence(userRegisterParam.getAdminCompetence());
         userMapper.insert(user);
         if (!sendMail) {
             initUser(user);
@@ -470,6 +480,14 @@ public class UserServiceImpl extends BaseService implements UserService {
         BeanUtils.copyProperties(user, res);
         Set<String> roleIds = roleService.listUserRoles(orgId, userId).stream().map(Role::getId).collect(Collectors.toSet());
         res.setRoleIds(roleIds);
+        List<String> childOrgs = new ArrayList<>();
+        String adminCompetence = user.getAdminCompetence();
+        if (null != adminCompetence){
+
+            List<String> Orgs = departmentMapper.selectOrgCodesByDeptIds(Convert.toLongArray(user.getAdminCompetence()));
+            childOrgs.addAll(Orgs);
+        }
+        res.setChildOrgs(childOrgs);
         return res;
     }
 

@@ -44,7 +44,7 @@ public class JwtUtils {
 
     private static final String PASSWORD_HASH = "password";
 
-    public static final int VERIFY_CODE_TIMEOUT_MIN = 10 * 60 * 1000;
+    public static final int VERIFY_CODE_TIMEOUT_MIN = 30 * 60 * 1000;
 
     public static JwtToken createJwtToken(User user) {
         JwtToken jwtToken = new JwtToken();

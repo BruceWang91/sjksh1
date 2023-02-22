@@ -17,7 +17,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter  {
         //Windows下
         registry.addResourceHandler("/upload/**").addResourceLocations("file:"+localurl);
         //Mac或Linux下(没有CDEF盘符)
-        registry.addResourceHandler("/aaa/**").addResourceLocations("file:"+localurl);
+        registry.addResourceHandler("/vis/**").addResourceLocations("file:"+localurl);
         super.addResourceHandlers(registry);
     }
 }

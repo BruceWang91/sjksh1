@@ -104,4 +104,27 @@ public interface UserMapperExt extends UserMapper {
             " dept_id = #{deptId}",
     })
     List<User> getUsersByDeptId(@Param("deptId") Long deptId);
+
+    @Select({
+            "select u.id \n" +
+            "from `user` u LEFT JOIN department d \n" +
+            "on u.dept_id = d.dept_id \n" +
+            "WHERE d.org_code = #{orgCode}"
+    })
+    List<String> selectByOrgCode(String orgCode);
+
+    @Select({
+            "SELECT id from `user` WHERE dept_id IN (select dept_id from department where del_flag = '0' and find_in_set(#{adminCompetence}, ancestors) or dept_id = #{adminCompetence})"
+    })
+    List<String> selectByDeptTree(Long adminCompetence);
+
+    @Select({
+            "<script>",
+            "SELECT id from `user` WHERE dept_id IN \n" +
+                    "<foreach collection=\"array\" item=\"deptId\" open=\"(\" separator=\",\" close=\")\">\n" +
+                    "#{deptId}\n" +
+                    "</foreach>",
+            "</script>"
+    })
+    List<String> selectUserIdByDeptIds(Long[] deptIds);
 }

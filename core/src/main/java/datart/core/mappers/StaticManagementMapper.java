@@ -20,6 +20,7 @@ public interface StaticManagementMapper {
             @Result(column = "type", property = "type", jdbcType = JdbcType.INTEGER),
             @Result(column = "text_content", property = "textContent", jdbcType = JdbcType.BLOB),
             @Result(column = "url", property = "url", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "pdf_url", property = "pdfUrl", jdbcType = JdbcType.VARCHAR),
             @Result(column = "parent_id", property = "parentId", jdbcType = JdbcType.BIGINT),
             @Result(column = "is_folder", property = "isFolder", jdbcType = JdbcType.INTEGER),
             @Result(column = "index", property = "index", jdbcType = JdbcType.INTEGER),
@@ -59,6 +60,7 @@ public interface StaticManagementMapper {
                     "            <if test=\"type != null\">type = #{type},</if>\n" +
                     "            <if test=\"textContent != null\">text_content = #{textContent},</if>\n" +
                     "            <if test=\"url != null\">url = #{url},</if>\n" +
+                    "            <if test=\"pdfUrl != null\">pdf_url = #{pdfUrl},</if>\n" +
                     "            <if test=\"isFolder != null\">is_folder = #{isFolder},</if>\n" +
                     "            <if test=\"index != null\">`index` = #{index},</if>\n" +
                     "            <if test=\"parentId != null\">parent_id = #{parentId},</if>\n" +
@@ -84,7 +86,7 @@ public interface StaticManagementMapper {
 
     @Select({
             "<script>",
-            "select id,module_name,org_id,mark,type,url,is_folder,`index`,parent_id,create_by,create_time,update_by,update_time,remark,link " +
+            "select id,module_name,org_id,mark,type,url,pdf_url,is_folder,`index`,parent_id,create_by,create_time,update_by,update_time,remark,link " +
                     "from static_management where 1=1\n" +
                     "            <if test=\"moduleName != null\">AND module_name = #{moduleName}\n</if>" +
                     "            <if test=\"orgId != null\">AND org_id = #{orgId}\n</if>" +
@@ -92,6 +94,7 @@ public interface StaticManagementMapper {
                     "            <if test=\"type != null\">AND type = #{type}\n</if>" +
                     "            <if test=\"textContent != null\">AND text_content = #{textContent}\n</if>" +
                     "            <if test=\"url != null\">AND url = #{url}\n</if>" +
+                    "            <if test=\"pdfUrl != null\">AND pdf_url = #{pdfUrl}\n</if>" +
                     "            <if test=\"isFolder != null\">AND is_folder = #{isFolder}\n</if>" +
                     "            <if test=\"index != null\">AND `index` = #{index}\n</if>" +
                     "            <if test=\"parentId != null\">AND parent_id = #{parentId}\n</if>" +
@@ -108,7 +111,7 @@ public interface StaticManagementMapper {
 
     @Select({
             "<script>",
-            "select id,module_name,org_id,mark,type,text_content,url,is_folder,`index`,parent_id,create_by,create_time,update_by,update_time,remark,link,json_str " +
+            "select id,module_name,org_id,mark,type,text_content,url,pdf_url,is_folder,`index`,parent_id,create_by,create_time,update_by,update_time,remark,link,json_str " +
                     "from static_management where 1=1\n" +
                     "            <if test=\"moduleName != null\">AND module_name = #{moduleName}\n</if>" +
                     "            <if test=\"orgId != null\">AND org_id = #{orgId}\n</if>" +
@@ -116,6 +119,7 @@ public interface StaticManagementMapper {
                     "            <if test=\"type != null\">AND type = #{type}\n</if>" +
                     "            <if test=\"textContent != null\">AND text_content = #{textContent}\n</if>" +
                     "            <if test=\"url != null\">AND url = #{url}\n</if>" +
+                    "            <if test=\"pdfUrl != null\">AND pdf_url = #{pdfUrl}\n</if>" +
                     "            <if test=\"isFolder != null\">AND is_folder = #{isFolder}\n</if>" +
                     "            <if test=\"index != null\">AND `index` = #{index}\n</if>" +
                     "            <if test=\"parentId != null\">AND parent_id = #{parentId}\n</if>" +

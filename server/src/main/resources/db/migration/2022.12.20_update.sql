@@ -1,0 +1,1 @@
+ALTER TABLE department ADD `org_code` VARCHAR(100) DEFAULT '' COMMENT '组织代码' ;

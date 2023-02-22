@@ -22,5 +22,9 @@ public class User extends BaseEntity {
 
     private Long deptId;
 
+    private String adminCompetence;
+
     private String deptName;
+
+    private String orgCode;
 }

@@ -13,11 +13,11 @@ public interface IStaticManagementService {
 
     int delete(String ids);
 
-    StaticManagement add(String moduleName, String orgId, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, MultipartFile file) throws IOException;
+    StaticManagement add(String moduleName, String orgId, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, Integer needChange, MultipartFile file) throws IOException;
 
     StaticManagement add1(StaticManagement staticManagement);
 
-    StaticManagement update(Long id, String moduleName, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, MultipartFile file) throws IOException;
+    StaticManagement update(Long id, String moduleName, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, Integer needChange, MultipartFile file) throws IOException;
 
     StaticManagement update1(StaticManagement staticManagement);
 

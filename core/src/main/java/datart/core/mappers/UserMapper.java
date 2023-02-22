@@ -23,15 +23,15 @@ public interface UserMapper extends CRUDMapper {
         "insert into user (id, email, ",
         "username, `password`, ",
         "active, `name`, description, ",
-        "avatar, dept_id, create_time, ",
+        "avatar, dept_id, admin_competence, create_time, ",
         "create_by, update_time, ",
         "update_by)",
         "values (#{id,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, ",
         "#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, ",
         "#{active,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, ",
-        "#{avatar,jdbcType=VARCHAR},#{deptId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, ",
-        "#{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, ",
-        "#{updateBy,jdbcType=VARCHAR})"
+        "#{avatar,jdbcType=VARCHAR},#{deptId,jdbcType=BIGINT}, #{adminCompetence,jdbcType=BIGINT}, ",
+        "#{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, ",
+        "#{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})"
     })
     int insert(User record);
 
@@ -40,7 +40,7 @@ public interface UserMapper extends CRUDMapper {
 
     @Select({
         "select",
-        "id, email, username, `password`, active, dept_id, `name`, description, avatar, create_time, ",
+        "id, email, username, `password`, active, dept_id, admin_competence, `name`, description, avatar, create_time, ",
         "create_by, update_time, update_by",
         "from user",
         "where id = #{id,jdbcType=VARCHAR}"
@@ -55,6 +55,7 @@ public interface UserMapper extends CRUDMapper {
         @Result(column="description", property="description", jdbcType=JdbcType.VARCHAR),
         @Result(column="avatar", property="avatar", jdbcType=JdbcType.VARCHAR),
         @Result(column="dept_id",property="deptId", jdbcType = JdbcType.BIGINT),
+        @Result(column="admin_competence",property="adminCompetence", jdbcType = JdbcType.VARCHAR),
         @Result(column="dept_name",property="deptName", jdbcType = JdbcType.VARCHAR),
         @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="create_by", property="createBy", jdbcType=JdbcType.VARCHAR),
@@ -73,6 +74,7 @@ public interface UserMapper extends CRUDMapper {
           "`password` = #{password,jdbcType=VARCHAR},",
           "active = #{active,jdbcType=TINYINT},",
           "dept_id = #{deptId,jdbcType=BIGINT},",
+          "admin_competence = #{adminCompetence,jdbcType=BIGINT},",
           "`name` = #{name,jdbcType=VARCHAR},",
           "description = #{description,jdbcType=VARCHAR},",
           "avatar = #{avatar,jdbcType=VARCHAR},",

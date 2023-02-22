@@ -1,7 +1,9 @@
 package datart.server.service.impl;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import datart.core.base.consts.Const;
 import datart.core.base.exception.Exceptions;
+import datart.core.entity.Organization;
 import datart.core.entity.Role;
 import datart.core.entity.TableImport;
 import datart.core.entity.TableImportField;
@@ -9,17 +11,21 @@ import datart.core.entity.param.TableImportFieldParam;
 import datart.core.entity.param.TableImportParam;
 import datart.core.mappers.TableImportFieldMapper;
 import datart.core.mappers.TableImportMapper;
+import datart.core.mappers.ext.DepartmentMapperExt;
+import datart.core.mappers.ext.OrganizationMapperExt;
 import datart.core.mappers.ext.RoleMapperExt;
 import datart.security.base.ResourceType;
 import datart.security.exception.PermissionDeniedException;
 import datart.security.manager.shiro.ShiroSecurityManager;
 import datart.security.util.PermissionHelper;
+import datart.server.common.Convert;
 import datart.server.common.StringUtils;
 import datart.server.config.datasource.DynamicDataSource;
 import datart.server.service.BaseService;
 import datart.server.service.TableImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -36,6 +42,10 @@ public class TableImportServiceImpl extends BaseService implements TableImportSe
     private ToolsServiceImpl toolsService;
     @Autowired
     private RoleMapperExt roleMapperExt;
+    @Autowired
+    private OrganizationMapperExt organizationMapper;
+    @Autowired
+    private DepartmentMapperExt departmentMapperExt;
 
     @Override
     public List<TableImport> tableImportList(TableImport tableImport) {
@@ -273,13 +283,17 @@ public class TableImportServiceImpl extends BaseService implements TableImportSe
             valus += "(";
             for (int j = 0; j < list.get(i).size(); j++) {
 
-                String data = StringUtils.isEmpty(list.get(i).get(j).getData()) ? "" : list.get(i).get(j).getData();
+                boolean isnull = false;
+                if (StringUtils.isEmpty(list.get(i).get(j).getData())) {
+                    isnull = true;
+                }
+                String data = StringUtils.isEmpty(list.get(i).get(j).getData()) ? "NULL" : list.get(i).get(j).getData();
                 if (j == list.get(i).size() - 1) {
 
-                    valus += "'" + data + "'";
+                    valus += isnull ? data : "'" + data + "'";
                 } else {
 
-                    valus += "'" + data + "',";
+                    valus += isnull ? data + "," : "'" + data + "',";
                 }
             }
             if (i < list.size() - 1) {
@@ -310,10 +324,24 @@ public class TableImportServiceImpl extends BaseService implements TableImportSe
         }
         String sourceId = tableImport.getSourceId();
         String tableName = tableImport.getTableName();
+        Organization organization = organizationMapper.getOrganization();
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("tableName", tableName);
+        if (!securityManager.isOrgOwner(organization.getId())) {
+            String orgCode = departmentMapperExt.selectDeptById(getCurrentUser().getDeptId()).getOrgCode();
+            List<String> orgCodes = new ArrayList<>();
+            orgCodes.add(orgCode);
+            String adminCompetence = getCurrentUser().getAdminCompetence();
+            if (adminCompetence != null){
+
+                List<String> Orgs = departmentMapperExt.selectOrgCodesByDeptIds(Convert.toLongArray(adminCompetence));
+                orgCodes.addAll(Orgs);
+            }
+            orgCodes = orgCodes.stream().distinct().collect(Collectors.toList());
+            map.put("orgCodes",orgCodes);
+        }
         toolsService.changeConnection(sourceId);
-        List<HashMap<String, Object>> list = tableImportMapper.getImportData(new HashMap<String, Object>() {{
-            put("tableName", tableName);
-        }});
+        List<HashMap<String, Object>> list = tableImportMapper.getImportData(map);
         DynamicDataSource.clear();
         return list;
     }
@@ -345,9 +373,9 @@ public class TableImportServiceImpl extends BaseService implements TableImportSe
             if (tableField.equals("id")) {
                 dataid = datalist.get(i).getData();
             } else {
-                if(StringUtils.isBlank(datalist.get(i).getData())){
+                if (StringUtils.isBlank(datalist.get(i).getData())) {
                     sets += tableField + "= null,";
-                }else{
+                } else {
                     sets += tableField + "='" + datalist.get(i).getData() + "',";
                 }
             }

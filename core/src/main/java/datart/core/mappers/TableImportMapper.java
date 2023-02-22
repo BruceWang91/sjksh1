@@ -94,11 +94,19 @@ public interface TableImportMapper extends CRUDMapper {
     @Insert({
             "insert into ${tableName} (${fields}) values ${valus}"
     })
-    int insertTable(HashMap<String,String> map);
+    int insertTable(HashMap<String, String> map);
 
     @Select({
             "<script>",
-            "select * from ${tableName} order by id\n",
+            "select * from ${tableName} where 1=1\n" +
+                    "<if test=\"orgCodes != null and orgCodes.size() > 0 \"> " +
+                    "and (org_code is null or org_code in \n" +
+                    "<foreach item=\"orgCodes\" collection=\"orgCodes\" open=\"(\" separator=\",\" close=\")\">\n" +
+                    "#{orgCodes}\n" +
+                    "</foreach>\n" +
+                    ")\n" +
+                    "</if>\n" +
+                    "order by id\n",
             "</script>"
     })
     List<HashMap<String, Object>> getImportData(HashMap<String, Object> map);

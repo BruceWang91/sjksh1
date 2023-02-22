@@ -20,5 +20,9 @@ public class UserSettings extends BaseEntity {
 
     private String deptName;
 
+    private String orgCode;
+
     private List<String> roleIds;
+
+    private List<String> childOrgs;
 }

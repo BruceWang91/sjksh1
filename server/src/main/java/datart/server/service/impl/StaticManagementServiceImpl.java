@@ -44,6 +44,8 @@ public class StaticManagementServiceImpl extends BaseService implements IStaticM
     private RoleMapperExt roleMapperExt;
     @Value("${spring.upload}")
     private String localurl;
+    @Value("${spring.libreoffice.officehome}") // 从application.yml配置文件中获取
+    private String home; // libreoffice安装位置
 
     @Override
     public List<StaticManagement> getList(StaticManagement staticManagement) {
@@ -219,7 +221,7 @@ public class StaticManagementServiceImpl extends BaseService implements IStaticM
     }
 
     @Override
-    public StaticManagement add(String moduleName, String orgId, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, MultipartFile file) throws IOException {
+    public StaticManagement add(String moduleName, String orgId, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, Integer needChange, MultipartFile file) throws IOException {
 
         StaticManagement staticManagement = new StaticManagement();
         staticManagement.setModuleName(moduleName);
@@ -237,9 +239,9 @@ public class StaticManagementServiceImpl extends BaseService implements IStaticM
 
         if (type != 1 && type != 0 && null != file) {
 
-            HashMap<String, Object> map = fileService.uploadstaticfile(FileOwner.STATIC_FILE_SAVE_DATA, staticManagement.getId(), file);
+            HashMap<String, Object> map = fileService.uploadstaticfile(FileOwner.STATIC_FILE_SAVE_DATA, staticManagement.getId(), needChange, file);
             staticManagement.setUrl(map.get("url").toString());
-//            staticManagement.setTextContent((byte[]) map.get("fileStream"));
+            staticManagement.setPdfUrl(map.get("pdfurl").toString());
         }
         staticManagementMapper.updateStaticManagement(staticManagement);
         return editmanagement(staticManagement);
@@ -262,7 +264,7 @@ public class StaticManagementServiceImpl extends BaseService implements IStaticM
     }
 
     @Override
-    public StaticManagement update(Long id, String moduleName, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, MultipartFile file) throws IOException {
+    public StaticManagement update(Long id, String moduleName, String mark, String jsonStr, String link, Integer type, Long parentId, Integer isFolder, Integer index, Integer needChange, MultipartFile file) throws IOException {
 
         StaticManagement staticManagement = staticManagementMapper.selectStaticManagementById(id);
         staticManagement.setModuleName(moduleName);
@@ -282,9 +284,9 @@ public class StaticManagementServiceImpl extends BaseService implements IStaticM
                 File oldfile = new File(url);
                 oldfile.delete();
             }
-            HashMap<String, Object> map = fileService.uploadstaticfile(FileOwner.STATIC_FILE_SAVE_DATA, staticManagement.getId(), file);
+            HashMap<String, Object> map = fileService.uploadstaticfile(FileOwner.STATIC_FILE_SAVE_DATA, staticManagement.getId(), needChange, file);
             staticManagement.setUrl(map.get("url").toString());
-//            staticManagement.setTextContent((byte[]) map.get("fileStream"));
+            staticManagement.setPdfUrl(map.get("pdfurl").toString());
         }
         staticManagementMapper.updateStaticManagement(staticManagement);
         return editmanagement(staticManagement);
@@ -325,6 +327,15 @@ public class StaticManagementServiceImpl extends BaseService implements IStaticM
                 if (StringUtils.isNotBlank(url)) {
 
                     File file = new File(url);
+                    file.delete();
+                }
+            }
+            String pdfurl = management.getPdfUrl();
+            if (StringUtils.isNotBlank(pdfurl)) {
+                pdfurl = pdfurl.replace("/upload/", localurl);
+                if (StringUtils.isNotBlank(pdfurl)) {
+
+                    File file = new File(pdfurl);
                     file.delete();
                 }
             }

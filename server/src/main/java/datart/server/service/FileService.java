@@ -16,5 +16,5 @@ public interface FileService {
 
     HashMap<String, Object> uploadtopdf(FileOwner fileData, Long classId, Long parentId, String orgId, MultipartFile file) throws IOException;
 
-    HashMap<String, Object> uploadstaticfile(FileOwner fileOwner, Long parentId, MultipartFile file) throws IOException;
+    HashMap<String, Object> uploadstaticfile(FileOwner fileOwner, Long parentId, Integer needChange, MultipartFile file) throws IOException;
 }

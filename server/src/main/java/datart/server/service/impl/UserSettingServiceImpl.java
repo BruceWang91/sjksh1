@@ -27,14 +27,17 @@ import datart.core.mappers.ext.RelRoleUserMapperExt;
 import datart.core.mappers.ext.UserMapperExt;
 import datart.core.mappers.ext.UserSettingsMapperExt;
 import datart.server.base.params.BaseCreateParam;
-import datart.server.common.StringUtils;
+import datart.server.common.Convert;
 import datart.server.service.BaseService;
 import datart.server.service.UserSettingService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -65,10 +68,19 @@ public class UserSettingServiceImpl extends BaseService implements UserSettingSe
                 if (null != department) {
                     userSettings.setDeptId(department.getDeptId());
                     userSettings.setDeptName(department.getDeptName());
+                    userSettings.setOrgCode(department.getOrgCode());
                 }
             }
             List<String> roleIds = relRoleUserMapper.getRoleIdsByUserId(userSettings.getUserId());
             userSettings.setRoleIds(roleIds);
+            List<String> childOrgs = new ArrayList<>();
+            String adminCompetence = user.getAdminCompetence();
+            if (null != adminCompetence) {
+
+                List<String> Orgs = departmentMapper.selectOrgCodesByDeptIds(Convert.toLongArray(adminCompetence));
+                childOrgs.addAll(Orgs);
+            }
+            userSettings.setChildOrgs(childOrgs);
         }
         return list;
     }
@@ -78,10 +90,11 @@ public class UserSettingServiceImpl extends BaseService implements UserSettingSe
         Department department = departmentMapper.selectDeptById(deptId);
         if (null != department && department.getType() != 2) {
 
-            getParentDept(department.getParentId());
+            return getParentDept(department.getParentId());
         }
         return department;
     }
+
 
     @Override
     public boolean deleteByUserId(String userId) {

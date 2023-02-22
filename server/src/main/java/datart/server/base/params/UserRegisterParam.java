@@ -43,4 +43,6 @@ public class UserRegisterParam {
     private String email;
 
     private Long deptId;
+
+    private String adminCompetence;
 }

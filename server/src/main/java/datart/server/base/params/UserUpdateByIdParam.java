@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -32,4 +33,5 @@ public class UserUpdateByIdParam extends UserUpdateParam {
 
     private Set<String> roleIds = new HashSet<>();
 
+    private List<String> childOrgs;
 }

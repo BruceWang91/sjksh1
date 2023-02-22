@@ -66,7 +66,7 @@ public class BasicValidRequestInterceptor implements HandlerInterceptor {
                 || requestURI.startsWith("/share")
                 || requestURI.startsWith("/jmreport")
                 || requestURI.startsWith("/upload")
-                || requestURI.startsWith("/aaa")
+                || requestURI.startsWith("/vis")
                 || requestURI.startsWith(staticPath);
     }
 

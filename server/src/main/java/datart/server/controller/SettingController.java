@@ -37,7 +37,7 @@ import java.util.List;
 @Api(value = SettingController.PER_PATH)
 @Slf4j
 @RestController
-@RequestMapping(value = SettingController.PER_PATH)
+@RequestMapping(value = "/settings")
 public class SettingController extends BaseController {
 
     public static final String PER_PATH = "/settings";

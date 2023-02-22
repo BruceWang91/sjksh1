@@ -41,6 +41,8 @@ public class UserBaseInfo {
 
     private Long deptId;
 
+    private String adminCompetence;
+
     private String deptName;
 
     public UserBaseInfo() {
@@ -55,5 +57,6 @@ public class UserBaseInfo {
         this.avatar = user.getAvatar();
         this.deptId = user.getDeptId();
         this.deptName = user.getDeptName();
+        this.adminCompetence = user.getAdminCompetence();
     }
 }

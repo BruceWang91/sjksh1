@@ -53,8 +53,10 @@ public class StaticManagementController extends BaseController {
                                                   @RequestParam("parentId") Long parentId,
                                                   @RequestParam("isFolder") Integer isFolder,
                                                   @RequestParam("index") Integer index,
+                                                  @RequestParam("needChange") Integer needChange,
                                                   @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
-        return ResponseData.success(staticManagementService.add(moduleName, orgId, mark, jsonStr, link, type, parentId, isFolder, index, file));
+        //needchange 传入1 将文件转换为pdf
+        return ResponseData.success(staticManagementService.add(moduleName, orgId, mark, jsonStr, link, type, parentId, isFolder, index, needChange, file));
     }
 
     @ApiOperation("新增静态资源管理")
@@ -74,8 +76,10 @@ public class StaticManagementController extends BaseController {
                                                    @RequestParam("parentId") Long parentId,
                                                    @RequestParam("isFolder") Integer isFolder,
                                                    @RequestParam("index") Integer index,
+                                                   @RequestParam("needChange") Integer needChange,
                                                    @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
-        return ResponseData.success(staticManagementService.update(id, moduleName, mark, jsonStr, link, type, parentId, isFolder, index, file));
+        //needchange 传入1 将文件转换为pdf
+        return ResponseData.success(staticManagementService.update(id, moduleName, mark, jsonStr, link, type, parentId, isFolder, index, needChange, file));
     }
 
     @ApiOperation("修改排序号")
