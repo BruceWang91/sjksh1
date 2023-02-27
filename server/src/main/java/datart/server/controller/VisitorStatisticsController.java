@@ -18,7 +18,7 @@ public class VisitorStatisticsController extends BaseController {
 
     @ApiOperation("查询访客统计数量")
     @GetMapping("/selectVisitorStatistics")
-    public ResponseData<List<VisitorStatistics>> selectVisitorStatistics(VisitorStatistics visitorStatistics){
+    public ResponseData<List<VisitorStatistics>> selectVisitorStatistics(VisitorStatistics visitorStatistics) {
 
         List<VisitorStatistics> visitorStatisticsList = visitorStatisticsService.selectVisitorStatistics(visitorStatistics);
         return ResponseData.success(visitorStatisticsList);
@@ -26,7 +26,7 @@ public class VisitorStatisticsController extends BaseController {
 
     @ApiOperation("新增访客记录")
     @PostMapping("/addVisitorStatistics")
-    public ResponseData<VisitorStatistics> addVisitorStatistics(@RequestBody VisitorStatistics visitorStatistics){
+    public ResponseData<VisitorStatistics> addVisitorStatistics(@RequestBody VisitorStatistics visitorStatistics) {
 
         return ResponseData.success(visitorStatisticsService.addVisitorStatistics(visitorStatistics));
     }
