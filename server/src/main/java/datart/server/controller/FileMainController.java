@@ -49,6 +49,7 @@ public class FileMainController extends BaseController {
     @ApiOperation("新增保存文件管理")
     @PostMapping("/add")
     public ResponseData<Integer> addSave(@RequestBody FileMain fileMain) {
+
         return ResponseData.success(fileMainService.insertFileMain(fileMain));
     }
 
@@ -58,6 +59,7 @@ public class FileMainController extends BaseController {
     @ApiOperation("修改保存文件管理")
     @PostMapping("/edit")
     public ResponseData<Integer> editSave(@RequestBody FileMain fileMain) {
+
         return ResponseData.success(fileMainService.updateFileMain(fileMain));
     }
 
@@ -67,6 +69,7 @@ public class FileMainController extends BaseController {
     @ApiOperation("删除文件管理")
     @PostMapping("/remove")
     public ResponseData<Integer> remove(String ids) {
+
         return ResponseData.success(fileMainService.deleteFileMainByFileIds(ids));
     }
 
