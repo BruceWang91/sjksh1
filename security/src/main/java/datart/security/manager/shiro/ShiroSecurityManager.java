@@ -325,10 +325,8 @@ public class ShiroSecurityManager implements DatartSecurityManager {
         return permissions;
     }
 
-
     @PostConstruct
     public void initSecurityManager() {
         SecurityUtils.setSecurityManager(securityManager);
     }
-
 }
